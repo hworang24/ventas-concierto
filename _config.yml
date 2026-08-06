@@ -1,0 +1,3 @@
+# Deshabilitar Jekyll completamente
+markdown: kramdown
+theme: null
