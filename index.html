@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Venta de Concierto - Palcos y Puestos</title>
+    <style>
+        /* ... (mismo CSS que antes) ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a2a 0%, #1a1a4e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        /* Resumen */
+        .summary {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .summary-item .label {
+            font-size: 0.9rem;
+            color: #ccc;
+            display: block;
+        }
+
+        .summary-item .number.sold {
+            color: #ff6b6b;
+        }
+
+        .summary-item .number.available {
+            color: #51cf66;
+        }
+
+        /* Controles de venta */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .controls select,
+        .controls button {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .controls select {
+            background: #2a2a5e;
+            color: #fff;
+            min-width: 200px;
+        }
+
+        .controls select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-buy {
+            background: linear-gradient(45deg, #f7971e, #ffd200);
+            color: #1a1a4e;
+            font-weight: bold;
+            padding: 12px 35px;
+        }
+
+        .btn-buy:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 5px 25px rgba(247, 151, 30, 0.4);
+        }
+
+        .btn-buy:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-reset {
+            background: #2a2a5e;
+            color: #fff;
+            border: 1px solid #444;
+        }
+
+        .btn-reset:hover {
+            background: #3a3a7e;
+        }
+
+        .btn-palco {
+            background: #2d8a4e;
+            color: #fff;
+        }
+
+        .btn-palco:hover:not(:disabled) {
+            background: #3aaa5e;
+            transform: scale(1.05);
+        }
+
+        .btn-palco:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Grid de mesas */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .seat {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .seat:hover:not(.sold):not(.blocked) {
+            transform: scale(1.05);
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .seat .seat-number {
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        .seat .seat-mesa {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .seat.available {
+            border-color: #51cf66;
+            background: rgba(81, 207, 102, 0.1);
+        }
+
+        .seat.available .seat-number {
+            color: #51cf66;
+        }
+
+        .seat.sold {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.15);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .seat.sold .seat-number {
+            color: #ff6b6b;
+            text-decoration: line-through;
+        }
+
+        .seat.blocked {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.15);
+            cursor: not-allowed;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .seat.blocked .seat-number {
+            color: #ffd700;
+        }
+
+        .seat .badge {
+            font-size: 0.6rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 4px;
+        }
+
+        .seat .badge.sold-badge {
+            color: #ff6b6b;
+        }
+
+        .seat .badge.blocked-badge {
+            color: #ffd700;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #1a1a4e;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .modal p {
+            color: #ccc;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .modal .highlight {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .modal .btn-close {
+            background: #ffd700;
+            color: #1a1a4e;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal .btn-close:hover {
+            transform: scale(1.05);
+        }
+
+        .modal .btn-close.danger {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        .modal .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+        }
+
+        .footer a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a2a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ffd700;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 8px;
+            }
+            .seat {
+                min-height: 65px;
+                padding: 8px 4px;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            .controls select {
+                min-width: 100%;
+            }
+            .summary {
+                gap: 15px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎫 Venta de Concierto</h1>
+        <p class="subtitle">Selecciona un puesto o compra un palco completo (10 puestos) · Los datos se guardan automáticamente</p>
+
+        <!-- Resumen -->
+        <div class="summary" id="summary">
+            <div class="summary-item">
+                <span class="number" id="totalSeats">1600</span>
+                <span class="label">Total puestos</span>
+            </div>
+            <div class="summary-item">
+                <span class="number available" id="availableSeats">1600</span>
+                <span class="label">Disponibles</span>
+            </div>
+            <div class="summary-item">
+                <span class="number sold" id="soldSeats">0</span>
+                <span class="label">Vendidos</span>
+            </div>
+            <div class="summary-item">
+                <span class="number" id="blockedSeats" style="color: #ffd700;">0</span>
+                <span class="label">Bloqueados (temporales)</span>
+            </div>
+            <div class="summary-item">
+                <span class="number" id="lastSave" style="font-size: 0.8rem; color: #666;">--</span>
+                <span class="label">Último guardado</span>
+            </div>
+        </div>
+
+        <!-- Controles -->
+        <div class="controls">
+            <select id="mesaSelect">
+                <option value="">Selecciona una mesa...</option>
+            </select>
+            <button class="btn-palco" id="btnPalco">🎪 Comprar Palco Completo</button>
+            <button class="btn-buy" id="btnBuy">🎟️ Comprar Puesto Individual</button>
+            <button class="btn-reset" id="btnReset">🔄 Reiniciar ventas</button>
+            <button class="btn-reset" id="btnExport" style="background: #1a4e2a;">💾 Exportar datos</button>
+            <button class="btn-reset" id="btnImport" style="background: #4e2a1a;">📂 Importar datos</button>
+        </div>
+
+        <!-- Grid de puestos -->
+        <div class="grid" id="seatGrid"></div>
+
+        <div class="footer">
+            🎵 Cada mesa tiene 10 puestos · Los puestos se bloquean al seleccionarlos · 1600 puestos totales
+            <br />
+            <small style="color: #444;">Los datos se guardan automáticamente en tu navegador</small>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h2 id="modalTitle">✅ ¡Venta realizada!</h2>
+            <p id="modalMessage">Has comprado el puesto correctamente.</p>
+            <div class="modal-actions">
+                <button class="btn-close" id="modalBtn">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- CONFIGURACIÓN ----------
+            const TOTAL_MESAS = 160;
+            const PUESTOS_POR_MESA = 10;
+            const STORAGE_KEY = 'concierto_ventas';
+
+            // ---------- ESTADO ----------
+            let seats = [];
+            let selectedSeatIndex = null;
+            let timeoutBlock = null;
+
+            // Elementos DOM
+            const gridEl = document.getElementById('seatGrid');
+            const mesaSelect = document.getElementById('mesaSelect');
+            const btnBuy = document.getElementById('btnBuy');
+            const btnPalco = document.getElementById('btnPalco');
+            const btnReset = document.getElementById('btnReset');
+            const btnExport = document.getElementById('btnExport');
+            const btnImport = document.getElementById('btnImport');
+            const totalSeatsEl = document.getElementById('totalSeats');
+            const availableSeatsEl = document.getElementById('availableSeats');
+            const soldSeatsEl = document.getElementById('soldSeats');
+            const blockedSeatsEl = document.getElementById('blockedSeats');
+            const lastSaveEl = document.getElementById('lastSave');
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalBtn = document.getElementById('modalBtn');
+
+            // ---------- PERSISTENCIA ----------
+            function guardarEstado() {
+                try {
+                    const estado = {
+                        seats: seats.map(s => ({ ...s })),
+                        timestamp: Date.now()
+                    };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+                    
+                    // Mostrar hora del último guardado
+                    const ahora = new Date();
+                    lastSaveEl.textContent = ahora.toLocaleTimeString();
+                } catch (e) {
+                    console.warn('No se pudo guardar en localStorage:', e);
+                }
+            }
+
+            function cargarEstado() {
+                try {
+                    const data = localStorage.getItem(STORAGE_KEY);
+                    if (!data) return false;
+                    
+                    const estado = JSON.parse(data);
+                    if (!estado.seats || !Array.isArray(estado.seats)) return false;
+                    
+                    if (estado.seats.length !== TOTAL_MESAS * PUESTOS_POR_MESA) {
+                        console.warn('Los datos guardados no coinciden con la configuración actual');
+                        return false;
+                    }
+                    
+                    seats = estado.seats;
+                    
+                    // Mostrar cuándo se guardó por última vez
+                    if (estado.timestamp) {
+                        const fecha = new Date(estado.timestamp);
+                        lastSaveEl.textContent = fecha.toLocaleString();
+                    }
+                    
+                    return true;
+                } catch (e) {
+                    console.warn('No se pudo cargar el estado:', e);
+                    return false;
+                }
+            }
+
+            function guardarYRenderizar() {
+                render();
+                guardarEstado();
+            }
+
+            // ---------- INICIALIZACIÓN ----------
+            function initSeats() {
+                // Intentar cargar datos guardados
+                if (cargarEstado()) {
+                    // Verificar que no haya puestos bloqueados (los bloqueos no deben persistir)
+                    let habiaBloqueados = false;
+                    seats.forEach(s => {
+                        if (s.estado === 'blocked') {
+                            s.estado = 'available';
+                            habiaBloqueados = true;
+                        }
+                    });
+                    if (habiaBloqueados) {
+                        guardarEstado();
+                    }
+                    selectedSeatIndex = null;
+                    populateMesaSelect();
+                    render();
+                    showModal('📂 Datos cargados', 'Se han restaurado las ventas guardadas anteriormente.');
+                    return;
+                }
+
+                // Si no hay datos guardados, crear nuevo estado
+                seats = [];
+                for (let mesa = 1; mesa <= TOTAL_MESAS; mesa++) {
+                    for (let puesto = 1; puesto <= PUESTOS_POR_MESA; puesto++) {
+                        seats.push({
+                            mesa: mesa,
+                            puesto: puesto,
+                            estado: 'available',
+                        });
+                    }
+                }
+                
+                if (timeoutBlock) {
+                    clearTimeout(timeoutBlock);
+                    timeoutBlock = null;
+                }
+                selectedSeatIndex = null;
+                populateMesaSelect();
+                render();
+                guardarEstado();
+            }
+
+            // ---------- POBLAR SELECT DE MESAS ----------
+            function populateMesaSelect() {
+                mesaSelect.innerHTML = '<option value="">Selecciona una mesa...</option>';
+                for (let mesa = 1; mesa <= TOTAL_MESAS; mesa++) {
+                    const disponibles = seats.filter(s => s.mesa === mesa && s.estado === 'available').length;
+                    const total = PUESTOS_POR_MESA;
+                    const vendidos = seats.filter(s => s.mesa === mesa && s.estado === 'sold').length;
+                    const bloqueados = seats.filter(s => s.mesa === mesa && s.estado === 'blocked').length;
+                    let label = `Mesa ${mesa} (${disponibles}/${total} libres`;
+                    if (vendidos > 0) label += `, ${vendidos} vendidos`;
+                    if (bloqueados > 0) label += `, ${bloqueados} bloqueados`;
+                    label += ')';
+                    const option = document.createElement('option');
+                    option.value = mesa;
+                    option.textContent = label;
+                    if (disponibles === 0) {
+                        option.disabled = true;
+                    }
+                    mesaSelect.appendChild(option);
+                }
+            }
+
+            // ---------- RENDERIZAR GRID ----------
+            function render() {
+                const total = seats.length;
+                const disponibles = seats.filter(s => s.estado === 'available').length;
+                const vendidos = seats.filter(s => s.estado === 'sold').length;
+                const bloqueados = seats.filter(s => s.estado === 'blocked').length;
+
+                totalSeatsEl.textContent = total;
+                availableSeatsEl.textContent = disponibles;
+                soldSeatsEl.textContent = vendidos;
+                blockedSeatsEl.textContent = bloqueados;
+
+                gridEl.innerHTML = '';
+                seats.forEach((seat, index) => {
+                    const div = document.createElement('div');
+                    div.className = `seat ${seat.estado}`;
+                    div.innerHTML = `
+                        <div class="seat-number">Puesto ${seat.puesto}</div>
+                        <div class="seat-mesa">Mesa ${seat.mesa}</div>
+                        ${seat.estado === 'sold' ? '<div class="badge sold-badge">VENDIDO</div>' : ''}
+                        ${seat.estado === 'blocked' ? '<div class="badge blocked-badge">BLOQUEADO</div>' : ''}
+                    `;
+                    if (seat.estado === 'available') {
+                        div.addEventListener('click', () => selectSeat(index));
+                    }
+                    gridEl.appendChild(div);
+                });
+
+                populateMesaSelect();
+                updateButtons();
+
+                if (selectedSeatIndex !== null && seats[selectedSeatIndex]) {
+                    const mesa = seats[selectedSeatIndex].mesa;
+                    mesaSelect.value = mesa;
+                } else {
+                    mesaSelect.value = '';
+                }
+            }
+
+            // ---------- SELECCIONAR PUESTO (bloqueo) ----------
+            function selectSeat(index) {
+                if (timeoutBlock) {
+                    clearTimeout(timeoutBlock);
+                    timeoutBlock = null;
+                    if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].estado === 'blocked') {
+                        seats[selectedSeatIndex].estado = 'available';
+                    }
+                }
+
+                if (selectedSeatIndex === index && seats[index].estado === 'blocked') {
+                    seats[index].estado = 'available';
+                    selectedSeatIndex = null;
+                    guardarYRenderizar();
+                    return;
+                }
+
+                if (seats[index].estado !== 'available') return;
+
+                seats[index].estado = 'blocked';
+                selectedSeatIndex = index;
+
+                timeoutBlock = setTimeout(() => {
+                    if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].estado === 'blocked') {
+                        seats[selectedSeatIndex].estado = 'available';
+                        selectedSeatIndex = null;
+                        guardarYRenderizar();
+                        showModal('⏰ Tiempo agotado', 'El bloqueo del puesto ha expirado. Vuelve a seleccionarlo.');
+                    }
+                    timeoutBlock = null;
+                }, 30000);
+
+                guardarYRenderizar();
+            }
+
+            // ---------- COMPRAR PUESTO INDIVIDUAL ----------
+            function buyIndividual() {
+                if (selectedSeatIndex === null) {
+                    showModal('⚠️ Selecciona un puesto', 'Primero haz clic en un puesto disponible para seleccionarlo.');
+                    return;
+                }
+
+                const seat = seats[selectedSeatIndex];
+                if (seat.estado !== 'blocked') {
+                    showModal('⚠️ Puesto no bloqueado', 'El puesto ya no está disponible. Selecciona otro.');
+                    selectedSeatIndex = null;
+                    guardarYRenderizar();
+                    return;
+                }
+
+                if (!confirm(`¿Comprar el puesto ${seat.puesto} de la mesa ${seat.mesa} por $XX?`)) {
+                    return;
+                }
+
+                seat.estado = 'sold';
+                selectedSeatIndex = null;
+                if (timeoutBlock) {
+                    clearTimeout(timeoutBlock);
+                    timeoutBlock = null;
+                }
+                guardarYRenderizar();
+                showModal('✅ ¡Compra exitosa!', `Has comprado el puesto ${seat.puesto} de la mesa ${seat.mesa}. ¡Disfruta del concierto! 🎵`);
+            }
+
+            // ---------- COMPRAR PALCO COMPLETO ----------
+            function buyPalco() {
+                const mesa = parseInt(mesaSelect.value);
+                if (!mesa || isNaN(mesa)) {
+                    showModal('⚠️ Selecciona una mesa', 'Elige una mesa del menú desplegable para comprar el palco completo.');
+                    return;
+                }
+
+                const seatsInMesa = seats.filter(s => s.mesa === mesa);
+                if (seatsInMesa.length === 0) {
+                    showModal('⚠️ Mesa inválida', 'La mesa seleccionada no existe.');
+                    return;
+                }
+
+                const available = seatsInMesa.filter(s => s.estado === 'available');
+                if (available.length !== PUESTOS_POR_MESA) {
+                    const vendidos = seatsInMesa.filter(s => s.estado === 'sold').length;
+                    const bloqueados = seatsInMesa.filter(s => s.estado === 'blocked').length;
+                    showModal(
+                        '⚠️ Palco no disponible',
+                        `La mesa ${mesa} no está completa. Tiene ${available.length} libres, ${vendidos} vendidos y ${bloqueados} bloqueados.`
+                    );
+                    return;
+                }
+
+                if (!confirm(`¿Comprar el palco completo de la mesa ${mesa} (${PUESTOS_POR_MESA} puestos) por $XXX?`)) {
+                    return;
+                }
+
+                seatsInMesa.forEach(s => {
+                    s.estado = 'sold';
+                });
+
+                if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].mesa === mesa) {
+                    selectedSeatIndex = null;
+                    if (timeoutBlock) {
+                        clearTimeout(timeoutBlock);
+                        timeoutBlock = null;
+                    }
+                }
+
+                guardarYRenderizar();
+                showModal('🎪 ¡Palco completo!', `Has comprado el palco completo de la mesa ${mesa} (${PUESTOS_POR_MESA} puestos). ¡Gran fiesta! 🎉`);
+            }
+
+            // ---------- REINICIAR ----------
+            function resetAll() {
+                if (!confirm('¿Seguro que quieres reiniciar todas las ventas? Se perderán los datos.')) return;
+                if (timeoutBlock) {
+                    clearTimeout(timeoutBlock);
+                    timeoutBlock = null;
+                }
+                selectedSeatIndex = null;
+                
+                // Resetear todos los puestos a disponible
+                seats.forEach(s => {
+                    s.estado = 'available';
+                });
+                
+                guardarYRenderizar();
+                showModal('🔄 Reiniciado', 'Todas las ventas se han reiniciado. ¡Listo para empezar!');
+            }
+
+            // ---------- EXPORTAR DATOS ----------
+            function exportarDatos() {
+                const data = localStorage.getItem(STORAGE_KEY);
+                if (!data) {
+                    showModal('⚠️ Sin datos', 'No hay datos guardados para exportar.');
+                    return;
+                }
+                
+                // Crear archivo de texto con los datos
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ventas_concierto_${new Date().toISOString().slice(0,10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showModal('✅ Exportado', 'Los datos se han exportado correctamente.');
+            }
+
+            // ---------- IMPORTAR DATOS ----------
+            function importarDatos() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        try {
+                            const data = JSON.parse(ev.target.result);
+                            if (!data.seats || !Array.isArray(data.seats)) {
+                                showModal('⚠️ Error', 'El archivo no tiene el formato correcto.');
+                                return;
+                            }
+                            
+                            if (data.seats.length !== TOTAL_MESAS * PUESTOS_POR_MESA) {
+                                showModal('⚠️ Error', 'El archivo no coincide con la configuración actual de puestos.');
+                                return;
+                            }
+                            
+                            if (!confirm('¿Importar estos datos? Se perderán los datos actuales.')) return;
+                            
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                            // Recargar estado
+                            if (cargarEstado()) {
+                                selectedSeatIndex = null;
+                                if (timeoutBlock) {
+                                    clearTimeout(timeoutBlock);
+                                    timeoutBlock = null;
+                                }
+                                render();
+                                showModal('✅ Importado', 'Los datos se han importado correctamente.');
+                            } else {
+                                showModal('⚠️ Error', 'No se pudieron cargar los datos importados.');
+                            }
+                        } catch (err) {
+                            showModal('⚠️ Error', 'El archivo no es válido.');
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            }
+
+            // ---------- ACTUALIZAR BOTONES ----------
+            function updateButtons() {
+                const hasBlocked = seats.some(s => s.estado === 'blocked');
+                btnBuy.disabled = !hasBlocked;
+
+                let palcoDisponible = false;
+                for (let mesa = 1; mesa <= TOTAL_MESAS; mesa++) {
+                    const seatsInMesa = seats.filter(s => s.mesa === mesa);
+                    const available = seatsInMesa.filter(s => s.estado === 'available');
+                    if (available.length === PUESTOS_POR_MESA) {
+                        palcoDisponible = true;
+                        break;
+                    }
+                }
+                btnPalco.disabled = !palcoDisponible;
+            }
+
+            // ---------- MODAL ----------
+            function showModal(title, message) {
+                modalTitle.textContent = title;
+                modalMessage.textContent = message;
+                modal.classList.add('active');
+            }
+
+            function closeModal() {
+                modal.classList.remove('active');
+            }
+
+            modalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            // ---------- EVENTOS ----------
+            btnBuy.addEventListener('click', buyIndividual);
+            btnPalco.addEventListener('click', buyPalco);
+            btnReset.addEventListener('click', resetAll);
+            btnExport.addEventListener('click', exportarDatos);
+            btnImport.addEventListener('click', importarDatos);
+
+            mesaSelect.addEventListener('change', function() {
+                if (selectedSeatIndex !== null) {
+                    if (seats[selectedSeatIndex] && seats[selectedSeatIndex].estado === 'blocked') {
+                        seats[selectedSeatIndex].estado = 'available';
+                    }
+                    selectedSeatIndex = null;
+                    if (timeoutBlock) {
+                        clearTimeout(timeoutBlock);
+                        timeoutBlock = null;
+                    }
+                    guardarYRenderizar();
+                }
+            });
+
+            // ---------- INICIAR ----------
+            initSeats();
+
+            // Mostrar mensaje de bienvenida solo si es primera vez
+            if (!localStorage.getItem(STORAGE_KEY)) {
+                setTimeout(() => {
+                    showModal('🎵 Bienvenido', 'Haz clic en un puesto disponible para seleccionarlo y comprarlo, o compra un palco completo desde el menú. Los datos se guardan automáticamente.');
+                }, 500);
+            }
+
+        })();
+    </script>
+</body>
+</html>
