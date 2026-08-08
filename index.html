@@ -41,7 +41,6 @@
             font-size: 1.1rem;
         }
 
-        /* ===== BANNER DE ADVERTENCIA ===== */
         .warning-banner {
             display: none;
             background: rgba(255, 215, 0, 0.15);
@@ -93,7 +92,6 @@
             transform: scale(1.05);
         }
 
-        /* ===== RESUMEN ===== */
         .summary {
             display: flex;
             justify-content: center;
@@ -132,7 +130,6 @@
             color: #51cf66;
         }
 
-        /* ===== INDICADOR DE ALMACENAMIENTO ===== */
         .storage-indicator {
             display: inline-block;
             padding: 4px 12px;
@@ -194,7 +191,6 @@
             margin-top: 2px;
         }
 
-        /* ===== CONTROLES ===== */
         .controls {
             display: flex;
             justify-content: center;
@@ -296,16 +292,6 @@
             transform: scale(1.05);
         }
 
-        .btn-debug {
-            background: #6c757d;
-            color: #fff;
-        }
-
-        .btn-debug:hover {
-            background: #5a6268;
-            transform: scale(1.05);
-        }
-
         .btn-export-data {
             background: #4a6fa5;
             color: #fff;
@@ -316,7 +302,26 @@
             transform: scale(1.05);
         }
 
-        /* ===== GRID DE PUESTOS ===== */
+        .btn-import-data {
+            background: #6c4a8a;
+            color: #fff;
+        }
+
+        .btn-import-data:hover {
+            background: #7c5a9a;
+            transform: scale(1.05);
+        }
+
+        .btn-debug {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .btn-debug:hover {
+            background: #5a6268;
+            transform: scale(1.05);
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -425,7 +430,6 @@
             }
         }
 
-        /* ===== MODAL ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -532,7 +536,6 @@
             flex-wrap: wrap;
         }
 
-        /* ===== DEBUG PANEL ===== */
         .debug-panel {
             margin-top: 20px;
             padding: 15px;
@@ -568,7 +571,6 @@
             color: #ffd700;
         }
 
-        /* ===== FOOTER ===== */
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -624,18 +626,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎫 Venta de Concierto de Amor y Amistad</h1>
-        <h1>CLUB SOCIAL VALLEDUPAR S.A.</h1>
+        <h1>🎫 Venta de Concierto</h1>
         <p class="subtitle">Selecciona un puesto o compra un palco completo (10 puestos)</p>
 
-        <!-- ===== BANNER DE ADVERTENCIA ===== -->
         <div class="warning-banner" id="storageWarning">
             <h3>⚠️ ALMACENAMIENTO CASI LLENO</h3>
             <p id="storageWarningMessage">El espacio de almacenamiento está llegando a su límite. Exporta tus datos para evitar pérdidas.</p>
             <button class="btn-export-urgent" onclick="window.exportarDatosUrgente()">💾 Exportar datos ahora</button>
         </div>
 
-        <!-- ===== RESUMEN ===== -->
         <div class="summary" id="summary">
             <div class="summary-item">
                 <span class="number" id="totalSeats">1600</span>
@@ -669,7 +668,6 @@
             </div>
         </div>
 
-        <!-- ===== CONTROLES ===== -->
         <div class="controls">
             <select id="mesaSelect">
                 <option value="">Selecciona una mesa...</option>
@@ -678,21 +676,19 @@
             <button class="btn-buy" id="btnBuy">🎟️ Comprar Puesto Individual</button>
             <button class="btn-excel" id="btnExcel">📊 Informe Excel</button>
             <button class="btn-export-data" id="btnExportData">💾 Exportar Backup</button>
+            <button class="btn-import-data" id="btnImportData">📂 Importar Backup</button>
             <input type="password" id="resetKeyInput" placeholder="🔑 Clave para reiniciar" style="min-width: 180px;" />
             <button class="btn-reset" id="btnReset">🔄 Reiniciar ventas</button>
             <button class="btn-debug" id="btnDebug">🐛 Debug</button>
         </div>
 
-        <!-- ===== GRID ===== -->
         <div class="grid" id="seatGrid"></div>
 
-        <!-- ===== DEBUG PANEL ===== -->
         <div class="debug-panel" id="debugPanel">
             <h4 style="color: #ffd700; margin-bottom: 10px;">📋 Registro de depuración</h4>
             <div id="debugLogs"></div>
         </div>
 
-        <!-- ===== FOOTER ===== -->
         <div class="footer">
             🎵 Cada mesa tiene 10 puestos · 1600 puestos totales · Los datos se guardan automáticamente
             <br />
@@ -700,7 +696,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL ===== -->
     <div class="modal-overlay" id="modal">
         <div class="modal">
             <h2 id="modalTitle">✅ ¡Venta realizada!</h2>
@@ -762,6 +757,7 @@
             const btnExcel = document.getElementById('btnExcel');
             const btnDebug = document.getElementById('btnDebug');
             const btnExportData = document.getElementById('btnExportData');
+            const btnImportData = document.getElementById('btnImportData');
             const resetKeyInput = document.getElementById('resetKeyInput');
             const totalSeatsEl = document.getElementById('totalSeats');
             const availableSeatsEl = document.getElementById('availableSeats');
@@ -857,7 +853,7 @@
                     warningBanner.classList.add('active');
                     warningBanner.classList.add('danger');
                     warningMessage.textContent =
-                    `⚠️ ¡ALERTA! Almacenamiento al ${percentage.toFixed(1)}%. Está casi lleno. Exporta tus datos para evitar pérdidas.`;
+                        `⚠️ ¡ALERTA! Almacenamiento al ${percentage.toFixed(1)}%. Está casi lleno. Exporta tus datos para evitar pérdidas.`;
                 } else if (percentage > 75) {
                     status = 'yellow';
                     emoji = '🟡';
@@ -1683,6 +1679,139 @@
             }
 
             // ============================================================
+            // ===== IMPORTAR BACKUP (NUEVO) =====
+            // ============================================================
+
+            function importarBackup() {
+                // Crear input de tipo file
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (!file) {
+                        logDebug('📂 No se seleccionó ningún archivo', 'warning');
+                        return;
+                    }
+
+                    logDebug(`📂 Intentando importar archivo: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`, 'info');
+
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        try {
+                            const data = JSON.parse(ev.target.result);
+
+                            // Validar que los datos sean correctos
+                            if (!data.seats || !Array.isArray(data.seats)) {
+                                showModal('❌ Error', 'El archivo no tiene el formato correcto.\n\nFalta la propiedad "seats".');
+                                logDebug('❌ Archivo inválido: falta "seats"', 'error');
+                                return;
+                            }
+
+                            if (data.seats.length !== TOTAL_MESAS * PUESTOS_POR_MESA) {
+                                showModal('❌ Error',
+                                    `El archivo no coincide con la configuración actual.\n\n` +
+                                    `Esperaba: ${TOTAL_MESAS * PUESTOS_POR_MESA} puestos\n` +
+                                    `Recibí: ${data.seats.length} puestos`
+                                );
+                                logDebug(`❌ Configuración incorrecta: esperaba ${TOTAL_MESAS * PUESTOS_POR_MESA}, recibí ${data.seats.length}`,
+                                    'error');
+                                return;
+                            }
+
+                            // Verificar que los datos de ventas existan
+                            if (!data.ventas || !Array.isArray(data.ventas)) {
+                                data.ventas = [];
+                            }
+
+                            // Mostrar información del backup
+                            const vendidos = data.seats.filter(s => s.estado === 'sold').length;
+                            const totalVentas = data.ventas.length;
+                            const fechaBackup = data.timestamp ? new Date(data.timestamp).toLocaleString() : 'Desconocida';
+
+                            logDebug(`📊 Backup contiene: ${totalVentas} ventas, ${vendidos} puestos vendidos`, 'info');
+
+                            // Confirmar importación
+                            showModal(
+                                '📂 Confirmar importación',
+                                `¿Importar estos datos?\n\n` +
+                                `📊 Información del backup:\n` +
+                                `• Ventas: ${totalVentas}\n` +
+                                `• Puestos vendidos: ${vendidos}\n` +
+                                `• Fecha del backup: ${fechaBackup}\n\n` +
+                                `⚠️ Esto reemplazará TODOS los datos actuales.\n` +
+                                `💾 Se recomienda exportar los datos actuales primero.`,
+                                false,
+                                true,
+                                function() {
+                                    logDebug('🔄 Ejecutando importación de datos...', 'warning');
+
+                                    try {
+                                        // Guardar los datos importados
+                                        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+                                        // Recargar estado
+                                        if (cargarEstado()) {
+                                            // Limpiar bloqueos
+                                            seats.forEach(s => {
+                                                if (s.estado === 'blocked') {
+                                                    s.estado = 'available';
+                                                }
+                                            });
+
+                                            selectedSeatIndex = null;
+                                            if (timeoutBlock) {
+                                                clearTimeout(timeoutBlock);
+                                                timeoutBlock = null;
+                                            }
+
+                                            guardarYRenderizar();
+                                            monitorStorage();
+
+                                            const vendidosImportados = seats.filter(s => s.estado === 'sold').length;
+                                            logDebug(
+                                                `✅ Importación completada. ${data.ventas.length} ventas, ${vendidosImportados} puestos vendidos`,
+                                                'success');
+
+                                            showModal('✅ ¡Importación exitosa!',
+                                                `Los datos se han importado correctamente.\n\n` +
+                                                `📊 Datos importados:\n` +
+                                                `• Ventas: ${data.ventas.length}\n` +
+                                                `• Puestos vendidos: ${vendidosImportados}\n` +
+                                                `• Fecha del backup: ${fechaBackup}\n\n` +
+                                                `🔄 La aplicación se ha actualizado con los datos importados.`
+                                            );
+                                        } else {
+                                            showModal('❌ Error', 'No se pudieron cargar los datos importados.');
+                                            logDebug('❌ Error cargando datos importados', 'error');
+                                        }
+                                    } catch (e) {
+                                        showModal('❌ Error', 'Ocurrió un error al importar: ' + e.message);
+                                        logDebug(`❌ Error importando: ${e.message}`, 'error');
+                                    }
+                                }
+                            );
+
+                        } catch (e) {
+                            showModal('❌ Error', 'El archivo no es un JSON válido.\n\nError: ' + e.message);
+                            logDebug(`❌ Error parseando JSON: ${e.message}`, 'error');
+                        }
+                    };
+
+                    reader.onerror = function() {
+                        showModal('❌ Error', 'No se pudo leer el archivo.');
+                        logDebug('❌ Error leyendo archivo', 'error');
+                    };
+
+                    reader.readAsText(file);
+                };
+
+                // Abrir el selector de archivos
+                input.click();
+            }
+
+            // ============================================================
             // ===== ACTUALIZAR BOTONES =====
             // ============================================================
 
@@ -1726,6 +1855,7 @@
             btnReset.addEventListener('click', resetAll);
             btnExcel.addEventListener('click', generarExcel);
             btnExportData.addEventListener('click', exportarBackup);
+            btnImportData.addEventListener('click', importarBackup);
             btnDebug.addEventListener('click', toggleDebug);
 
             resetKeyInput.addEventListener('keypress', function(e) {
@@ -1767,13 +1897,16 @@
             console.log('🔑 Clave de reinicio:', RESET_KEY);
             console.log('💾 Sistema de monitoreo de almacenamiento activado');
             console.log('📊 Límite: 5 MB por sitio web');
+            console.log('📂 Botón "Importar Backup" disponible');
             console.log('💡 Presiona "🐛 Debug" para ver el panel de depuración');
 
             if (!localStorage.getItem(STORAGE_KEY)) {
                 setTimeout(() => {
                     showModal('🎵 Bienvenido',
-                        'Haz clic en un puesto disponible para seleccionarlo y comprarlo, o compra un palco completo desde el menú.\n\n💾 El sistema monitorea automáticamente el espacio de almacenamiento.'
-                        );
+                        'Haz clic en un puesto disponible para seleccionarlo y comprarlo, o compra un palco completo desde el menú.\n\n' +
+                        '💾 El sistema monitorea automáticamente el espacio de almacenamiento.\n' +
+                        '📂 Puedes exportar e importar copias de seguridad.'
+                    );
                 }, 500);
             }
 
