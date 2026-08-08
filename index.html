@@ -573,10 +573,6 @@
             let timeoutBlock = null;
             let ventas = [];
 
-            // Variables para el modal de confirmación
-            let confirmCallback = null;
-            let isConfirmMode = false;
-
             // ---------- DEBUG ----------
             function logDebug(message, type = 'info') {
                 const panel = document.getElementById('debugPanel');
@@ -612,6 +608,13 @@
             const modalBtn = document.getElementById('modalBtn');
             const modalCancelBtn = document.getElementById('modalCancelBtn');
 
+            // Variables para el modal
+            let modalConfig = {
+                isConfirm: false,
+                onConfirm: null,
+                showForm: false
+            };
+
             // ---------- PERSISTENCIA ----------
             function guardarEstado() {
                 try {
@@ -621,7 +624,7 @@
                         timestamp: Date.now()
                     };
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
-                    logDebug(`✅ Estado guardado: ${ventas.length} ventas, ${seats.filter(s => s.estado === 'sold').length} vendidos`, 'success');
+                    logDebug(`✅ Estado guardado: ${ventas.length} ventas`, 'success');
                     return true;
                 } catch (e) {
                     logDebug(`❌ Error al guardar: ${e.message}`, 'error');
@@ -650,7 +653,7 @@
                     
                     seats = estado.seats;
                     ventas = estado.ventas || [];
-                    logDebug(`✅ Datos cargados: ${ventas.length} ventas, ${seats.filter(s => s.estado === 'sold').length} vendidos`, 'success');
+                    logDebug(`✅ Datos cargados: ${ventas.length} ventas`, 'success');
                     return true;
                 } catch (e) {
                     logDebug(`❌ Error al cargar: ${e.message}`, 'error');
@@ -668,6 +671,7 @@
                 modalTitle.textContent = title;
                 modalMessage.textContent = message;
                 
+                // Configurar el formulario
                 if (showForm) {
                     modalForm.style.display = 'block';
                     buyerName.value = '';
@@ -676,69 +680,87 @@
                     modalForm.style.display = 'none';
                 }
                 
-                modal.classList.add('active');
-                isConfirmMode = isConfirm;
+                // Guardar configuración
+                modalConfig = {
+                    isConfirm: isConfirm,
+                    onConfirm: onConfirm,
+                    showForm: showForm
+                };
                 
+                // Configurar botones
                 if (isConfirm) {
                     modalBtn.textContent = 'Confirmar';
                     modalBtn.className = 'btn-close';
                     modalBtn.style.background = '#ffd700';
                     modalBtn.style.color = '#1a1a4e';
                     modalCancelBtn.style.display = 'inline-block';
-                    
-                    // Guardar el callback
-                    confirmCallback = onConfirm;
                 } else {
                     modalBtn.textContent = 'Aceptar';
                     modalBtn.className = 'btn-close';
                     modalBtn.style.background = '#ffd700';
                     modalBtn.style.color = '#1a1a4e';
                     modalCancelBtn.style.display = 'none';
-                    confirmCallback = null;
                 }
+                
+                modal.classList.add('active');
+                logDebug(`📋 Modal mostrado: "${title}"`, 'info');
             }
 
             function closeModal() {
                 modal.classList.remove('active');
-                isConfirmMode = false;
-                confirmCallback = null;
+                modalConfig = {
+                    isConfirm: false,
+                    onConfirm: null,
+                    showForm: false
+                };
+                logDebug('📋 Modal cerrado', 'info');
             }
 
             // ---------- MANEJAR CONFIRMACIÓN DEL MODAL ----------
             function handleConfirm() {
-                if (!isConfirmMode) {
+                logDebug('🔄 Botón Confirmar presionado', 'info');
+                
+                // Si no es modo confirmación, solo cerrar
+                if (!modalConfig.isConfirm) {
                     closeModal();
                     return;
                 }
 
                 // Verificar si hay formulario
-                const hasForm = modalForm.style.display !== 'none';
-                if (hasForm) {
+                if (modalConfig.showForm) {
                     const nombre = buyerName.value.trim();
                     const id = buyerId.value.trim();
                     if (!nombre || !id) {
+                        logDebug('⚠️ Datos incompletos', 'warning');
                         showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.', true, false);
                         return;
                     }
+                    logDebug(`✅ Datos del formulario: ${nombre} - ${id}`, 'success');
                 }
 
+                // Obtener el callback
+                const callback = modalConfig.onConfirm;
+                
                 // Cerrar modal
                 closeModal();
 
-                // Ejecutar el callback de confirmación
-                if (confirmCallback && typeof confirmCallback === 'function') {
+                // Ejecutar el callback si existe
+                if (callback && typeof callback === 'function') {
                     logDebug('✅ Ejecutando callback de confirmación', 'success');
-                    confirmCallback();
-                    confirmCallback = null;
+                    try {
+                        callback();
+                    } catch (e) {
+                        logDebug(`❌ Error en callback: ${e.message}`, 'error');
+                        showModal('❌ Error', 'Ocurrió un error al procesar la compra. Intenta nuevamente.');
+                    }
                 } else {
                     logDebug('⚠️ No hay callback de confirmación', 'warning');
                 }
             }
 
             function handleCancel() {
+                logDebug('❌ Confirmación cancelada por el usuario', 'warning');
                 closeModal();
-                confirmCallback = null;
-                logDebug('❌ Confirmación cancelada', 'warning');
             }
 
             // Eventos del modal
@@ -962,15 +984,16 @@
                 showModal(
                     '📝 Datos del comprador',
                     `Compra del puesto ${seat.puesto} de la mesa ${seat.mesa}`,
-                    true,
-                    true,
+                    true,  // showForm
+                    true,  // isConfirm
                     function() {
-                        logDebug('📝 Ejecutando compra individual...', 'info');
+                        logDebug('📝 EJECUTANDO CALLBACK DE COMPRA INDIVIDUAL', 'success');
+                        
                         const nombre = buyerName.value.trim();
                         const id = buyerId.value.trim();
                         
                         if (!nombre || !id) {
-                            logDebug('⚠️ Datos incompletos', 'warning');
+                            logDebug('⚠️ Datos incompletos en callback', 'warning');
                             showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.', true, false);
                             return;
                         }
@@ -1025,15 +1048,16 @@
                 showModal(
                     '📝 Datos del comprador',
                     `Compra del palco completo - Mesa ${mesa} (${PUESTOS_POR_MESA} puestos)`,
-                    true,
-                    true,
+                    true,  // showForm
+                    true,  // isConfirm
                     function() {
-                        logDebug('📝 Ejecutando compra de palco...', 'info');
+                        logDebug('📝 EJECUTANDO CALLBACK DE COMPRA DE PALCO', 'success');
+                        
                         const nombre = buyerName.value.trim();
                         const id = buyerId.value.trim();
                         
                         if (!nombre || !id) {
-                            logDebug('⚠️ Datos incompletos', 'warning');
+                            logDebug('⚠️ Datos incompletos en callback', 'warning');
                             showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.', true, false);
                             return;
                         }
@@ -1279,6 +1303,7 @@
 
             console.log('🔑 Clave de reinicio:', RESET_KEY);
             console.log('💡 Presiona "🐛 Debug" para ver el panel de depuración');
+            console.log('📝 Para comprar: selecciona un puesto → click en "Comprar Puesto Individual" → completa el formulario → Confirmar');
 
             if (!localStorage.getItem(STORAGE_KEY)) {
                 setTimeout(() => {
