@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Venta de Concierto - Palcos y Puestos</title>
     <style>
-        /* ... (mismo CSS que antes) ... */
         * {
             margin: 0;
             padding: 0;
@@ -42,7 +41,6 @@
             font-size: 1.1rem;
         }
 
-        /* Resumen */
         .summary {
             display: flex;
             justify-content: center;
@@ -80,7 +78,6 @@
             color: #51cf66;
         }
 
-        /* Controles de venta */
         .controls {
             display: flex;
             justify-content: center;
@@ -94,7 +91,8 @@
         }
 
         .controls select,
-        .controls button {
+        .controls button,
+        .controls input {
             padding: 12px 20px;
             border-radius: 8px;
             border: none;
@@ -112,6 +110,17 @@
         .controls select:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+
+        .controls input {
+            background: #2a2a5e;
+            color: #fff;
+            min-width: 150px;
+            cursor: text;
+        }
+
+        .controls input::placeholder {
+            color: #888;
         }
 
         .btn-buy {
@@ -158,7 +167,16 @@
             transform: none;
         }
 
-        /* Grid de mesas */
+        .btn-excel {
+            background: #1a7a3a;
+            color: #fff;
+        }
+
+        .btn-excel:hover {
+            background: #2a9a4a;
+            transform: scale(1.05);
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -197,6 +215,16 @@
             font-size: 0.7rem;
             color: #888;
             margin-top: 2px;
+        }
+
+        .seat .seat-buyer {
+            font-size: 0.6rem;
+            color: #666;
+            margin-top: 2px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .seat.available {
@@ -248,16 +276,10 @@
         }
 
         @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.6;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
 
-        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -280,11 +302,13 @@
             background: #1a1a4e;
             border-radius: 20px;
             padding: 40px;
-            max-width: 450px;
+            max-width: 500px;
             width: 90%;
             text-align: center;
             border: 1px solid rgba(255, 215, 0, 0.3);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal h2 {
@@ -304,6 +328,33 @@
             font-weight: bold;
         }
 
+        .modal .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .modal .form-group label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .modal .form-group input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #0a0a2a;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .modal .form-group input:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+
         .modal .btn-close {
             background: #ffd700;
             color: #1a1a4e;
@@ -314,6 +365,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin: 5px;
         }
 
         .modal .btn-close:hover {
@@ -322,6 +374,11 @@
 
         .modal .btn-close.danger {
             background: #ff6b6b;
+            color: #fff;
+        }
+
+        .modal .btn-close.secondary {
+            background: #666;
             color: #fff;
         }
 
@@ -342,12 +399,6 @@
             padding-top: 20px;
         }
 
-        .footer a {
-            color: #ffd700;
-            text-decoration: none;
-        }
-
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -375,12 +426,16 @@
                 flex-direction: column;
                 align-items: center;
             }
-            .controls select {
+            .controls select,
+            .controls input {
                 min-width: 100%;
             }
             .summary {
                 gap: 15px;
                 padding: 15px;
+            }
+            .modal {
+                padding: 20px;
             }
         }
     </style>
@@ -388,9 +443,8 @@
 <body>
     <div class="container">
         <h1>🎫 Venta de Concierto</h1>
-        <p class="subtitle">Selecciona un puesto o compra un palco completo (10 puestos) · Los datos se guardan automáticamente</p>
+        <p class="subtitle">Selecciona un puesto o compra un palco completo (10 puestos)</p>
 
-        <!-- Resumen -->
         <div class="summary" id="summary">
             <div class="summary-item">
                 <span class="number" id="totalSeats">1600</span>
@@ -409,30 +463,26 @@
                 <span class="label">Bloqueados (temporales)</span>
             </div>
             <div class="summary-item">
-                <span class="number" id="lastSave" style="font-size: 0.8rem; color: #666;">--</span>
-                <span class="label">Último guardado</span>
+                <span class="number" id="totalVentas" style="color: #4fc3f7;">0</span>
+                <span class="label">Total ventas</span>
             </div>
         </div>
 
-        <!-- Controles -->
         <div class="controls">
             <select id="mesaSelect">
                 <option value="">Selecciona una mesa...</option>
             </select>
             <button class="btn-palco" id="btnPalco">🎪 Comprar Palco Completo</button>
             <button class="btn-buy" id="btnBuy">🎟️ Comprar Puesto Individual</button>
-            <button class="btn-reset" id="btnReset">🔄 Reiniciar ventas</button>
-            <button class="btn-reset" id="btnExport" style="background: #1a4e2a;">💾 Exportar datos</button>
-            <button class="btn-reset" id="btnImport" style="background: #4e2a1a;">📂 Importar datos</button>
+            <button class="btn-excel" id="btnExcel">📊 Informe Excel</button>
+            <button class="btn-reset" id="btnReset">🔑 Reiniciar ventas</button>
+            <input type="password" id="resetKeyInput" placeholder="Clave para reiniciar" style="min-width: 150px;" />
         </div>
 
-        <!-- Grid de puestos -->
         <div class="grid" id="seatGrid"></div>
 
         <div class="footer">
-            🎵 Cada mesa tiene 10 puestos · Los puestos se bloquean al seleccionarlos · 1600 puestos totales
-            <br />
-            <small style="color: #444;">Los datos se guardan automáticamente en tu navegador</small>
+            🎵 Cada mesa tiene 10 puestos · 1600 puestos totales · Los datos se guardan automáticamente
         </div>
     </div>
 
@@ -441,8 +491,19 @@
         <div class="modal">
             <h2 id="modalTitle">✅ ¡Venta realizada!</h2>
             <p id="modalMessage">Has comprado el puesto correctamente.</p>
+            <div id="modalForm" style="display: none;">
+                <div class="form-group">
+                    <label for="buyerName">Nombre completo:</label>
+                    <input type="text" id="buyerName" placeholder="Ej: Juan Pérez" required />
+                </div>
+                <div class="form-group">
+                    <label for="buyerId">Número de identificación (Cédula/Pasaporte):</label>
+                    <input type="text" id="buyerId" placeholder="Ej: 1234567890" required />
+                </div>
+            </div>
             <div class="modal-actions">
                 <button class="btn-close" id="modalBtn">Aceptar</button>
+                <button class="btn-close secondary" id="modalCancelBtn" style="display: none;">Cancelar</button>
             </div>
         </div>
     </div>
@@ -453,11 +514,14 @@
             const TOTAL_MESAS = 160;
             const PUESTOS_POR_MESA = 10;
             const STORAGE_KEY = 'concierto_ventas';
+            const RESET_KEY = '12436219*';
 
             // ---------- ESTADO ----------
             let seats = [];
             let selectedSeatIndex = null;
             let timeoutBlock = null;
+            let pendingAction = null;
+            let ventas = []; // Array para guardar historial de ventas
 
             // Elementos DOM
             const gridEl = document.getElementById('seatGrid');
@@ -465,30 +529,31 @@
             const btnBuy = document.getElementById('btnBuy');
             const btnPalco = document.getElementById('btnPalco');
             const btnReset = document.getElementById('btnReset');
-            const btnExport = document.getElementById('btnExport');
-            const btnImport = document.getElementById('btnImport');
+            const btnExcel = document.getElementById('btnExcel');
+            const resetKeyInput = document.getElementById('resetKeyInput');
             const totalSeatsEl = document.getElementById('totalSeats');
             const availableSeatsEl = document.getElementById('availableSeats');
             const soldSeatsEl = document.getElementById('soldSeats');
             const blockedSeatsEl = document.getElementById('blockedSeats');
-            const lastSaveEl = document.getElementById('lastSave');
+            const totalVentasEl = document.getElementById('totalVentas');
             const modal = document.getElementById('modal');
             const modalTitle = document.getElementById('modalTitle');
             const modalMessage = document.getElementById('modalMessage');
+            const modalForm = document.getElementById('modalForm');
+            const buyerName = document.getElementById('buyerName');
+            const buyerId = document.getElementById('buyerId');
             const modalBtn = document.getElementById('modalBtn');
+            const modalCancelBtn = document.getElementById('modalCancelBtn');
 
             // ---------- PERSISTENCIA ----------
             function guardarEstado() {
                 try {
                     const estado = {
                         seats: seats.map(s => ({ ...s })),
+                        ventas: ventas,
                         timestamp: Date.now()
                     };
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
-                    
-                    // Mostrar hora del último guardado
-                    const ahora = new Date();
-                    lastSaveEl.textContent = ahora.toLocaleTimeString();
                 } catch (e) {
                     console.warn('No se pudo guardar en localStorage:', e);
                 }
@@ -508,13 +573,7 @@
                     }
                     
                     seats = estado.seats;
-                    
-                    // Mostrar cuándo se guardó por última vez
-                    if (estado.timestamp) {
-                        const fecha = new Date(estado.timestamp);
-                        lastSaveEl.textContent = fecha.toLocaleString();
-                    }
-                    
+                    ventas = estado.ventas || [];
                     return true;
                 } catch (e) {
                     console.warn('No se pudo cargar el estado:', e);
@@ -527,36 +586,99 @@
                 guardarEstado();
             }
 
+            // ---------- MODAL ----------
+            function showModal(title, message, showForm = false, isConfirm = false, onConfirm = null) {
+                modalTitle.textContent = title;
+                modalMessage.textContent = message;
+                
+                if (showForm) {
+                    modalForm.style.display = 'block';
+                    buyerName.value = '';
+                    buyerId.value = '';
+                } else {
+                    modalForm.style.display = 'none';
+                }
+                
+                modal.classList.add('active');
+                
+                if (isConfirm) {
+                    modalBtn.textContent = 'Confirmar';
+                    modalBtn.className = 'btn-close';
+                    modalBtn.style.background = '#ffd700';
+                    modalBtn.style.color = '#1a1a4e';
+                    modalCancelBtn.style.display = 'inline-block';
+                    
+                    pendingAction = onConfirm;
+                    
+                    modalBtn.onclick = function() {
+                        if (showForm) {
+                            const nombre = buyerName.value.trim();
+                            const id = buyerId.value.trim();
+                            if (!nombre || !id) {
+                                showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.');
+                                return;
+                            }
+                        }
+                        closeModal();
+                        if (pendingAction) {
+                            pendingAction();
+                            pendingAction = null;
+                        }
+                    };
+                    
+                    modalCancelBtn.onclick = function() {
+                        closeModal();
+                        pendingAction = null;
+                    };
+                } else {
+                    modalBtn.textContent = 'Aceptar';
+                    modalBtn.className = 'btn-close';
+                    modalBtn.style.background = '#ffd700';
+                    modalBtn.style.color = '#1a1a4e';
+                    modalCancelBtn.style.display = 'none';
+                    
+                    modalBtn.onclick = function() {
+                        closeModal();
+                    };
+                }
+            }
+
+            function closeModal() {
+                modal.classList.remove('active');
+                pendingAction = null;
+            }
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                    pendingAction = null;
+                }
+            });
+
             // ---------- INICIALIZACIÓN ----------
             function initSeats() {
-                // Intentar cargar datos guardados
                 if (cargarEstado()) {
-                    // Verificar que no haya puestos bloqueados (los bloqueos no deben persistir)
-                    let habiaBloqueados = false;
                     seats.forEach(s => {
                         if (s.estado === 'blocked') {
                             s.estado = 'available';
-                            habiaBloqueados = true;
                         }
                     });
-                    if (habiaBloqueados) {
-                        guardarEstado();
-                    }
                     selectedSeatIndex = null;
                     populateMesaSelect();
                     render();
-                    showModal('📂 Datos cargados', 'Se han restaurado las ventas guardadas anteriormente.');
                     return;
                 }
 
-                // Si no hay datos guardados, crear nuevo estado
                 seats = [];
+                ventas = [];
                 for (let mesa = 1; mesa <= TOTAL_MESAS; mesa++) {
                     for (let puesto = 1; puesto <= PUESTOS_POR_MESA; puesto++) {
                         seats.push({
                             mesa: mesa,
                             puesto: puesto,
                             estado: 'available',
+                            comprador: null,
+                            identificacion: null
                         });
                     }
                 }
@@ -571,7 +693,7 @@
                 guardarEstado();
             }
 
-            // ---------- POBLAR SELECT DE MESAS ----------
+            // ---------- POBLAR SELECT ----------
             function populateMesaSelect() {
                 mesaSelect.innerHTML = '<option value="">Selecciona una mesa...</option>';
                 for (let mesa = 1; mesa <= TOTAL_MESAS; mesa++) {
@@ -593,7 +715,7 @@
                 }
             }
 
-            // ---------- RENDERIZAR GRID ----------
+            // ---------- RENDERIZAR ----------
             function render() {
                 const total = seats.length;
                 const disponibles = seats.filter(s => s.estado === 'available').length;
@@ -604,6 +726,7 @@
                 availableSeatsEl.textContent = disponibles;
                 soldSeatsEl.textContent = vendidos;
                 blockedSeatsEl.textContent = bloqueados;
+                totalVentasEl.textContent = ventas.length;
 
                 gridEl.innerHTML = '';
                 seats.forEach((seat, index) => {
@@ -612,6 +735,7 @@
                     div.innerHTML = `
                         <div class="seat-number">Puesto ${seat.puesto}</div>
                         <div class="seat-mesa">Mesa ${seat.mesa}</div>
+                        ${seat.estado === 'sold' && seat.comprador ? `<div class="seat-buyer">${seat.comprador}</div>` : ''}
                         ${seat.estado === 'sold' ? '<div class="badge sold-badge">VENDIDO</div>' : ''}
                         ${seat.estado === 'blocked' ? '<div class="badge blocked-badge">BLOQUEADO</div>' : ''}
                     `;
@@ -632,7 +756,7 @@
                 }
             }
 
-            // ---------- SELECCIONAR PUESTO (bloqueo) ----------
+            // ---------- SELECCIONAR PUESTO ----------
             function selectSeat(index) {
                 if (timeoutBlock) {
                     clearTimeout(timeoutBlock);
@@ -667,7 +791,41 @@
                 guardarYRenderizar();
             }
 
-            // ---------- COMPRAR PUESTO INDIVIDUAL ----------
+            // ---------- REGISTRAR VENTA ----------
+            function registrarVenta(seat, nombre, identificacion) {
+                const venta = {
+                    fecha: new Date().toLocaleString(),
+                    mesa: seat.mesa,
+                    puesto: seat.puesto,
+                    comprador: nombre,
+                    identificacion: identificacion,
+                    tipo: 'Individual'
+                };
+                ventas.push(venta);
+                seat.comprador = nombre;
+                seat.identificacion = identificacion;
+                guardarEstado();
+            }
+
+            function registrarVentaPalco(mesa, nombre, identificacion) {
+                const seatsInMesa = seats.filter(s => s.mesa === mesa && s.estado === 'sold');
+                seatsInMesa.forEach(seat => {
+                    const venta = {
+                        fecha: new Date().toLocaleString(),
+                        mesa: seat.mesa,
+                        puesto: seat.puesto,
+                        comprador: nombre,
+                        identificacion: identificacion,
+                        tipo: 'Palco'
+                    };
+                    ventas.push(venta);
+                    seat.comprador = nombre;
+                    seat.identificacion = identificacion;
+                });
+                guardarEstado();
+            }
+
+            // ---------- COMPRAR INDIVIDUAL ----------
             function buyIndividual() {
                 if (selectedSeatIndex === null) {
                     showModal('⚠️ Selecciona un puesto', 'Primero haz clic en un puesto disponible para seleccionarlo.');
@@ -682,21 +840,36 @@
                     return;
                 }
 
-                if (!confirm(`¿Comprar el puesto ${seat.puesto} de la mesa ${seat.mesa} por $XX?`)) {
-                    return;
-                }
+                showModal(
+                    '📝 Datos del comprador',
+                    `Compra del puesto ${seat.puesto} de la mesa ${seat.mesa}`,
+                    true,
+                    true,
+                    function() {
+                        const nombre = buyerName.value.trim();
+                        const id = buyerId.value.trim();
+                        
+                        if (!nombre || !id) {
+                            showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.');
+                            return;
+                        }
 
-                seat.estado = 'sold';
-                selectedSeatIndex = null;
-                if (timeoutBlock) {
-                    clearTimeout(timeoutBlock);
-                    timeoutBlock = null;
-                }
-                guardarYRenderizar();
-                showModal('✅ ¡Compra exitosa!', `Has comprado el puesto ${seat.puesto} de la mesa ${seat.mesa}. ¡Disfruta del concierto! 🎵`);
+                        seat.estado = 'sold';
+                        registrarVenta(seat, nombre, id);
+                        selectedSeatIndex = null;
+                        if (timeoutBlock) {
+                            clearTimeout(timeoutBlock);
+                            timeoutBlock = null;
+                        }
+                        guardarYRenderizar();
+                        showModal('✅ ¡Compra exitosa!', 
+                            `Puesto ${seat.puesto} - Mesa ${seat.mesa}\nComprador: ${nombre}\nID: ${id}\n¡Disfruta del concierto! 🎵`
+                        );
+                    }
+                );
             }
 
-            // ---------- COMPRAR PALCO COMPLETO ----------
+            // ---------- COMPRAR PALCO ----------
             function buyPalco() {
                 const mesa = parseInt(mesaSelect.value);
                 if (!mesa || isNaN(mesa)) {
@@ -721,111 +894,232 @@
                     return;
                 }
 
-                if (!confirm(`¿Comprar el palco completo de la mesa ${mesa} (${PUESTOS_POR_MESA} puestos) por $XXX?`)) {
-                    return;
-                }
-
-                seatsInMesa.forEach(s => {
-                    s.estado = 'sold';
-                });
-
-                if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].mesa === mesa) {
-                    selectedSeatIndex = null;
-                    if (timeoutBlock) {
-                        clearTimeout(timeoutBlock);
-                        timeoutBlock = null;
-                    }
-                }
-
-                guardarYRenderizar();
-                showModal('🎪 ¡Palco completo!', `Has comprado el palco completo de la mesa ${mesa} (${PUESTOS_POR_MESA} puestos). ¡Gran fiesta! 🎉`);
-            }
-
-            // ---------- REINICIAR ----------
-            function resetAll() {
-                if (!confirm('¿Seguro que quieres reiniciar todas las ventas? Se perderán los datos.')) return;
-                if (timeoutBlock) {
-                    clearTimeout(timeoutBlock);
-                    timeoutBlock = null;
-                }
-                selectedSeatIndex = null;
-                
-                // Resetear todos los puestos a disponible
-                seats.forEach(s => {
-                    s.estado = 'available';
-                });
-                
-                guardarYRenderizar();
-                showModal('🔄 Reiniciado', 'Todas las ventas se han reiniciado. ¡Listo para empezar!');
-            }
-
-            // ---------- EXPORTAR DATOS ----------
-            function exportarDatos() {
-                const data = localStorage.getItem(STORAGE_KEY);
-                if (!data) {
-                    showModal('⚠️ Sin datos', 'No hay datos guardados para exportar.');
-                    return;
-                }
-                
-                // Crear archivo de texto con los datos
-                const blob = new Blob([data], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `ventas_concierto_${new Date().toISOString().slice(0,10)}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                showModal('✅ Exportado', 'Los datos se han exportado correctamente.');
-            }
-
-            // ---------- IMPORTAR DATOS ----------
-            function importarDatos() {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.json';
-                input.onchange = function(e) {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    
-                    const reader = new FileReader();
-                    reader.onload = function(ev) {
-                        try {
-                            const data = JSON.parse(ev.target.result);
-                            if (!data.seats || !Array.isArray(data.seats)) {
-                                showModal('⚠️ Error', 'El archivo no tiene el formato correcto.');
-                                return;
-                            }
-                            
-                            if (data.seats.length !== TOTAL_MESAS * PUESTOS_POR_MESA) {
-                                showModal('⚠️ Error', 'El archivo no coincide con la configuración actual de puestos.');
-                                return;
-                            }
-                            
-                            if (!confirm('¿Importar estos datos? Se perderán los datos actuales.')) return;
-                            
-                            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-                            // Recargar estado
-                            if (cargarEstado()) {
-                                selectedSeatIndex = null;
-                                if (timeoutBlock) {
-                                    clearTimeout(timeoutBlock);
-                                    timeoutBlock = null;
-                                }
-                                render();
-                                showModal('✅ Importado', 'Los datos se han importado correctamente.');
-                            } else {
-                                showModal('⚠️ Error', 'No se pudieron cargar los datos importados.');
-                            }
-                        } catch (err) {
-                            showModal('⚠️ Error', 'El archivo no es válido.');
+                showModal(
+                    '📝 Datos del comprador',
+                    `Compra del palco completo - Mesa ${mesa} (${PUESTOS_POR_MESA} puestos)`,
+                    true,
+                    true,
+                    function() {
+                        const nombre = buyerName.value.trim();
+                        const id = buyerId.value.trim();
+                        
+                        if (!nombre || !id) {
+                            showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.');
+                            return;
                         }
-                    };
-                    reader.readAsText(file);
-                };
-                input.click();
+
+                        seatsInMesa.forEach(s => {
+                            s.estado = 'sold';
+                        });
+                        registrarVentaPalco(mesa, nombre, id);
+
+                        if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].mesa === mesa) {
+                            selectedSeatIndex = null;
+                            if (timeoutBlock) {
+                                clearTimeout(timeoutBlock);
+                                timeoutBlock = null;
+                            }
+                        }
+
+                        guardarYRenderizar();
+                        showModal('🎪 ¡Palco completo!', 
+                            `Mesa ${mesa} (${PUESTOS_POR_MESA} puestos)\nComprador: ${nombre}\nID: ${id}\n¡Gran fiesta! 🎉`
+                        );
+                    }
+                );
+            }
+
+            // ---------- REINICIAR CON CLAVE ----------
+            function resetAll() {
+                const clave = resetKeyInput.value.trim();
+                if (clave !== RESET_KEY) {
+                    showModal('🔒 Acceso denegado', 'La clave ingresada es incorrecta. Intenta nuevamente.');
+                    resetKeyInput.value = '';
+                    resetKeyInput.focus();
+                    return;
+                }
+
+                showModal(
+                    '⚠️ Confirmar reinicio',
+                    '¿Seguro que quieres reiniciar todas las ventas? Esta acción es irreversible.',
+                    false,
+                    true,
+                    function() {
+                        if (timeoutBlock) {
+                            clearTimeout(timeoutBlock);
+                            timeoutBlock = null;
+                        }
+                        selectedSeatIndex = null;
+                        
+                        seats.forEach(s => {
+                            s.estado = 'available';
+                            s.comprador = null;
+                            s.identificacion = null;
+                        });
+                        
+                        ventas = [];
+                        resetKeyInput.value = '';
+                        
+                        guardarYRenderizar();
+                        showModal('🔄 Reiniciado', 'Todas las ventas se han reiniciado correctamente. ¡Listo para empezar!');
+                    }
+                );
+            }
+
+            // ---------- GENERAR EXCEL ----------
+            function generarExcel() {
+                if (ventas.length === 0) {
+                    showModal('📊 Sin datos', 'No hay ventas registradas para generar el informe.');
+                    return;
+                }
+
+                // Crear tabla HTML para Excel
+                let tabla = `
+                    <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                          xmlns:x="urn:schemas-microsoft-com:office:excel" 
+                          xmlns="http://www.w3.org/TR/REC-html40">
+                    <head>
+                        <meta charset="UTF-8">
+                        <!--[if gte mso 9]>
+                        <xml>
+                            <x:ExcelWorkbook>
+                                <x:ExcelWorksheets>
+                                    <x:ExcelWorksheet>
+                                        <x:Name>Ventas</x:Name>
+                                        <x:WorksheetOptions>
+                                            <x:DisplayGridlines/>
+                                        </x:WorksheetOptions>
+                                    </x:ExcelWorksheet>
+                                </x:ExcelWorksheets>
+                            </x:ExcelWorkbook>
+                        </xml>
+                        <![endif]-->
+                        <style>
+                            th {
+                                background-color: #ffd700;
+                                color: #1a1a4e;
+                                font-weight: bold;
+                                padding: 8px;
+                                border: 1px solid #000;
+                            }
+                            td {
+                                padding: 6px;
+                                border: 1px solid #ccc;
+                            }
+                            .total {
+                                background-color: #f0f0f0;
+                                font-weight: bold;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>INFORME DE VENTAS - CONCIERTO</h2>
+                        <p>Fecha de generación: ${new Date().toLocaleString()}</p>
+                        <p>Total de ventas: ${ventas.length}</p>
+                        <br/>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Fecha</th>
+                                    <th>Mesa</th>
+                                    <th>Puesto</th>
+                                    <th>Comprador</th>
+                                    <th>Identificación</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                ventas.forEach((venta, index) => {
+                    tabla += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${venta.fecha}</td>
+                            <td>${venta.mesa}</td>
+                            <td>${venta.puesto}</td>
+                            <td>${venta.comprador}</td>
+                            <td>${venta.identificacion}</td>
+                            <td>${venta.tipo}</td>
+                        </tr>
+                    `;
+                });
+
+                // Resumen por mesas
+                const resumenMesas = {};
+                ventas.forEach(v => {
+                    if (!resumenMesas[v.mesa]) {
+                        resumenMesas[v.mesa] = { individual: 0, palco: 0, total: 0 };
+                    }
+                    resumenMesas[v.mesa].total++;
+                    if (v.tipo === 'Individual') {
+                        resumenMesas[v.mesa].individual++;
+                    } else {
+                        resumenMesas[v.mesa].palco++;
+                    }
+                });
+
+                tabla += `
+                            </tbody>
+                        </table>
+                        <br/>
+                        <h3>RESUMEN POR MESA</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mesa</th>
+                                    <th>Individuales</th>
+                                    <th>Palcos</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                for (const [mesa, datos] of Object.entries(resumenMesas)) {
+                    tabla += `
+                        <tr>
+                            <td>Mesa ${mesa}</td>
+                            <td>${datos.individual}</td>
+                            <td>${datos.palco}</td>
+                            <td>${datos.total}</td>
+                        </tr>
+                    `;
+                }
+
+                // Total general
+                const totalIndividuales = ventas.filter(v => v.tipo === 'Individual').length;
+                const totalPalcos = ventas.filter(v => v.tipo === 'Palco').length;
+
+                tabla += `
+                            <tr class="total">
+                                <td><strong>TOTALES</strong></td>
+                                <td><strong>${totalIndividuales}</strong></td>
+                                <td><strong>${totalPalcos}</strong></td>
+                                <td><strong>${ventas.length}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <p><strong>Total puestos vendidos:</strong> ${ventas.length} de 1600</p>
+                    <p><strong>Porcentaje de ocupación:</strong> ${((ventas.length / 1600) * 100).toFixed(2)}%</p>
+                    </body>
+                    </html>
+                `;
+
+                // Crear Blob y descargar
+                const blob = new Blob([tabla], { 
+                    type: 'application/vnd.ms-excel;charset=utf-8' 
+                });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Informe_Ventas_Concierto_${new Date().toISOString().slice(0,10)}.xls`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
             }
 
             // ---------- ACTUALIZAR BOTONES ----------
@@ -845,28 +1139,18 @@
                 btnPalco.disabled = !palcoDisponible;
             }
 
-            // ---------- MODAL ----------
-            function showModal(title, message) {
-                modalTitle.textContent = title;
-                modalMessage.textContent = message;
-                modal.classList.add('active');
-            }
-
-            function closeModal() {
-                modal.classList.remove('active');
-            }
-
-            modalBtn.addEventListener('click', closeModal);
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) closeModal();
-            });
-
             // ---------- EVENTOS ----------
             btnBuy.addEventListener('click', buyIndividual);
             btnPalco.addEventListener('click', buyPalco);
             btnReset.addEventListener('click', resetAll);
-            btnExport.addEventListener('click', exportarDatos);
-            btnImport.addEventListener('click', importarDatos);
+            btnExcel.addEventListener('click', generarExcel);
+
+            // Enter en el campo de clave para reiniciar
+            resetKeyInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    resetAll();
+                }
+            });
 
             mesaSelect.addEventListener('change', function() {
                 if (selectedSeatIndex !== null) {
@@ -885,10 +1169,10 @@
             // ---------- INICIAR ----------
             initSeats();
 
-            // Mostrar mensaje de bienvenida solo si es primera vez
+            // Mensaje de bienvenida
             if (!localStorage.getItem(STORAGE_KEY)) {
                 setTimeout(() => {
-                    showModal('🎵 Bienvenido', 'Haz clic en un puesto disponible para seleccionarlo y comprarlo, o compra un palco completo desde el menú. Los datos se guardan automáticamente.');
+                    showModal('🎵 Bienvenido', 'Haz clic en un puesto disponible para seleccionarlo y comprarlo, o compra un palco completo desde el menú.');
                 }, 500);
             }
 
