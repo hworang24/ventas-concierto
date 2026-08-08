@@ -115,7 +115,7 @@
         .controls input {
             background: #2a2a5e;
             color: #fff;
-            min-width: 150px;
+            min-width: 180px;
             cursor: text;
         }
 
@@ -142,13 +142,15 @@
         }
 
         .btn-reset {
-            background: #2a2a5e;
+            background: #dc3545;
             color: #fff;
             border: 1px solid #444;
+            font-weight: bold;
         }
 
         .btn-reset:hover {
-            background: #3a3a7e;
+            background: #c82333;
+            transform: scale(1.05);
         }
 
         .btn-palco {
@@ -174,6 +176,16 @@
 
         .btn-excel:hover {
             background: #2a9a4a;
+            transform: scale(1.05);
+        }
+
+        .btn-debug {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .btn-debug:hover {
+            background: #5a6268;
             transform: scale(1.05);
         }
 
@@ -321,11 +333,7 @@
             color: #ccc;
             margin-bottom: 20px;
             font-size: 1.1rem;
-        }
-
-        .modal .highlight {
-            color: #ffd700;
-            font-weight: bold;
+            white-space: pre-line;
         }
 
         .modal .form-group {
@@ -397,6 +405,41 @@
             font-size: 0.9rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             padding-top: 20px;
+        }
+
+        .debug-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid #444;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .debug-panel.active {
+            display: block;
+        }
+
+        .debug-panel .log-entry {
+            font-size: 0.8rem;
+            color: #aaa;
+            padding: 2px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-family: monospace;
+        }
+
+        .debug-panel .log-entry.error {
+            color: #ff6b6b;
+        }
+
+        .debug-panel .log-entry.success {
+            color: #51cf66;
+        }
+
+        .debug-panel .log-entry.warning {
+            color: #ffd700;
         }
 
         ::-webkit-scrollbar {
@@ -475,14 +518,22 @@
             <button class="btn-palco" id="btnPalco">🎪 Comprar Palco Completo</button>
             <button class="btn-buy" id="btnBuy">🎟️ Comprar Puesto Individual</button>
             <button class="btn-excel" id="btnExcel">📊 Informe Excel</button>
-            <button class="btn-reset" id="btnReset">🔑 Reiniciar ventas</button>
-            <input type="password" id="resetKeyInput" placeholder="Clave para reiniciar" style="min-width: 150px;" />
+            <input type="password" id="resetKeyInput" placeholder="🔑 Clave para reiniciar" style="min-width: 180px;" />
+            <button class="btn-reset" id="btnReset">🔄 Reiniciar ventas</button>
+            <button class="btn-debug" id="btnDebug">🐛 Debug</button>
         </div>
 
         <div class="grid" id="seatGrid"></div>
 
+        <div class="debug-panel" id="debugPanel">
+            <h4 style="color: #ffd700; margin-bottom: 10px;">📋 Registro de depuración</h4>
+            <div id="debugLogs"></div>
+        </div>
+
         <div class="footer">
             🎵 Cada mesa tiene 10 puestos · 1600 puestos totales · Los datos se guardan automáticamente
+            <br />
+            <small style="color: #444;">Clave de reinicio: 12436219*</small>
         </div>
     </div>
 
@@ -520,8 +571,23 @@
             let seats = [];
             let selectedSeatIndex = null;
             let timeoutBlock = null;
-            let pendingAction = null;
-            let ventas = []; // Array para guardar historial de ventas
+            let ventas = [];
+
+            // Variables para el modal de confirmación
+            let confirmCallback = null;
+            let isConfirmMode = false;
+
+            // ---------- DEBUG ----------
+            function logDebug(message, type = 'info') {
+                const panel = document.getElementById('debugPanel');
+                const logs = document.getElementById('debugLogs');
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                logs.appendChild(entry);
+                panel.scrollTop = panel.scrollHeight;
+                console.log(`[DEBUG] ${message}`);
+            }
 
             // Elementos DOM
             const gridEl = document.getElementById('seatGrid');
@@ -530,6 +596,7 @@
             const btnPalco = document.getElementById('btnPalco');
             const btnReset = document.getElementById('btnReset');
             const btnExcel = document.getElementById('btnExcel');
+            const btnDebug = document.getElementById('btnDebug');
             const resetKeyInput = document.getElementById('resetKeyInput');
             const totalSeatsEl = document.getElementById('totalSeats');
             const availableSeatsEl = document.getElementById('availableSeats');
@@ -554,29 +621,39 @@
                         timestamp: Date.now()
                     };
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+                    logDebug(`✅ Estado guardado: ${ventas.length} ventas, ${seats.filter(s => s.estado === 'sold').length} vendidos`, 'success');
+                    return true;
                 } catch (e) {
-                    console.warn('No se pudo guardar en localStorage:', e);
+                    logDebug(`❌ Error al guardar: ${e.message}`, 'error');
+                    return false;
                 }
             }
 
             function cargarEstado() {
                 try {
                     const data = localStorage.getItem(STORAGE_KEY);
-                    if (!data) return false;
+                    if (!data) {
+                        logDebug('No hay datos guardados previamente.', 'warning');
+                        return false;
+                    }
                     
                     const estado = JSON.parse(data);
-                    if (!estado.seats || !Array.isArray(estado.seats)) return false;
+                    if (!estado.seats || !Array.isArray(estado.seats)) {
+                        logDebug('❌ Datos inválidos', 'error');
+                        return false;
+                    }
                     
                     if (estado.seats.length !== TOTAL_MESAS * PUESTOS_POR_MESA) {
-                        console.warn('Los datos guardados no coinciden con la configuración actual');
+                        logDebug('❌ Configuración incorrecta', 'error');
                         return false;
                     }
                     
                     seats = estado.seats;
                     ventas = estado.ventas || [];
+                    logDebug(`✅ Datos cargados: ${ventas.length} ventas, ${seats.filter(s => s.estado === 'sold').length} vendidos`, 'success');
                     return true;
                 } catch (e) {
-                    console.warn('No se pudo cargar el estado:', e);
+                    logDebug(`❌ Error al cargar: ${e.message}`, 'error');
                     return false;
                 }
             }
@@ -600,6 +677,7 @@
                 }
                 
                 modal.classList.add('active');
+                isConfirmMode = isConfirm;
                 
                 if (isConfirm) {
                     modalBtn.textContent = 'Confirmar';
@@ -608,67 +686,95 @@
                     modalBtn.style.color = '#1a1a4e';
                     modalCancelBtn.style.display = 'inline-block';
                     
-                    pendingAction = onConfirm;
-                    
-                    modalBtn.onclick = function() {
-                        if (showForm) {
-                            const nombre = buyerName.value.trim();
-                            const id = buyerId.value.trim();
-                            if (!nombre || !id) {
-                                showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.');
-                                return;
-                            }
-                        }
-                        closeModal();
-                        if (pendingAction) {
-                            pendingAction();
-                            pendingAction = null;
-                        }
-                    };
-                    
-                    modalCancelBtn.onclick = function() {
-                        closeModal();
-                        pendingAction = null;
-                    };
+                    // Guardar el callback
+                    confirmCallback = onConfirm;
                 } else {
                     modalBtn.textContent = 'Aceptar';
                     modalBtn.className = 'btn-close';
                     modalBtn.style.background = '#ffd700';
                     modalBtn.style.color = '#1a1a4e';
                     modalCancelBtn.style.display = 'none';
-                    
-                    modalBtn.onclick = function() {
-                        closeModal();
-                    };
+                    confirmCallback = null;
                 }
             }
 
             function closeModal() {
                 modal.classList.remove('active');
-                pendingAction = null;
+                isConfirmMode = false;
+                confirmCallback = null;
             }
+
+            // ---------- MANEJAR CONFIRMACIÓN DEL MODAL ----------
+            function handleConfirm() {
+                if (!isConfirmMode) {
+                    closeModal();
+                    return;
+                }
+
+                // Verificar si hay formulario
+                const hasForm = modalForm.style.display !== 'none';
+                if (hasForm) {
+                    const nombre = buyerName.value.trim();
+                    const id = buyerId.value.trim();
+                    if (!nombre || !id) {
+                        showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.', true, false);
+                        return;
+                    }
+                }
+
+                // Cerrar modal
+                closeModal();
+
+                // Ejecutar el callback de confirmación
+                if (confirmCallback && typeof confirmCallback === 'function') {
+                    logDebug('✅ Ejecutando callback de confirmación', 'success');
+                    confirmCallback();
+                    confirmCallback = null;
+                } else {
+                    logDebug('⚠️ No hay callback de confirmación', 'warning');
+                }
+            }
+
+            function handleCancel() {
+                closeModal();
+                confirmCallback = null;
+                logDebug('❌ Confirmación cancelada', 'warning');
+            }
+
+            // Eventos del modal
+            modalBtn.addEventListener('click', handleConfirm);
+            modalCancelBtn.addEventListener('click', handleCancel);
 
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
-                    closeModal();
-                    pendingAction = null;
+                    handleCancel();
                 }
             });
 
             // ---------- INICIALIZACIÓN ----------
             function initSeats() {
+                logDebug('🚀 Inicializando aplicación...', 'info');
+                
                 if (cargarEstado()) {
+                    let bloqueados = 0;
                     seats.forEach(s => {
                         if (s.estado === 'blocked') {
                             s.estado = 'available';
+                            bloqueados++;
                         }
                     });
+                    if (bloqueados > 0) {
+                        logDebug(`🔄 Se limpiaron ${bloqueados} puestos bloqueados.`, 'warning');
+                        guardarEstado();
+                    }
                     selectedSeatIndex = null;
                     populateMesaSelect();
                     render();
+                    logDebug('✅ Aplicación inicializada con datos guardados.', 'success');
                     return;
                 }
 
+                logDebug('📦 Creando nuevo estado inicial...', 'info');
                 seats = [];
                 ventas = [];
                 for (let mesa = 1; mesa <= TOTAL_MESAS; mesa++) {
@@ -691,6 +797,7 @@
                 populateMesaSelect();
                 render();
                 guardarEstado();
+                logDebug('✅ Aplicación inicializada con estado nuevo.', 'success');
             }
 
             // ---------- POBLAR SELECT ----------
@@ -793,6 +900,8 @@
 
             // ---------- REGISTRAR VENTA ----------
             function registrarVenta(seat, nombre, identificacion) {
+                logDebug(`📝 Registrando venta: Mesa ${seat.mesa}, Puesto ${seat.puesto} - ${nombre}`, 'info');
+                
                 const venta = {
                     fecha: new Date().toLocaleString(),
                     mesa: seat.mesa,
@@ -804,10 +913,15 @@
                 ventas.push(venta);
                 seat.comprador = nombre;
                 seat.identificacion = identificacion;
+                
+                logDebug(`✅ Venta registrada. Total ventas: ${ventas.length}`, 'success');
                 guardarEstado();
+                render();
             }
 
             function registrarVentaPalco(mesa, nombre, identificacion) {
+                logDebug(`📝 Registrando palco completo: Mesa ${mesa} - ${nombre}`, 'info');
+                
                 const seatsInMesa = seats.filter(s => s.mesa === mesa && s.estado === 'sold');
                 seatsInMesa.forEach(seat => {
                     const venta = {
@@ -822,7 +936,10 @@
                     seat.comprador = nombre;
                     seat.identificacion = identificacion;
                 });
+                
+                logDebug(`✅ Palco registrado. ${seatsInMesa.length} puestos, total ventas: ${ventas.length}`, 'success');
                 guardarEstado();
+                render();
             }
 
             // ---------- COMPRAR INDIVIDUAL ----------
@@ -840,20 +957,27 @@
                     return;
                 }
 
+                logDebug(`🛒 Iniciando compra individual: Mesa ${seat.mesa}, Puesto ${seat.puesto}`, 'info');
+
                 showModal(
                     '📝 Datos del comprador',
                     `Compra del puesto ${seat.puesto} de la mesa ${seat.mesa}`,
                     true,
                     true,
                     function() {
+                        logDebug('📝 Ejecutando compra individual...', 'info');
                         const nombre = buyerName.value.trim();
                         const id = buyerId.value.trim();
                         
                         if (!nombre || !id) {
-                            showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.');
+                            logDebug('⚠️ Datos incompletos', 'warning');
+                            showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.', true, false);
                             return;
                         }
 
+                        logDebug(`✅ Datos del comprador: ${nombre} - ${id}`, 'success');
+
+                        // Marcar como vendido
                         seat.estado = 'sold';
                         registrarVenta(seat, nombre, id);
                         selectedSeatIndex = null;
@@ -862,9 +986,11 @@
                             timeoutBlock = null;
                         }
                         guardarYRenderizar();
+                        
                         showModal('✅ ¡Compra exitosa!', 
                             `Puesto ${seat.puesto} - Mesa ${seat.mesa}\nComprador: ${nombre}\nID: ${id}\n¡Disfruta del concierto! 🎵`
                         );
+                        logDebug(`🎉 Compra completada: Mesa ${seat.mesa}, Puesto ${seat.puesto}`, 'success');
                     }
                 );
             }
@@ -894,20 +1020,27 @@
                     return;
                 }
 
+                logDebug(`🛒 Iniciando compra de palco: Mesa ${mesa}`, 'info');
+
                 showModal(
                     '📝 Datos del comprador',
                     `Compra del palco completo - Mesa ${mesa} (${PUESTOS_POR_MESA} puestos)`,
                     true,
                     true,
                     function() {
+                        logDebug('📝 Ejecutando compra de palco...', 'info');
                         const nombre = buyerName.value.trim();
                         const id = buyerId.value.trim();
                         
                         if (!nombre || !id) {
-                            showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.');
+                            logDebug('⚠️ Datos incompletos', 'warning');
+                            showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.', true, false);
                             return;
                         }
 
+                        logDebug(`✅ Datos del comprador: ${nombre} - ${id}`, 'success');
+
+                        // Marcar todos los puestos como vendidos
                         seatsInMesa.forEach(s => {
                             s.estado = 'sold';
                         });
@@ -925,6 +1058,7 @@
                         showModal('🎪 ¡Palco completo!', 
                             `Mesa ${mesa} (${PUESTOS_POR_MESA} puestos)\nComprador: ${nombre}\nID: ${id}\n¡Gran fiesta! 🎉`
                         );
+                        logDebug(`🎉 Palco completado: Mesa ${mesa}`, 'success');
                     }
                 );
             }
@@ -932,36 +1066,58 @@
             // ---------- REINICIAR CON CLAVE ----------
             function resetAll() {
                 const clave = resetKeyInput.value.trim();
+                logDebug(`🔑 Intento de reinicio con clave: "${clave}"`, 'info');
+                
+                if (!clave) {
+                    logDebug('⚠️ No se ingresó clave', 'warning');
+                    showModal('⚠️ Clave requerida', 'Por favor, ingresa la clave para reiniciar las ventas.');
+                    resetKeyInput.focus();
+                    return;
+                }
+
                 if (clave !== RESET_KEY) {
-                    showModal('🔒 Acceso denegado', 'La clave ingresada es incorrecta. Intenta nuevamente.');
+                    logDebug(`❌ Clave incorrecta: "${clave}"`, 'error');
+                    showModal('🔒 Acceso denegado', 'La clave ingresada es incorrecta. Intenta nuevamente.\n\nClave correcta: 12436219*');
                     resetKeyInput.value = '';
                     resetKeyInput.focus();
                     return;
                 }
 
+                logDebug('✅ Clave correcta, mostrando confirmación', 'success');
+                
                 showModal(
                     '⚠️ Confirmar reinicio',
-                    '¿Seguro que quieres reiniciar todas las ventas? Esta acción es irreversible.',
+                    '¿Seguro que quieres reiniciar TODAS las ventas?\n\nEsta acción es irreversible y eliminará todos los datos.\n\nTotal ventas: ' + ventas.length,
                     false,
                     true,
                     function() {
+                        logDebug('🔄 Ejecutando reinicio...', 'warning');
+                        
                         if (timeoutBlock) {
                             clearTimeout(timeoutBlock);
                             timeoutBlock = null;
                         }
                         selectedSeatIndex = null;
                         
+                        let reseteados = 0;
                         seats.forEach(s => {
+                            if (s.estado === 'sold' || s.estado === 'blocked') {
+                                reseteados++;
+                            }
                             s.estado = 'available';
                             s.comprador = null;
                             s.identificacion = null;
                         });
                         
+                        const ventasEliminadas = ventas.length;
                         ventas = [];
                         resetKeyInput.value = '';
                         
                         guardarYRenderizar();
-                        showModal('🔄 Reiniciado', 'Todas las ventas se han reiniciado correctamente. ¡Listo para empezar!');
+                        logDebug(`✅ Reinicio completado. ${reseteado} puestos liberados, ${ventasEliminadas} ventas eliminadas.`, 'success');
+                        showModal('🔄 Reiniciado', 
+                            `Todas las ventas se han reiniciado correctamente.\n\nPuestos liberados: ${reseteado}\nVentas eliminadas: ${ventasEliminadas}\n¡Listo para empezar de nuevo!`
+                        );
                     }
                 );
             }
@@ -973,7 +1129,8 @@
                     return;
                 }
 
-                // Crear tabla HTML para Excel
+                logDebug(`📊 Generando Excel con ${ventas.length} ventas`, 'info');
+
                 let tabla = `
                     <html xmlns:o="urn:schemas-microsoft-com:office:office" 
                           xmlns:x="urn:schemas-microsoft-com:office:excel" 
@@ -995,21 +1152,9 @@
                         </xml>
                         <![endif]-->
                         <style>
-                            th {
-                                background-color: #ffd700;
-                                color: #1a1a4e;
-                                font-weight: bold;
-                                padding: 8px;
-                                border: 1px solid #000;
-                            }
-                            td {
-                                padding: 6px;
-                                border: 1px solid #ccc;
-                            }
-                            .total {
-                                background-color: #f0f0f0;
-                                font-weight: bold;
-                            }
+                            th { background-color: #ffd700; color: #1a1a4e; font-weight: bold; padding: 8px; border: 1px solid #000; }
+                            td { padding: 6px; border: 1px solid #ccc; }
+                            .total { background-color: #f0f0f0; font-weight: bold; }
                         </style>
                     </head>
                     <body>
@@ -1018,35 +1163,14 @@
                         <p>Total de ventas: ${ventas.length}</p>
                         <br/>
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Fecha</th>
-                                    <th>Mesa</th>
-                                    <th>Puesto</th>
-                                    <th>Comprador</th>
-                                    <th>Identificación</th>
-                                    <th>Tipo</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>#</th><th>Fecha</th><th>Mesa</th><th>Puesto</th><th>Comprador</th><th>Identificación</th><th>Tipo</th></tr></thead>
                             <tbody>
                 `;
 
                 ventas.forEach((venta, index) => {
-                    tabla += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${venta.fecha}</td>
-                            <td>${venta.mesa}</td>
-                            <td>${venta.puesto}</td>
-                            <td>${venta.comprador}</td>
-                            <td>${venta.identificacion}</td>
-                            <td>${venta.tipo}</td>
-                        </tr>
-                    `;
+                    tabla += `<tr><td>${index + 1}</td><td>${venta.fecha}</td><td>${venta.mesa}</td><td>${venta.puesto}</td><td>${venta.comprador}</td><td>${venta.identificacion}</td><td>${venta.tipo}</td></tr>`;
                 });
 
-                // Resumen por mesas
                 const resumenMesas = {};
                 ventas.forEach(v => {
                     if (!resumenMesas[v.mesa]) {
@@ -1060,58 +1184,25 @@
                     }
                 });
 
-                tabla += `
-                            </tbody>
-                        </table>
-                        <br/>
-                        <h3>RESUMEN POR MESA</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Mesa</th>
-                                    <th>Individuales</th>
-                                    <th>Palcos</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
+                tabla += `</tbody></table><br/><h3>RESUMEN POR MESA</h3><table><thead><tr><th>Mesa</th><th>Individuales</th><th>Palcos</th><th>Total</th></tr></thead><tbody>`;
 
                 for (const [mesa, datos] of Object.entries(resumenMesas)) {
-                    tabla += `
-                        <tr>
-                            <td>Mesa ${mesa}</td>
-                            <td>${datos.individual}</td>
-                            <td>${datos.palco}</td>
-                            <td>${datos.total}</td>
-                        </tr>
-                    `;
+                    tabla += `<tr><td>Mesa ${mesa}</td><td>${datos.individual}</td><td>${datos.palco}</td><td>${datos.total}</td></tr>`;
                 }
 
-                // Total general
                 const totalIndividuales = ventas.filter(v => v.tipo === 'Individual').length;
                 const totalPalcos = ventas.filter(v => v.tipo === 'Palco').length;
 
                 tabla += `
-                            <tr class="total">
-                                <td><strong>TOTALES</strong></td>
-                                <td><strong>${totalIndividuales}</strong></td>
-                                <td><strong>${totalPalcos}</strong></td>
-                                <td><strong>${ventas.length}</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <br/>
-                    <p><strong>Total puestos vendidos:</strong> ${ventas.length} de 1600</p>
-                    <p><strong>Porcentaje de ocupación:</strong> ${((ventas.length / 1600) * 100).toFixed(2)}%</p>
-                    </body>
-                    </html>
+                            <tr class="total"><td><strong>TOTALES</strong></td><td><strong>${totalIndividuales}</strong></td><td><strong>${totalPalcos}</strong></td><td><strong>${ventas.length}</strong></td></tr>
+                        </tbody></table>
+                        <br/>
+                        <p><strong>Total puestos vendidos:</strong> ${ventas.length} de 1600</p>
+                        <p><strong>Porcentaje de ocupación:</strong> ${((ventas.length / 1600) * 100).toFixed(2)}%</p>
+                    </body></html>
                 `;
 
-                // Crear Blob y descargar
-                const blob = new Blob([tabla], { 
-                    type: 'application/vnd.ms-excel;charset=utf-8' 
-                });
+                const blob = new Blob([tabla], { type: 'application/vnd.ms-excel;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
@@ -1120,6 +1211,8 @@
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
+                
+                logDebug(`📊 Excel generado con ${ventas.length} ventas`, 'success');
             }
 
             // ---------- ACTUALIZAR BOTONES ----------
@@ -1139,17 +1232,32 @@
                 btnPalco.disabled = !palcoDisponible;
             }
 
+            // ---------- DEBUG TOGGLE ----------
+            function toggleDebug() {
+                const panel = document.getElementById('debugPanel');
+                panel.classList.toggle('active');
+                if (panel.classList.contains('active')) {
+                    logDebug('🐛 Panel de depuración activado', 'info');
+                    logDebug(`📊 Estado actual: ${ventas.length} ventas, ${seats.filter(s => s.estado === 'sold').length} puestos vendidos`, 'info');
+                }
+            }
+
             // ---------- EVENTOS ----------
             btnBuy.addEventListener('click', buyIndividual);
             btnPalco.addEventListener('click', buyPalco);
             btnReset.addEventListener('click', resetAll);
             btnExcel.addEventListener('click', generarExcel);
+            btnDebug.addEventListener('click', toggleDebug);
 
-            // Enter en el campo de clave para reiniciar
             resetKeyInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
+                    e.preventDefault();
                     resetAll();
                 }
+            });
+
+            resetKeyInput.addEventListener('focus', function() {
+                this.select();
             });
 
             mesaSelect.addEventListener('change', function() {
@@ -1169,7 +1277,9 @@
             // ---------- INICIAR ----------
             initSeats();
 
-            // Mensaje de bienvenida
+            console.log('🔑 Clave de reinicio:', RESET_KEY);
+            console.log('💡 Presiona "🐛 Debug" para ver el panel de depuración');
+
             if (!localStorage.getItem(STORAGE_KEY)) {
                 setTimeout(() => {
                     showModal('🎵 Bienvenido', 'Haz clic en un puesto disponible para seleccionarlo y comprarlo, o compra un palco completo desde el menú.');
