@@ -41,10 +41,63 @@
             font-size: 1.1rem;
         }
 
+        /* ===== BANNER DE ADVERTENCIA ===== */
+        .warning-banner {
+            display: none;
+            background: rgba(255, 215, 0, 0.15);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .warning-banner.active {
+            display: block;
+        }
+
+        .warning-banner.danger {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.15);
+        }
+
+        .warning-banner h3 {
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .warning-banner.danger h3 {
+            color: #ff6b6b;
+        }
+
+        .warning-banner p {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .warning-banner .btn-export-urgent {
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .warning-banner .btn-export-urgent:hover {
+            background: #e55a5a;
+            transform: scale(1.05);
+        }
+
+        /* ===== RESUMEN ===== */
         .summary {
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: 30px;
             flex-wrap: wrap;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -56,6 +109,7 @@
 
         .summary-item {
             text-align: center;
+            min-width: 70px;
         }
 
         .summary-item .number {
@@ -65,7 +119,7 @@
         }
 
         .summary-item .label {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #ccc;
             display: block;
         }
@@ -78,6 +132,69 @@
             color: #51cf66;
         }
 
+        /* ===== INDICADOR DE ALMACENAMIENTO ===== */
+        .storage-indicator {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .storage-indicator.green {
+            background: rgba(81, 207, 102, 0.2);
+            color: #51cf66;
+            border: 1px solid #51cf66;
+        }
+
+        .storage-indicator.yellow {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            border: 1px solid #ffd700;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .storage-indicator.red {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
+            animation: pulse 0.5s ease-in-out infinite;
+        }
+
+        .storage-bar-container {
+            width: 120px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin: 6px auto 0;
+            overflow: hidden;
+        }
+
+        .storage-bar-container .fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+            background: #51cf66;
+        }
+
+        .storage-bar-container .fill.warning {
+            background: #ffd700;
+        }
+
+        .storage-bar-container .fill.danger {
+            background: #ff6b6b;
+        }
+
+        .storage-detail {
+            font-size: 0.65rem;
+            color: #888;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* ===== CONTROLES ===== */
         .controls {
             display: flex;
             justify-content: center;
@@ -189,6 +306,17 @@
             transform: scale(1.05);
         }
 
+        .btn-export-data {
+            background: #4a6fa5;
+            color: #fff;
+        }
+
+        .btn-export-data:hover {
+            background: #5a7fb5;
+            transform: scale(1.05);
+        }
+
+        /* ===== GRID DE PUESTOS ===== */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -288,10 +416,16 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
         }
 
+        /* ===== MODAL ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -398,15 +532,7 @@
             flex-wrap: wrap;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 20px;
-        }
-
+        /* ===== DEBUG PANEL ===== */
         .debug-panel {
             margin-top: 20px;
             padding: 15px;
@@ -426,7 +552,7 @@
             font-size: 0.8rem;
             color: #aaa;
             padding: 2px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             font-family: monospace;
         }
 
@@ -440,6 +566,16 @@
 
         .debug-panel .log-entry.warning {
             color: #ffd700;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
         }
 
         ::-webkit-scrollbar {
@@ -480,15 +616,25 @@
             .modal {
                 padding: 20px;
             }
+            .storage-bar-container {
+                width: 80px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎫 Venta de Concierto de Amor y Amistad</h1>
-        <h1>Club Social Valledupar S.A.</h1>
+        <h1>🎫 Venta de Concierto</h1>
         <p class="subtitle">Selecciona un puesto o compra un palco completo (10 puestos)</p>
 
+        <!-- ===== BANNER DE ADVERTENCIA ===== -->
+        <div class="warning-banner" id="storageWarning">
+            <h3>⚠️ ALMACENAMIENTO CASI LLENO</h3>
+            <p id="storageWarningMessage">El espacio de almacenamiento está llegando a su límite. Exporta tus datos para evitar pérdidas.</p>
+            <button class="btn-export-urgent" onclick="window.exportarDatosUrgente()">💾 Exportar datos ahora</button>
+        </div>
+
+        <!-- ===== RESUMEN ===== -->
         <div class="summary" id="summary">
             <div class="summary-item">
                 <span class="number" id="totalSeats">1600</span>
@@ -504,14 +650,25 @@
             </div>
             <div class="summary-item">
                 <span class="number" id="blockedSeats" style="color: #ffd700;">0</span>
-                <span class="label">Bloqueados (temporales)</span>
+                <span class="label">Bloqueados</span>
             </div>
             <div class="summary-item">
                 <span class="number" id="totalVentas" style="color: #4fc3f7;">0</span>
                 <span class="label">Total ventas</span>
             </div>
+            <div class="summary-item">
+                <span class="number" id="storageStatus" style="font-size: 1.8rem;">🟢</span>
+                <span class="label">Almacenamiento</span>
+                <span class="storage-indicator green" id="storageIndicator">Excelente</span>
+                <div class="storage-bar-container">
+                    <div class="fill" id="storageBar" style="width: 0%;"></div>
+                </div>
+                <span class="storage-detail" id="storageDetail">0 KB usado de 5 MB</span>
+                <span class="storage-detail" id="storagePercent">0%</span>
+            </div>
         </div>
 
+        <!-- ===== CONTROLES ===== -->
         <div class="controls">
             <select id="mesaSelect">
                 <option value="">Selecciona una mesa...</option>
@@ -519,26 +676,30 @@
             <button class="btn-palco" id="btnPalco">🎪 Comprar Palco Completo</button>
             <button class="btn-buy" id="btnBuy">🎟️ Comprar Puesto Individual</button>
             <button class="btn-excel" id="btnExcel">📊 Informe Excel</button>
+            <button class="btn-export-data" id="btnExportData">💾 Exportar Backup</button>
             <input type="password" id="resetKeyInput" placeholder="🔑 Clave para reiniciar" style="min-width: 180px;" />
             <button class="btn-reset" id="btnReset">🔄 Reiniciar ventas</button>
             <button class="btn-debug" id="btnDebug">🐛 Debug</button>
         </div>
 
+        <!-- ===== GRID ===== -->
         <div class="grid" id="seatGrid"></div>
 
+        <!-- ===== DEBUG PANEL ===== -->
         <div class="debug-panel" id="debugPanel">
             <h4 style="color: #ffd700; margin-bottom: 10px;">📋 Registro de depuración</h4>
             <div id="debugLogs"></div>
         </div>
 
+        <!-- ===== FOOTER ===== -->
         <div class="footer">
             🎵 Cada mesa tiene 10 puestos · 1600 puestos totales · Los datos se guardan automáticamente
             <br />
-            <small style="color: #444;">Clave de reinicio: 12436219*</small>
+            <small style="color: #444;">Clave de reinicio: 12436219* · Límite de almacenamiento: 5 MB</small>
         </div>
     </div>
 
-    <!-- Modal de confirmación -->
+    <!-- ===== MODAL ===== -->
     <div class="modal-overlay" id="modal">
         <div class="modal">
             <h2 id="modalTitle">✅ ¡Venta realizada!</h2>
@@ -573,6 +734,11 @@
             let selectedSeatIndex = null;
             let timeoutBlock = null;
             let ventas = [];
+            let modalConfig = {
+                isConfirm: false,
+                onConfirm: null,
+                showForm: false
+            };
 
             // ---------- DEBUG ----------
             function logDebug(message, type = 'info') {
@@ -586,7 +752,7 @@
                 console.log(`[DEBUG] ${message}`);
             }
 
-            // Elementos DOM
+            // ---------- ELEMENTOS DOM ----------
             const gridEl = document.getElementById('seatGrid');
             const mesaSelect = document.getElementById('mesaSelect');
             const btnBuy = document.getElementById('btnBuy');
@@ -594,12 +760,20 @@
             const btnReset = document.getElementById('btnReset');
             const btnExcel = document.getElementById('btnExcel');
             const btnDebug = document.getElementById('btnDebug');
+            const btnExportData = document.getElementById('btnExportData');
             const resetKeyInput = document.getElementById('resetKeyInput');
             const totalSeatsEl = document.getElementById('totalSeats');
             const availableSeatsEl = document.getElementById('availableSeats');
             const soldSeatsEl = document.getElementById('soldSeats');
             const blockedSeatsEl = document.getElementById('blockedSeats');
             const totalVentasEl = document.getElementById('totalVentas');
+            const storageStatusEl = document.getElementById('storageStatus');
+            const storageIndicatorEl = document.getElementById('storageIndicator');
+            const storageBarEl = document.getElementById('storageBar');
+            const storageDetailEl = document.getElementById('storageDetail');
+            const storagePercentEl = document.getElementById('storagePercent');
+            const warningBanner = document.getElementById('storageWarning');
+            const warningMessage = document.getElementById('storageWarningMessage');
             const modal = document.getElementById('modal');
             const modalTitle = document.getElementById('modalTitle');
             const modalMessage = document.getElementById('modalMessage');
@@ -609,15 +783,172 @@
             const modalBtn = document.getElementById('modalBtn');
             const modalCancelBtn = document.getElementById('modalCancelBtn');
 
-            // Variables para el modal
-            let modalConfig = {
-                isConfirm: false,
-                onConfirm: null,
-                showForm: false
+            // ============================================================
+            // ===== SISTEMA DE MONITOREO DE ALMACENAMIENTO =====
+            // ============================================================
+
+            function getStorageSize() {
+                try {
+                    let total = 0;
+                    for (let key in localStorage) {
+                        if (localStorage.hasOwnProperty(key)) {
+                            total += localStorage[key].length * 2;
+                        }
+                    }
+                    return total;
+                } catch (e) {
+                    return 0;
+                }
+            }
+
+            function getStoragePercentage() {
+                const used = getStorageSize();
+                const limit = 5 * 1024 * 1024;
+                return (used / limit) * 100;
+            }
+
+            function canSaveData() {
+                try {
+                    const testKey = '_test_save_' + Date.now();
+                    localStorage.setItem(testKey, 'test');
+                    localStorage.removeItem(testKey);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            function monitorStorage() {
+                const used = getStorageSize();
+                const percentage = getStoragePercentage();
+                const canSave = canSaveData();
+
+                let sizeText = '';
+                if (used < 1024) {
+                    sizeText = used + ' B';
+                } else if (used < 1024 * 1024) {
+                    sizeText = (used / 1024).toFixed(1) + ' KB';
+                } else {
+                    sizeText = (used / (1024 * 1024)).toFixed(2) + ' MB';
+                }
+
+                storageDetailEl.textContent = `${sizeText} usado de 5 MB`;
+                storagePercentEl.textContent = `${percentage.toFixed(1)}%`;
+
+                let status = 'green';
+                let label = 'Excelente';
+                let emoji = '🟢';
+                let barColor = '';
+
+                if (!canSave) {
+                    status = 'red';
+                    emoji = '🔴';
+                    label = '⚠️ LLENO';
+                    barColor = 'danger';
+                    warningBanner.classList.add('active');
+                    warningBanner.classList.add('danger');
+                    warningMessage.textContent = '⚠️ ¡ALERTA! El almacenamiento está COMPLETAMENTE LLENO. No se pueden guardar más ventas. Exporta tus datos inmediatamente.';
+                } else if (percentage > 90) {
+                    status = 'red';
+                    emoji = '🔴';
+                    label = '⚠️ CRÍTICO';
+                    barColor = 'danger';
+                    warningBanner.classList.add('active');
+                    warningBanner.classList.add('danger');
+                    warningMessage.textContent =
+                    `⚠️ ¡ALERTA! Almacenamiento al ${percentage.toFixed(1)}%. Está casi lleno. Exporta tus datos para evitar pérdidas.`;
+                } else if (percentage > 75) {
+                    status = 'yellow';
+                    emoji = '🟡';
+                    label = '⚠️ Atención';
+                    barColor = 'warning';
+                    warningBanner.classList.add('active');
+                    warningBanner.classList.remove('danger');
+                    warningMessage.textContent =
+                        `⚠️ Atención: Almacenamiento al ${percentage.toFixed(1)}%. Considera exportar tus datos para liberar espacio.`;
+                } else {
+                    status = 'green';
+                    emoji = '🟢';
+                    label = '✅ Excelente';
+                    barColor = '';
+                    warningBanner.classList.remove('active');
+                    warningBanner.classList.remove('danger');
+                }
+
+                storageStatusEl.textContent = emoji;
+                storageIndicatorEl.className = `storage-indicator ${status}`;
+                storageIndicatorEl.textContent = label;
+
+                const barWidth = Math.min(percentage, 100);
+                storageBarEl.style.width = barWidth + '%';
+                storageBarEl.className = 'fill' + (barColor ? ' ' + barColor : '');
+
+                console.log(`💾 Almacenamiento: ${sizeText} (${percentage.toFixed(1)}%) - ${canSave ? '✅ OK' : '❌ LLENO'}`);
+
+                return { used, percentage, canSave };
+            }
+
+            // ===== EXPORTAR DATOS DE EMERGENCIA =====
+            window.exportarDatosUrgente = function() {
+                try {
+                    const data = localStorage.getItem(STORAGE_KEY);
+                    if (!data) {
+                        showModal('⚠️ Sin datos', 'No hay datos para exportar.');
+                        return;
+                    }
+
+                    const blob = new Blob([data], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    const fecha = new Date().toISOString().slice(0, 10);
+                    a.download = `BACKUP_URGENTE_Ventas_${fecha}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    showModal('💾 Backup creado', 'Se ha creado una copia de seguridad de emergencia. Guarda este archivo en un lugar seguro.');
+                } catch (e) {
+                    showModal('❌ Error', 'No se pudo exportar los datos: ' + e.message);
+                }
             };
 
-            // ---------- PERSISTENCIA ----------
+            // ===== VERIFICAR ANTES DE GUARDAR =====
+            function verificarStorageAntesDeGuardar() {
+                const canSave = canSaveData();
+                if (!canSave) {
+                    logDebug('❌ NO HAY ESPACIO PARA GUARDAR', 'error');
+                    showModal(
+                        '⚠️ ALMACENAMIENTO LLENO',
+                        'No hay espacio para guardar más datos.\n\n' +
+                        'Por favor, exporta tus datos con el botón "💾 Exportar Backup" o "📊 Informe Excel".\n\n' +
+                        'Luego puedes reiniciar las ventas para liberar espacio.'
+                    );
+                    return false;
+                }
+                return true;
+            }
+
+            // ============================================================
+            // ===== PERSISTENCIA =====
+            // ============================================================
+
             function guardarEstado() {
+                if (!canSaveData()) {
+                    logDebug('❌ IMPOSIBLE GUARDAR: Almacenamiento lleno', 'error');
+                    monitorStorage();
+                    showModal(
+                        '⚠️ ERROR DE ALMACENAMIENTO',
+                        'No se pueden guardar más datos. El almacenamiento está lleno.\n\n' +
+                        'SOLUCIÓN:\n' +
+                        '1. Exporta tus datos con "📊 Informe Excel" o "💾 Exportar Backup"\n' +
+                        '2. Reinicia las ventas con la clave\n' +
+                        '3. Vuelve a intentar'
+                    );
+                    return false;
+                }
+
                 try {
                     const estado = {
                         seats: seats.map(s => ({ ...s })),
@@ -626,9 +957,21 @@
                     };
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
                     logDebug(`✅ Estado guardado: ${ventas.length} ventas`, 'success');
+                    monitorStorage();
                     return true;
                 } catch (e) {
-                    logDebug(`❌ Error al guardar: ${e.message}`, 'error');
+                    if (e.name === 'QuotaExceededError' || e.code === 22) {
+                        logDebug('❌ QUOTA EXCEEDED: No hay espacio', 'error');
+                        showModal(
+                            '⚠️ ALMACENAMIENTO LLENO',
+                            'No hay suficiente espacio para guardar los datos.\n\n' +
+                            'Capacidad máxima: 5 MB por sitio web.\n\n' +
+                            'Exporta tus datos y reinicia las ventas.'
+                        );
+                        monitorStorage();
+                    } else {
+                        logDebug(`❌ Error al guardar: ${e.message}`, 'error');
+                    }
                     return false;
                 }
             }
@@ -640,18 +983,18 @@
                         logDebug('No hay datos guardados previamente.', 'warning');
                         return false;
                     }
-                    
+
                     const estado = JSON.parse(data);
                     if (!estado.seats || !Array.isArray(estado.seats)) {
                         logDebug('❌ Datos inválidos', 'error');
                         return false;
                     }
-                    
+
                     if (estado.seats.length !== TOTAL_MESAS * PUESTOS_POR_MESA) {
                         logDebug('❌ Configuración incorrecta', 'error');
                         return false;
                     }
-                    
+
                     seats = estado.seats;
                     ventas = estado.ventas || [];
                     logDebug(`✅ Datos cargados: ${ventas.length} ventas`, 'success');
@@ -667,12 +1010,14 @@
                 guardarEstado();
             }
 
-            // ---------- MODAL ----------
+            // ============================================================
+            // ===== MODAL =====
+            // ============================================================
+
             function showModal(title, message, showForm = false, isConfirm = false, onConfirm = null) {
                 modalTitle.textContent = title;
                 modalMessage.textContent = message;
-                
-                // Configurar el formulario
+
                 if (showForm) {
                     modalForm.style.display = 'block';
                     buyerName.value = '';
@@ -680,15 +1025,13 @@
                 } else {
                     modalForm.style.display = 'none';
                 }
-                
-                // Guardar configuración
+
                 modalConfig = {
                     isConfirm: isConfirm,
                     onConfirm: onConfirm,
                     showForm: showForm
                 };
-                
-                // Configurar botones
+
                 if (isConfirm) {
                     modalBtn.textContent = 'Confirmar';
                     modalBtn.className = 'btn-close';
@@ -702,7 +1045,7 @@
                     modalBtn.style.color = '#1a1a4e';
                     modalCancelBtn.style.display = 'none';
                 }
-                
+
                 modal.classList.add('active');
                 logDebug(`📋 Modal mostrado: "${title}"`, 'info');
             }
@@ -714,20 +1057,16 @@
                     onConfirm: null,
                     showForm: false
                 };
-                logDebug('📋 Modal cerrado', 'info');
             }
 
-            // ---------- MANEJAR CONFIRMACIÓN DEL MODAL ----------
             function handleConfirm() {
                 logDebug('🔄 Botón Confirmar presionado', 'info');
-                
-                // Si no es modo confirmación, solo cerrar
+
                 if (!modalConfig.isConfirm) {
                     closeModal();
                     return;
                 }
 
-                // Verificar si hay formulario
                 if (modalConfig.showForm) {
                     const nombre = buyerName.value.trim();
                     const id = buyerId.value.trim();
@@ -739,13 +1078,9 @@
                     logDebug(`✅ Datos del formulario: ${nombre} - ${id}`, 'success');
                 }
 
-                // Obtener el callback
                 const callback = modalConfig.onConfirm;
-                
-                // Cerrar modal
                 closeModal();
 
-                // Ejecutar el callback si existe
                 if (callback && typeof callback === 'function') {
                     logDebug('✅ Ejecutando callback de confirmación', 'success');
                     try {
@@ -760,11 +1095,10 @@
             }
 
             function handleCancel() {
-                logDebug('❌ Confirmación cancelada por el usuario', 'warning');
+                logDebug('❌ Confirmación cancelada', 'warning');
                 closeModal();
             }
 
-            // Eventos del modal
             modalBtn.addEventListener('click', handleConfirm);
             modalCancelBtn.addEventListener('click', handleCancel);
 
@@ -774,10 +1108,13 @@
                 }
             });
 
-            // ---------- INICIALIZACIÓN ----------
+            // ============================================================
+            // ===== INICIALIZACIÓN =====
+            // ============================================================
+
             function initSeats() {
                 logDebug('🚀 Inicializando aplicación...', 'info');
-                
+
                 if (cargarEstado()) {
                     let bloqueados = 0;
                     seats.forEach(s => {
@@ -794,6 +1131,7 @@
                     populateMesaSelect();
                     render();
                     logDebug('✅ Aplicación inicializada con datos guardados.', 'success');
+                    monitorStorage();
                     return;
                 }
 
@@ -811,7 +1149,7 @@
                         });
                     }
                 }
-                
+
                 if (timeoutBlock) {
                     clearTimeout(timeoutBlock);
                     timeoutBlock = null;
@@ -820,10 +1158,14 @@
                 populateMesaSelect();
                 render();
                 guardarEstado();
+                monitorStorage();
                 logDebug('✅ Aplicación inicializada con estado nuevo.', 'success');
             }
 
-            // ---------- POBLAR SELECT ----------
+            // ============================================================
+            // ===== POBLAR SELECT =====
+            // ============================================================
+
             function populateMesaSelect() {
                 mesaSelect.innerHTML = '<option value="">Selecciona una mesa...</option>';
                 for (let mesa = 1; mesa <= TOTAL_MESAS; mesa++) {
@@ -845,7 +1187,10 @@
                 }
             }
 
-            // ---------- RENDERIZAR ----------
+            // ============================================================
+            // ===== RENDERIZAR =====
+            // ============================================================
+
             function render() {
                 const total = seats.length;
                 const disponibles = seats.filter(s => s.estado === 'available').length;
@@ -886,12 +1231,16 @@
                 }
             }
 
-            // ---------- SELECCIONAR PUESTO ----------
+            // ============================================================
+            // ===== SELECCIONAR PUESTO =====
+            // ============================================================
+
             function selectSeat(index) {
                 if (timeoutBlock) {
                     clearTimeout(timeoutBlock);
                     timeoutBlock = null;
-                    if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].estado === 'blocked') {
+                    if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].estado ===
+                        'blocked') {
                         seats[selectedSeatIndex].estado = 'available';
                     }
                 }
@@ -909,7 +1258,8 @@
                 selectedSeatIndex = index;
 
                 timeoutBlock = setTimeout(() => {
-                    if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].estado === 'blocked') {
+                    if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].estado ===
+                        'blocked') {
                         seats[selectedSeatIndex].estado = 'available';
                         selectedSeatIndex = null;
                         guardarYRenderizar();
@@ -921,10 +1271,13 @@
                 guardarYRenderizar();
             }
 
-            // ---------- REGISTRAR VENTA ----------
+            // ============================================================
+            // ===== REGISTRAR VENTA =====
+            // ============================================================
+
             function registrarVenta(seat, nombre, identificacion) {
                 logDebug(`📝 Registrando venta: Mesa ${seat.mesa}, Puesto ${seat.puesto} - ${nombre}`, 'info');
-                
+
                 const venta = {
                     fecha: new Date().toLocaleString(),
                     mesa: seat.mesa,
@@ -936,15 +1289,16 @@
                 ventas.push(venta);
                 seat.comprador = nombre;
                 seat.identificacion = identificacion;
-                
+
                 logDebug(`✅ Venta registrada. Total ventas: ${ventas.length}`, 'success');
                 guardarEstado();
                 render();
+                monitorStorage();
             }
 
             function registrarVentaPalco(mesa, nombre, identificacion) {
                 logDebug(`📝 Registrando palco completo: Mesa ${mesa} - ${nombre}`, 'info');
-                
+
                 const seatsInMesa = seats.filter(s => s.mesa === mesa && s.estado === 'sold');
                 seatsInMesa.forEach(seat => {
                     const venta = {
@@ -959,14 +1313,22 @@
                     seat.comprador = nombre;
                     seat.identificacion = identificacion;
                 });
-                
+
                 logDebug(`✅ Palco registrado. ${seatsInMesa.length} puestos, total ventas: ${ventas.length}`, 'success');
                 guardarEstado();
                 render();
+                monitorStorage();
             }
 
-            // ---------- COMPRAR INDIVIDUAL ----------
+            // ============================================================
+            // ===== COMPRAR INDIVIDUAL =====
+            // ============================================================
+
             function buyIndividual() {
+                if (!verificarStorageAntesDeGuardar()) {
+                    return;
+                }
+
                 if (selectedSeatIndex === null) {
                     showModal('⚠️ Selecciona un puesto', 'Primero haz clic en un puesto disponible para seleccionarlo.');
                     return;
@@ -985,14 +1347,14 @@
                 showModal(
                     '📝 Datos del comprador',
                     `Compra del puesto ${seat.puesto} de la mesa ${seat.mesa}`,
-                    true,  // showForm
-                    true,  // isConfirm
+                    true,
+                    true,
                     function() {
                         logDebug('📝 EJECUTANDO CALLBACK DE COMPRA INDIVIDUAL', 'success');
-                        
+
                         const nombre = buyerName.value.trim();
                         const id = buyerId.value.trim();
-                        
+
                         if (!nombre || !id) {
                             logDebug('⚠️ Datos incompletos en callback', 'warning');
                             showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.', true, false);
@@ -1001,7 +1363,6 @@
 
                         logDebug(`✅ Datos del comprador: ${nombre} - ${id}`, 'success');
 
-                        // Marcar como vendido
                         seat.estado = 'sold';
                         registrarVenta(seat, nombre, id);
                         selectedSeatIndex = null;
@@ -1010,8 +1371,9 @@
                             timeoutBlock = null;
                         }
                         guardarYRenderizar();
-                        
-                        showModal('✅ ¡Compra exitosa!', 
+                        monitorStorage();
+
+                        showModal('✅ ¡Compra exitosa!',
                             `Puesto ${seat.puesto} - Mesa ${seat.mesa}\nComprador: ${nombre}\nID: ${id}\n¡Disfruta del concierto! 🎵`
                         );
                         logDebug(`🎉 Compra completada: Mesa ${seat.mesa}, Puesto ${seat.puesto}`, 'success');
@@ -1019,8 +1381,15 @@
                 );
             }
 
-            // ---------- COMPRAR PALCO ----------
+            // ============================================================
+            // ===== COMPRAR PALCO =====
+            // ============================================================
+
             function buyPalco() {
+                if (!verificarStorageAntesDeGuardar()) {
+                    return;
+                }
+
                 const mesa = parseInt(mesaSelect.value);
                 if (!mesa || isNaN(mesa)) {
                     showModal('⚠️ Selecciona una mesa', 'Elige una mesa del menú desplegable para comprar el palco completo.');
@@ -1049,14 +1418,14 @@
                 showModal(
                     '📝 Datos del comprador',
                     `Compra del palco completo - Mesa ${mesa} (${PUESTOS_POR_MESA} puestos)`,
-                    true,  // showForm
-                    true,  // isConfirm
+                    true,
+                    true,
                     function() {
                         logDebug('📝 EJECUTANDO CALLBACK DE COMPRA DE PALCO', 'success');
-                        
+
                         const nombre = buyerName.value.trim();
                         const id = buyerId.value.trim();
-                        
+
                         if (!nombre || !id) {
                             logDebug('⚠️ Datos incompletos en callback', 'warning');
                             showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.', true, false);
@@ -1065,13 +1434,13 @@
 
                         logDebug(`✅ Datos del comprador: ${nombre} - ${id}`, 'success');
 
-                        // Marcar todos los puestos como vendidos
                         seatsInMesa.forEach(s => {
                             s.estado = 'sold';
                         });
                         registrarVentaPalco(mesa, nombre, id);
 
-                        if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].mesa === mesa) {
+                        if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].mesa ===
+                            mesa) {
                             selectedSeatIndex = null;
                             if (timeoutBlock) {
                                 clearTimeout(timeoutBlock);
@@ -1080,7 +1449,9 @@
                         }
 
                         guardarYRenderizar();
-                        showModal('🎪 ¡Palco completo!', 
+                        monitorStorage();
+
+                        showModal('🎪 ¡Palco completo!',
                             `Mesa ${mesa} (${PUESTOS_POR_MESA} puestos)\nComprador: ${nombre}\nID: ${id}\n¡Gran fiesta! 🎉`
                         );
                         logDebug(`🎉 Palco completado: Mesa ${mesa}`, 'success');
@@ -1088,11 +1459,14 @@
                 );
             }
 
-            // ---------- REINICIAR CON CLAVE ----------
+            // ============================================================
+            // ===== REINICIAR CON CLAVE =====
+            // ============================================================
+
             function resetAll() {
                 const clave = resetKeyInput.value.trim();
                 logDebug(`🔑 Intento de reinicio con clave: "${clave}"`, 'info');
-                
+
                 if (!clave) {
                     logDebug('⚠️ No se ingresó clave', 'warning');
                     showModal('⚠️ Clave requerida', 'Por favor, ingresa la clave para reiniciar las ventas.');
@@ -1108,22 +1482,33 @@
                     return;
                 }
 
+                const storageInfo = monitorStorage();
+                const sizeText = storageInfo.used < 1024 ?
+                    storageInfo.used + ' B' :
+                    (storageInfo.used / 1024).toFixed(1) + ' KB';
+
                 logDebug('✅ Clave correcta, mostrando confirmación', 'success');
-                
+
                 showModal(
                     '⚠️ Confirmar reinicio',
-                    '¿Seguro que quieres reiniciar TODAS las ventas?\n\nEsta acción es irreversible y eliminará todos los datos.\n\nTotal ventas: ' + ventas.length,
+                    `¿Seguro que quieres reiniciar TODAS las ventas?\n\n` +
+                    `Esta acción es irreversible y eliminará todos los datos.\n\n` +
+                    `📊 Datos actuales:\n` +
+                    `• Ventas: ${ventas.length}\n` +
+                    `• Puestos vendidos: ${seats.filter(s => s.estado === 'sold').length}\n` +
+                    `• Espacio usado: ${sizeText} (${storageInfo.percentage.toFixed(1)}%)\n\n` +
+                    `⚠️ Se liberará espacio en el almacenamiento.`,
                     false,
                     true,
                     function() {
                         logDebug('🔄 Ejecutando reinicio...', 'warning');
-                        
+
                         if (timeoutBlock) {
                             clearTimeout(timeoutBlock);
                             timeoutBlock = null;
                         }
                         selectedSeatIndex = null;
-                        
+
                         let reseteados = 0;
                         seats.forEach(s => {
                             if (s.estado === 'sold' || s.estado === 'blocked') {
@@ -1133,21 +1518,43 @@
                             s.comprador = null;
                             s.identificacion = null;
                         });
-                        
+
                         const ventasEliminadas = ventas.length;
                         ventas = [];
                         resetKeyInput.value = '';
-                        
+
+                        try {
+                            localStorage.removeItem(STORAGE_KEY);
+                            const estado = {
+                                seats: seats.map(s => ({ ...s })),
+                                ventas: ventas,
+                                timestamp: Date.now()
+                            };
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+                        } catch (e) {
+                            logDebug('⚠️ No se pudo limpiar el almacenamiento completamente', 'warning');
+                        }
+
                         guardarYRenderizar();
-                        logDebug(`✅ Reinicio completado. ${reseteado} puestos liberados, ${ventasEliminadas} ventas eliminadas.`, 'success');
-                        showModal('🔄 Reiniciado', 
-                            `Todas las ventas se han reiniciado correctamente.\n\nPuestos liberados: ${reseteado}\nVentas eliminadas: ${ventasEliminadas}\n¡Listo para empezar de nuevo!`
+                        monitorStorage();
+
+                        logDebug(`✅ Reinicio completado. ${reseteado} puestos liberados, ${ventasEliminadas} ventas eliminadas.`,
+                            'success');
+                        showModal('🔄 Reiniciado',
+                            `Todas las ventas se han reiniciado correctamente.\n\n` +
+                            `Puestos liberados: ${reseteado}\n` +
+                            `Ventas eliminadas: ${ventasEliminadas}\n` +
+                            `💾 Espacio liberado en el almacenamiento.\n\n` +
+                            `¡Listo para empezar de nuevo!`
                         );
                     }
                 );
             }
 
-            // ---------- GENERAR EXCEL ----------
+            // ============================================================
+            // ===== GENERAR EXCEL =====
+            // ============================================================
+
             function generarExcel() {
                 if (ventas.length === 0) {
                     showModal('📊 Sin datos', 'No hay ventas registradas para generar el informe.');
@@ -1193,7 +1600,8 @@
                 `;
 
                 ventas.forEach((venta, index) => {
-                    tabla += `<tr><td>${index + 1}</td><td>${venta.fecha}</td><td>${venta.mesa}</td><td>${venta.puesto}</td><td>${venta.comprador}</td><td>${venta.identificacion}</td><td>${venta.tipo}</td></tr>`;
+                    tabla +=
+                        `<tr><td>${index + 1}</td><td>${venta.fecha}</td><td>${venta.mesa}</td><td>${venta.puesto}</td><td>${venta.comprador}</td><td>${venta.identificacion}</td><td>${venta.tipo}</td></tr>`;
                 });
 
                 const resumenMesas = {};
@@ -1212,7 +1620,8 @@
                 tabla += `</tbody></table><br/><h3>RESUMEN POR MESA</h3><table><thead><tr><th>Mesa</th><th>Individuales</th><th>Palcos</th><th>Total</th></tr></thead><tbody>`;
 
                 for (const [mesa, datos] of Object.entries(resumenMesas)) {
-                    tabla += `<tr><td>Mesa ${mesa}</td><td>${datos.individual}</td><td>${datos.palco}</td><td>${datos.total}</td></tr>`;
+                    tabla +=
+                        `<tr><td>Mesa ${mesa}</td><td>${datos.individual}</td><td>${datos.palco}</td><td>${datos.total}</td></tr>`;
                 }
 
                 const totalIndividuales = ventas.filter(v => v.tipo === 'Individual').length;
@@ -1224,6 +1633,7 @@
                         <br/>
                         <p><strong>Total puestos vendidos:</strong> ${ventas.length} de 1600</p>
                         <p><strong>Porcentaje de ocupación:</strong> ${((ventas.length / 1600) * 100).toFixed(2)}%</p>
+                        <p><strong>Espacio usado en almacenamiento:</strong> ${document.getElementById('storageDetail').textContent}</p>
                     </body></html>
                 `;
 
@@ -1236,11 +1646,45 @@
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
-                
+
                 logDebug(`📊 Excel generado con ${ventas.length} ventas`, 'success');
             }
 
-            // ---------- ACTUALIZAR BOTONES ----------
+            // ============================================================
+            // ===== EXPORTAR BACKUP =====
+            // ============================================================
+
+            function exportarBackup() {
+                try {
+                    const data = localStorage.getItem(STORAGE_KEY);
+                    if (!data) {
+                        showModal('⚠️ Sin datos', 'No hay datos para exportar.');
+                        return;
+                    }
+
+                    const blob = new Blob([data], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    const fecha = new Date().toISOString().slice(0, 10);
+                    a.download = `Backup_Ventas_${fecha}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    showModal('💾 Backup creado', 'Se ha creado una copia de seguridad de tus datos.\n\nGuarda este archivo en un lugar seguro.');
+                    logDebug('💾 Backup exportado correctamente', 'success');
+                } catch (e) {
+                    showModal('❌ Error', 'No se pudo exportar los datos: ' + e.message);
+                    logDebug(`❌ Error exportando backup: ${e.message}`, 'error');
+                }
+            }
+
+            // ============================================================
+            // ===== ACTUALIZAR BOTONES =====
+            // ============================================================
+
             function updateButtons() {
                 const hasBlocked = seats.some(s => s.estado === 'blocked');
                 btnBuy.disabled = !hasBlocked;
@@ -1257,21 +1701,30 @@
                 btnPalco.disabled = !palcoDisponible;
             }
 
-            // ---------- DEBUG TOGGLE ----------
+            // ============================================================
+            // ===== DEBUG TOGGLE =====
+            // ============================================================
+
             function toggleDebug() {
                 const panel = document.getElementById('debugPanel');
                 panel.classList.toggle('active');
                 if (panel.classList.contains('active')) {
                     logDebug('🐛 Panel de depuración activado', 'info');
-                    logDebug(`📊 Estado actual: ${ventas.length} ventas, ${seats.filter(s => s.estado === 'sold').length} puestos vendidos`, 'info');
+                    logDebug(`📊 Estado actual: ${ventas.length} ventas, ${seats.filter(s => s.estado === 'sold').length} puestos vendidos`,
+                        'info');
+                    monitorStorage();
                 }
             }
 
-            // ---------- EVENTOS ----------
+            // ============================================================
+            // ===== EVENTOS =====
+            // ============================================================
+
             btnBuy.addEventListener('click', buyIndividual);
             btnPalco.addEventListener('click', buyPalco);
             btnReset.addEventListener('click', resetAll);
             btnExcel.addEventListener('click', generarExcel);
+            btnExportData.addEventListener('click', exportarBackup);
             btnDebug.addEventListener('click', toggleDebug);
 
             resetKeyInput.addEventListener('keypress', function(e) {
@@ -1299,16 +1752,27 @@
                 }
             });
 
-            // ---------- INICIAR ----------
+            // ============================================================
+            // ===== INICIAR =====
+            // ============================================================
+
             initSeats();
 
+            // Monitoreo cada 30 segundos
+            setInterval(() => {
+                monitorStorage();
+            }, 30000);
+
             console.log('🔑 Clave de reinicio:', RESET_KEY);
+            console.log('💾 Sistema de monitoreo de almacenamiento activado');
+            console.log('📊 Límite: 5 MB por sitio web');
             console.log('💡 Presiona "🐛 Debug" para ver el panel de depuración');
-            console.log('📝 Para comprar: selecciona un puesto → click en "Comprar Puesto Individual" → completa el formulario → Confirmar');
 
             if (!localStorage.getItem(STORAGE_KEY)) {
                 setTimeout(() => {
-                    showModal('🎵 Bienvenido', 'Haz clic en un puesto disponible para seleccionarlo y comprarlo, o compra un palco completo desde el menú.');
+                    showModal('🎵 Bienvenido',
+                        'Haz clic en un puesto disponible para seleccionarlo y comprarlo, o compra un palco completo desde el menú.\n\n💾 El sistema monitorea automáticamente el espacio de almacenamiento.'
+                        );
                 }, 500);
             }
 
