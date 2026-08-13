@@ -43,7 +43,6 @@
             font-size: 1rem;
         }
 
-        /* ===== BANNER ===== */
         .warning-banner {
             display: none;
             background: rgba(255, 215, 0, 0.15);
@@ -95,7 +94,6 @@
             transform: scale(1.05);
         }
 
-        /* ===== RESUMEN ===== */
         .summary {
             display: flex;
             justify-content: center;
@@ -134,7 +132,6 @@
             color: #51cf66;
         }
 
-        /* ===== INDICADOR DE ALMACENAMIENTO ===== */
         .storage-indicator {
             display: inline-block;
             padding: 3px 10px;
@@ -196,7 +193,6 @@
             margin-top: 2px;
         }
 
-        /* ===== CONTROLES ===== */
         .controls {
             display: flex;
             justify-content: center;
@@ -363,19 +359,6 @@
             transform: scale(1.05);
         }
 
-        /* ===== BOTÓN LIBERAR MESA ===== */
-        .btn-liberar {
-            background: #ff6b6b;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .btn-liberar:hover {
-            background: #e55a5a;
-            transform: scale(1.05);
-        }
-
-        /* ===== FILTRO DE ZONAS ===== */
         .zona-filtro {
             display: flex;
             justify-content: center;
@@ -417,7 +400,6 @@
             margin-right: 5px;
         }
 
-        /* ===== GRID ===== */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -600,7 +582,6 @@
             50% { opacity: 0.6; }
         }
 
-        /* ===== MODAL ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -683,7 +664,27 @@
             flex: 1;
         }
 
-        /* ===== FILTRO DE CONCILIACIÓN ===== */
+        .modal .info-box {
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid #ffa500;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .modal .info-box .label {
+            color: #aaa;
+            font-size: 0.7rem;
+            display: block;
+        }
+
+        .modal .info-box .value {
+            color: #ffd700;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
         .filtro-conciliacion {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 10px;
@@ -838,7 +839,6 @@
             flex-wrap: wrap;
         }
 
-        /* ===== CONCILIACIÓN ===== */
         .conciliacion-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -1155,8 +1155,6 @@
                 <span style="font-size:0.65rem;color:#888;">(1-9)</span>
             </div>
             <button class="btn-modificar" id="btnModificar">🔄 Modificar Reserva</button>
-            <!-- ===== NUEVO BOTÓN: LIBERAR MESA ===== -->
-            <button class="btn-liberar" id="btnLiberarMesa">🔓 Liberar Mesa</button>
             <button class="btn-excel" id="btnExcel">📊 Excel</button>
             <button class="btn-conciliacion" id="btnConciliacion">🏦 Conciliar</button>
             <button class="btn-export-data" id="btnExportData">💾 Exportar</button>
@@ -1276,37 +1274,6 @@
                     <span class="value" id="abonadoMesaModificar" style="font-size:0.9rem;">$0</span>
                     <span class="label" style="margin-top:4px;">Saldo pendiente</span>
                     <span class="value" id="saldoMesaModificar" style="font-size:0.9rem;color:#ff6b6b;">$0</span>
-                </div>
-            </div>
-
-            <!-- ===== MODAL DE LIBERAR MESA ===== -->
-            <div id="modalLiberar" style="display: none;">
-                <p style="color:#ff6b6b;font-size:0.9rem;margin-bottom:15px;">🔓 Selecciona una mesa para liberar todos sus puestos</p>
-                <div class="form-group">
-                    <label for="mesaLiberarSelect">Mesa a liberar:</label>
-                    <select id="mesaLiberarSelect" required>
-                        <option value="">Selecciona una mesa...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="liberarPuestos">Puestos a liberar:</label>
-                    <select id="liberarPuestos" required>
-                        <option value="todos">Todos los puestos</option>
-                        <option value="individual">Puesto individual</option>
-                    </select>
-                </div>
-                <div class="form-group" id="grupoPuestoIndividual" style="display:none;">
-                    <label for="puestoIndividual">Número de puesto:</label>
-                    <input type="number" id="puestoIndividual" placeholder="Ej: 1" min="1" max="10" />
-                </div>
-                <div class="form-group">
-                    <label for="claveLiberar">🔑 Clave de seguridad:</label>
-                    <input type="password" id="claveLiberar" placeholder="Ingresa la clave de liberación" required />
-                    <small style="color: #888; font-size: 0.7rem;">Clave: 12436219*</small>
-                </div>
-                <div id="infoMesaLiberar" class="info-box">
-                    <span class="label">Estado de la mesa</span>
-                    <span class="value" id="estadoMesaLiberar">Selecciona una mesa</span>
                 </div>
             </div>
             
@@ -1473,8 +1440,7 @@
                 showForm: false,
                 showZonaForm: false,
                 showConciliacion: false,
-                showModificar: false,
-                showLiberar: false
+                showModificar: false
             };
 
             // ============================================================
@@ -1487,7 +1453,6 @@
             const btnBuy = document.getElementById('btnBuy');
             const btnPalco = document.getElementById('btnPalco');
             const btnModificar = document.getElementById('btnModificar');
-            const btnLiberarMesa = document.getElementById('btnLiberarMesa');
             const btnReset = document.getElementById('btnReset');
             const btnExcel = document.getElementById('btnExcel');
             const btnConciliacion = document.getElementById('btnConciliacion');
@@ -1519,7 +1484,6 @@
             const modalMessage = document.getElementById('modalMessage');
             const modalForm = document.getElementById('modalForm');
             const modalModificar = document.getElementById('modalModificar');
-            const modalLiberar = document.getElementById('modalLiberar');
             const modalZonaForm = document.getElementById('modalZonaForm');
             const modalConciliacion = document.getElementById('modalConciliacion');
             const conciliacionContent = document.getElementById('conciliacionContent');
@@ -1540,14 +1504,6 @@
             const totalMesaModificar = document.getElementById('totalMesaModificar');
             const abonadoMesaModificar = document.getElementById('abonadoMesaModificar');
             const saldoMesaModificar = document.getElementById('saldoMesaModificar');
-
-            // Elementos del modal de liberar
-            const mesaLiberarSelect = document.getElementById('mesaLiberarSelect');
-            const liberarPuestos = document.getElementById('liberarPuestos');
-            const puestoIndividual = document.getElementById('puestoIndividual');
-            const claveLiberar = document.getElementById('claveLiberar');
-            const estadoMesaLiberar = document.getElementById('estadoMesaLiberar');
-            const grupoPuestoIndividual = document.getElementById('grupoPuestoIndividual');
 
             const zonaNombre = document.getElementById('zonaNombre');
             const zonaMesas = document.getElementById('zonaMesas');
@@ -1631,6 +1587,197 @@
             }
 
             // ============================================================
+            // ===== MONITOREO DE ALMACENAMIENTO =====
+            // ============================================================
+            function getStorageSize() {
+                try {
+                    let total = 0;
+                    for (let key in localStorage) {
+                        if (localStorage.hasOwnProperty(key)) {
+                            total += localStorage[key].length * 2;
+                        }
+                    }
+                    return total;
+                } catch (e) {
+                    return 0;
+                }
+            }
+
+            function getStoragePercentage() {
+                const used = getStorageSize();
+                const limit = 5 * 1024 * 1024;
+                return (used / limit) * 100;
+            }
+
+            function canSaveData() {
+                try {
+                    const testKey = '_test_' + Date.now();
+                    localStorage.setItem(testKey, 'test');
+                    localStorage.removeItem(testKey);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            function monitorStorage() {
+                const used = getStorageSize();
+                const percentage = getStoragePercentage();
+                const canSave = canSaveData();
+
+                let sizeText = '';
+                if (used < 1024) {
+                    sizeText = used + ' B';
+                } else if (used < 1024 * 1024) {
+                    sizeText = (used / 1024).toFixed(1) + ' KB';
+                } else {
+                    sizeText = (used / (1024 * 1024)).toFixed(2) + ' MB';
+                }
+
+                storageDetailEl.textContent = sizeText;
+
+                let status = 'green';
+                let label = 'OK';
+                let emoji = '🟢';
+                let barColor = '';
+
+                if (!canSave || percentage > 95) {
+                    status = 'red';
+                    emoji = '🔴';
+                    label = '⚠️ LLENO';
+                    barColor = 'danger';
+                    warningBanner.classList.add('active');
+                    warningBanner.classList.add('danger');
+                    warningMessage.textContent = '⚠️ ¡ALERTA! Almacenamiento COMPLETAMENTE LLENO.';
+                } else if (percentage > 75) {
+                    status = 'yellow';
+                    emoji = '🟡';
+                    label = '⚠️ Atención';
+                    barColor = 'warning';
+                    warningBanner.classList.add('active');
+                    warningBanner.classList.remove('danger');
+                    warningMessage.textContent = `⚠️ Almacenamiento al ${percentage.toFixed(1)}%.`;
+                } else {
+                    status = 'green';
+                    emoji = '🟢';
+                    label = '✅ OK';
+                    barColor = '';
+                    warningBanner.classList.remove('active');
+                    warningBanner.classList.remove('danger');
+                }
+
+                storageStatusEl.textContent = emoji;
+                storageIndicatorEl.className = `storage-indicator ${status}`;
+                storageIndicatorEl.textContent = label;
+
+                const barWidth = Math.min(percentage, 100);
+                storageBarEl.style.width = barWidth + '%';
+                storageBarEl.className = 'fill' + (barColor ? ' ' + barColor : '');
+
+                return { used, percentage, canSave };
+            }
+
+            window.exportarDatosUrgente = function() {
+                exportarBackup();
+            };
+
+            // ============================================================
+            // ===== CREAR ESTRUCTURA =====
+            // ============================================================
+            function crearEstructuraZonas() {
+                if (zonas.length > 0) return true;
+                logDebug('📦 Creando zonas predefinidas...', 'info');
+                zonas = JSON.parse(JSON.stringify(ZONAS_PREDEFINIDAS));
+                return true;
+            }
+
+            function generarPuestosDesdeZonas() {
+                seats = [];
+                let id = 1;
+                zonas.forEach(zona => {
+                    for (let mesa = 1; mesa <= zona.mesas; mesa++) {
+                        let numeroMesa = mesa;
+                        if (zona.numeracion === 'personalizado') {
+                            const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+                                'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+                            ];
+                            numeroMesa = letras[mesa - 1] || mesa;
+                        }
+                        for (let puesto = 1; puesto <= zona.puestosPorMesa; puesto++) {
+                            seats.push({
+                                id: id++,
+                                zonaId: zona.id,
+                                zonaNombre: zona.nombre,
+                                mesa: numeroMesa,
+                                puesto: puesto,
+                                precio: zona.precio,
+                                estado: 'available',
+                                comprador: null,
+                                identificacion: null,
+                                email: null,
+                                telefono: null,
+                                tipoComprador: null,
+                                formaPago: null,
+                                montoPagado: 0,
+                                montoTotal: zona.precio,
+                                color: zona.color
+                            });
+                        }
+                    }
+                });
+                logDebug(`✅ Generados ${seats.length} puestos`, 'success');
+                return seats.length;
+            }
+
+            // ============================================================
+            // ===== AGREGAR ZONA =====
+            // ============================================================
+            function agregarZonaPersonalizada(nombre, mesas, puestosPorMesa, precio, color, numeracion) {
+                const id = 'zona-' + Date.now();
+                const nuevaZona = {
+                    id: id,
+                    nombre: nombre,
+                    mesas: mesas,
+                    puestosPorMesa: puestosPorMesa,
+                    precio: precio,
+                    color: color || '#ffb74d',
+                    numeracion: numeracion || 'consecutivo'
+                };
+                zonas.push(nuevaZona);
+
+                let maxId = seats.length > 0 ? Math.max(...seats.map(s => s.id)) : 0;
+                for (let mesa = 1; mesa <= mesas; mesa++) {
+                    for (let puesto = 1; puesto <= puestosPorMesa; puesto++) {
+                        seats.push({
+                            id: ++maxId,
+                            zonaId: nuevaZona.id,
+                            zonaNombre: nuevaZona.nombre,
+                            mesa: mesa,
+                            puesto: puesto,
+                            precio: precio,
+                            estado: 'available',
+                            comprador: null,
+                            identificacion: null,
+                            email: null,
+                            telefono: null,
+                            tipoComprador: null,
+                            formaPago: null,
+                            montoPagado: 0,
+                            montoTotal: precio,
+                            color: color || '#ffb74d'
+                        });
+                    }
+                }
+
+                logDebug(`✅ Zona "${nombre}" creada`, 'success');
+                guardarYRenderizar();
+                actualizarFiltros();
+                showModal('✅ Zona creada',
+                    `Zona "${nombre}" creada.\n\n📊 Mesas: ${mesas}\n🪑 Puestos/mesa: ${puestosPorMesa}\n💰 Precio: $${precio.toLocaleString()}\n🎫 Total: ${mesas * puestosPorMesa} puestos`
+                );
+            }
+
+            // ============================================================
             // ===== FUNCIONES DE FECHA =====
             // ============================================================
             function obtenerFechaISO() {
@@ -1682,197 +1829,231 @@
             }
 
             // ============================================================
-            // ===== LIBERAR MESA =====
+            // ===== CONCILIACIÓN =====
             // ============================================================
-            
-            // Función para cargar mesas disponibles para liberar
-            function cargarMesasLiberar() {
-                mesaLiberarSelect.innerHTML = '<option value="">Selecciona una mesa...</option>';
-                
-                // Obtener todas las mesas que tienen al menos un puesto vendido o reservado
-                const mesasOcupadas = {};
-                seats.forEach(s => {
-                    if (s.estado === 'sold' || s.estado === 'reserved') {
-                        const key = s.zonaId + '|' + s.mesa;
-                        if (!mesasOcupadas[key]) {
-                            mesasOcupadas[key] = {
-                                zonaId: s.zonaId,
-                                zonaNombre: s.zonaNombre,
-                                mesa: s.mesa,
-                                puestos: [],
-                                total: 0,
-                                vendidos: 0,
-                                reservados: 0,
-                                disponibles: 0
-                            };
+            function generarConciliacion(filtro, fechaDiaVal, fechaInicioVal, fechaFinVal) {
+                let ventasFiltradas = [];
+                let textoFiltro = 'Todas las ventas';
+
+                const hoy = new Date();
+                const hoyStr = formatearFechaISO(hoy);
+
+                logDebug(`📅 Filtro: ${filtro}, Hoy: ${hoyStr}`, 'info');
+
+                if (filtro === 'todas') {
+                    ventasFiltradas = ventas;
+                    textoFiltro = 'Todas las ventas';
+                } else if (filtro === 'hoy') {
+                    ventasFiltradas = ventas.filter(v => {
+                        const fechaVenta = extraerFechaVenta(v.fecha);
+                        if (!fechaVenta) return false;
+                        return esMismoDia(fechaVenta, hoy);
+                    });
+                    textoFiltro = `Ventas de hoy (${hoy.toLocaleDateString()})`;
+                } else if (filtro === 'dia' && fechaDiaVal) {
+                    const fechaBuscar = new Date(fechaDiaVal);
+                    ventasFiltradas = ventas.filter(v => {
+                        const fechaVenta = extraerFechaVenta(v.fecha);
+                        if (!fechaVenta) return false;
+                        return esMismoDia(fechaVenta, fechaBuscar);
+                    });
+                    textoFiltro = `Ventas del ${fechaBuscar.toLocaleDateString()}`;
+                } else if (filtro === 'rango' && fechaInicioVal && fechaFinVal) {
+                    const inicio = new Date(fechaInicioVal);
+                    const fin = new Date(fechaFinVal);
+                    fin.setHours(23, 59, 59);
+                    
+                    ventasFiltradas = ventas.filter(v => {
+                        const fechaVenta = extraerFechaVenta(v.fecha);
+                        if (!fechaVenta) return false;
+                        return fechaVenta >= inicio && fechaVenta <= fin;
+                    });
+                    textoFiltro = `Ventas del ${inicio.toLocaleDateString()} al ${fin.toLocaleDateString()}`;
+                } else {
+                    ventasFiltradas = ventas;
+                    textoFiltro = 'Todas las ventas';
+                }
+
+                logDebug(`📊 Ventas filtradas: ${ventasFiltradas.length} de ${ventas.length}`, 'info');
+
+                const resumen = {};
+                let totalGeneral = 0;
+                let totalVentas = 0;
+
+                for (const key in FORMAS_PAGO) {
+                    resumen[key] = { total: 0, cantidad: 0 };
+                }
+
+                ventasFiltradas.forEach(v => {
+                    const metodo = v.formaPago || 'efectivo';
+                    if (!resumen[metodo]) {
+                        resumen[metodo] = { total: 0, cantidad: 0 };
+                    }
+                    resumen[metodo].total += v.precio || 0;
+                    resumen[metodo].cantidad++;
+                    totalGeneral += v.precio || 0;
+                    totalVentas++;
+                });
+
+                ventasFiltradas.forEach(v => {
+                    if (!v.formaPago) {
+                        if (!resumen['sin-registro']) {
+                            resumen['sin-registro'] = { total: 0, cantidad: 0 };
                         }
-                        mesasOcupadas[key].puestos.push(s);
-                        mesasOcupadas[key].total++;
-                        if (s.estado === 'sold') mesasOcupadas[key].vendidos++;
-                        if (s.estado === 'reserved') mesasOcupadas[key].reservados++;
-                        if (s.estado === 'available') mesasOcupadas[key].disponibles++;
+                        resumen['sin-registro'].total += v.precio || 0;
+                        resumen['sin-registro'].cantidad++;
                     }
                 });
 
-                // Agregar al select
-                Object.values(mesasOcupadas).forEach(m => {
-                    const opt = document.createElement('option');
-                    opt.value = m.zonaId + '|' + m.mesa;
-                    const estado = m.reservados > 0 ? `🔒 ${m.reservados} reservados` : `✅ ${m.vendidos} vendidos`;
-                    opt.textContent = `${m.zonaNombre} - Mesa ${m.mesa} | ${estado} | ${m.total} puestos`;
-                    mesaLiberarSelect.appendChild(opt);
-                });
-
-                // Evento para mostrar información de la mesa seleccionada
-                mesaLiberarSelect.addEventListener('change', function() {
-                    const valor = this.value;
-                    if (!valor) {
-                        estadoMesaLiberar.textContent = 'Selecciona una mesa';
-                        return;
-                    }
-                    
-                    const [zonaId, mesaNum] = valor.split('|');
-                    const puestosMesa = seats.filter(s => s.zonaId === zonaId && String(s.mesa) === String(mesaNum));
-                    const total = puestosMesa.length;
-                    const vendidos = puestosMesa.filter(s => s.estado === 'sold').length;
-                    const reservados = puestosMesa.filter(s => s.estado === 'reserved').length;
-                    const disponibles = puestosMesa.filter(s => s.estado === 'available').length;
-                    
-                    estadoMesaLiberar.innerHTML = `
-                        📊 Mesa ${mesaNum} - ${puestosMesa[0].zonaNombre}<br>
-                        ✅ Disponibles: ${disponibles}<br>
-                        ❌ Vendidos: ${vendidos}<br>
-                        🔒 Reservados: ${reservados}<br>
-                        📦 Total: ${total}
-                    `;
-                });
+                return { resumen, totalGeneral, totalVentas, textoFiltro, ventasFiltradas };
             }
 
-            // Función para liberar mesa
-            function liberarMesa() {
-                const valor = mesaLiberarSelect.value;
-                const clave = claveLiberar.value.trim();
+            function mostrarConciliacion(filtro = 'todas', fechaDiaVal = null, fechaInicioVal = null, fechaFinVal = null) {
+                if (filtro === 'dia' && !fechaDiaVal) {
+                    fechaDiaVal = document.getElementById('fechaDia').value;
+                }
+                if (filtro === 'rango' && !fechaInicioVal) {
+                    fechaInicioVal = document.getElementById('fechaInicio').value;
+                    fechaFinVal = document.getElementById('fechaFin').value;
+                }
+
+                const data = generarConciliacion(filtro, fechaDiaVal, fechaInicioVal, fechaFinVal);
+
+                document.getElementById('filtroInfo').innerHTML = `Mostrando: <span>${data.textoFiltro}</span>`;
+                if (data.totalVentas === 0) {
+                    document.getElementById('filtroInfo').innerHTML += ` (⚠️ Sin ventas en este período)`;
+                }
+
+                let html = '';
                 
-                if (!valor) {
-                    showModal('⚠️ Selecciona una mesa', 'Por favor, selecciona una mesa para liberar.');
-                    return;
-                }
-
-                if (clave !== RESET_KEY) {
-                    showModal('🔒 Acceso denegado', 'La clave de seguridad es incorrecta.\n\nClave: 12436219*');
-                    claveLiberar.value = '';
-                    claveLiberar.focus();
-                    return;
-                }
-
-                const [zonaId, mesaNum] = valor.split('|');
-                const puestosMesa = seats.filter(s => s.zonaId === zonaId && String(s.mesa) === String(mesaNum));
-                
-                if (puestosMesa.length === 0) {
-                    showModal('⚠️ Error', 'No se encontraron puestos en esta mesa.');
-                    return;
-                }
-
-                const liberarTipo = liberarPuestos.value;
-                let puestosALiberar = puestosMesa;
-                let mensaje = '';
-
-                if (liberarTipo === 'individual') {
-                    const puesto = parseInt(puestoIndividual.value);
-                    if (!puesto || puesto < 1 || puesto > puestosMesa.length) {
-                        showModal('⚠️ Puesto inválido', `Ingresa un número de puesto válido (1-${puestosMesa.length}).`);
-                        return;
-                    }
-                    puestosALiberar = puestosMesa.filter(s => s.puesto === puesto);
-                    mensaje = `puesto ${puesto} de la mesa ${mesaNum}`;
+                if (data.totalVentas === 0) {
+                    html += `<p style="color:#888;font-size:0.9rem;text-align:center;padding:20px 0;">📭 No hay ventas en el período seleccionado</p>`;
                 } else {
-                    mensaje = `todos los puestos de la mesa ${mesaNum}`;
-                }
+                    html += `<p style="font-size:0.85rem;color:#aaa;">Total ventas: ${data.totalVentas}</p>`;
+                    html += '<div class="conciliacion-grid">';
 
-                if (puestosALiberar.length === 0) {
-                    showModal('⚠️ Error', 'No se encontraron puestos para liberar.');
-                    return;
-                }
-
-                // Verificar si los puestos están disponibles
-                const yaDisponibles = puestosALiberar.filter(s => s.estado === 'available').length;
-                if (yaDisponibles === puestosALiberar.length) {
-                    showModal('⚠️ Ya están disponibles', `Los ${mensaje} ya están disponibles.`);
-                    return;
-                }
-
-                // Confirmar liberación
-                const confirmar = confirm(
-                    `⚠️ ¿Estás seguro de liberar ${mensaje}?\n\n` +
-                    `📊 Esta acción:\n` +
-                    `• Eliminará los datos del comprador\n` +
-                    `• Devolverá los puestos a disponibles\n` +
-                    `• Eliminará las ventas asociadas\n\n` +
-                    `⚠️ Esta acción NO se puede deshacer.`
-                );
-
-                if (!confirmar) return;
-
-                // Liberar puestos
-                const idsLiberados = puestosALiberar.map(s => s.id);
-                const ventasEliminadas = [];
-
-                puestosALiberar.forEach(s => {
-                    // Guardar información para el log
-                    if (s.estado === 'sold' || s.estado === 'reserved') {
-                        ventasEliminadas.push({
-                            mesa: s.mesa,
-                            puesto: s.puesto,
-                            comprador: s.comprador,
-                            estado: s.estado
-                        });
+                    for (const [key, value] of Object.entries(data.resumen)) {
+                        if (value.cantidad === 0) continue;
+                        const label = FORMAS_PAGO[key] ? FORMAS_PAGO[key].label : '📋 Sin registro';
+                        const porcentaje = data.totalGeneral > 0 ? ((value.total / data.totalGeneral) * 100).toFixed(1) : 0;
+                        html += `
+                            <div class="conciliacion-item">
+                                <div class="metodo">${label}</div>
+                                <div class="total">$${value.total.toLocaleString()}</div>
+                                <div class="cantidad">${value.cantidad} transacciones (${porcentaje}%)</div>
+                            </div>
+                        `;
                     }
-                    
-                    s.estado = 'available';
-                    s.comprador = null;
-                    s.identificacion = null;
-                    s.email = null;
-                    s.telefono = null;
-                    s.tipoComprador = null;
-                    s.formaPago = null;
-                    s.montoPagado = 0;
-                    s.montoTotal = s.precio;
+
+                    html += `</div>`;
+                    html += `
+                        <div class="conciliacion-total">
+                            <div class="label">💰 TOTAL RECAUDADO</div>
+                            <div class="number">$${data.totalGeneral.toLocaleString()}</div>
+                            <div style="color:#888;font-size:0.8rem;margin-top:4px;">
+                                ${data.totalVentas} ventas · ${Object.keys(data.resumen).filter(k => data.resumen[k].cantidad > 0).length} métodos de pago
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += `<div id="conciliacionData" style="display:none;">${JSON.stringify(data)}</div>`;
+
+                conciliacionContent.innerHTML = html;
+                modalConciliacion.style.display = 'block';
+                modalForm.style.display = 'none';
+                modalZonaForm.style.display = 'none';
+                modalModificar.style.display = 'none';
+                modalTitle.textContent = '🏦 Conciliación de Caja';
+                modalMessage.textContent = '';
+                modalBtn.style.display = 'none';
+                modalCancelBtn.style.display = 'none';
+                btnCerrarConciliacion.style.display = 'inline-block';
+                modal.classList.add('active');
+
+                btnConciliacionExcel.onclick = function() {
+                    const dataGuardada = JSON.parse(document.getElementById('conciliacionData').textContent);
+                    exportarConciliacionExcel(dataGuardada);
+                };
+                btnConciliacionExcel.style.display = 'inline-block';
+            }
+
+            function exportarConciliacionExcel(data) {
+                let tabla = `
+                    <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                          xmlns:x="urn:schemas-microsoft-com:office:excel" 
+                          xmlns="http://www.w3.org/TR/REC-html40">
+                    <head><meta charset="UTF-8">
+                        <style>
+                            th { background-color: #ffd700; color: #1a1a4e; font-weight: bold; padding: 8px; border: 1px solid #000; }
+                            td { padding: 6px; border: 1px solid #ccc; }
+                            .total { background-color: #f0f0f0; font-weight: bold; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>🏦 CONCILIACIÓN DE CAJA - CONCIERTO</h2>
+                        <p>Fecha de generación: ${new Date().toLocaleString()}</p>
+                        <p>${data.textoFiltro || 'Todas las ventas'}</p>
+                        <p>Total ventas: ${data.totalVentas}</p>
+                        <br/>
+                        <table>
+                            <thead><tr><th>Método de Pago</th><th>Cantidad</th><th>Total</th><th>%</th></tr></thead>
+                            <tbody>
+                `;
+
+                for (const [key, value] of Object.entries(data.resumen)) {
+                    if (value.cantidad === 0) continue;
+                    const label = FORMAS_PAGO[key] ? FORMAS_PAGO[key].label : '📋 Sin registro';
+                    const porcentaje = data.totalGeneral > 0 ? ((value.total / data.totalGeneral) * 100).toFixed(1) : 0;
+                    tabla +=
+                        `<tr><td>${label}</td><td>${value.cantidad}</td><td>$${value.total.toLocaleString()}</td><td>${porcentaje}%</td></tr>`;
+                }
+
+                tabla += `
+                            <tr class="total"><td><strong>TOTAL</strong></td><td><strong>${data.totalVentas}</strong></td><td><strong>$${data.totalGeneral.toLocaleString()}</strong></td><td><strong>100%</strong></td></tr>
+                        </tbody></table>
+                        <br/>
+                        <h3>📋 DETALLE DE VENTAS</h3>
+                        <table>
+                            <thead><tr><th>#</th><th>Fecha</th><th>Zona</th><th>Mesa</th><th>Puesto</th><th>Comprador</th><th>ID</th><th>Email</th><th>Teléfono</th><th>Tipo</th><th>Pago</th><th>Precio</th><th>Estado</th></tr></thead>
+                            <tbody>
+                `;
+
+                const ventasFiltradas = data.ventasFiltradas || data.ventas || [];
+                ventasFiltradas.forEach((v, i) => {
+                    const pago = FORMAS_PAGO[v.formaPago] ? FORMAS_PAGO[v.formaPago].label : 'Sin registro';
+                    const tipo = TIPOS_COMPRADOR[v.tipoComprador] ? TIPOS_COMPRADOR[v.tipoComprador].label : 'Sin tipo';
+                    const estado = v.estado || 'Completada';
+                    tabla +=
+                        `<tr><td>${i+1}</td><td>${v.fecha}</td><td>${v.zonaNombre}</td><td>${v.mesa}</td><td>${v.puesto}</td><td>${v.comprador}</td><td>${v.identificacion}</td><td>${v.email || 'N/A'}</td><td>${v.telefono || 'N/A'}</td><td>${tipo}</td><td>${pago}</td><td>$${(v.precio||0).toLocaleString()}</td><td>${estado}</td></tr>`;
                 });
 
-                // Eliminar ventas asociadas
-                const ventasOriginales = ventas.length;
-                ventas = ventas.filter(v => {
-                    const id = seats.findIndex(s => 
-                        s.zonaId === v.zonaId && 
-                        String(s.mesa) === String(v.mesa) && 
-                        s.puesto === v.puesto
-                    );
-                    if (id === -1) return true;
-                    return !idsLiberados.includes(seats[id].id);
-                });
+                tabla += `
+                            </tbody></table>
+                            <br/>
+                            <p><strong>Total recaudado:</strong> $${data.totalGeneral.toLocaleString()}</p>
+                            <p><strong>Total ventas:</strong> ${data.totalVentas}</p>
+                            <p><strong>Métodos de pago utilizados:</strong> ${Object.keys(data.resumen).filter(k => data.resumen[k].cantidad > 0).length}</p>
+                        </body></html>
+                `;
 
-                const ventasEliminadasTotal = ventasOriginales - ventas.length;
+                const blob = new Blob([tabla], { type: 'application/vnd.ms-excel;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Conciliacion_${new Date().toISOString().slice(0,10)}.xls`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
 
-                guardarYRenderizar();
-                closeModal();
-
-                // Mostrar resultado
-                let resultado = `✅ Liberación completada\n\n`;
-                resultado += `📦 ${puestosALiberar.length} puestos liberados\n`;
-                resultado += `🗑️ ${ventasEliminadasTotal} ventas eliminadas\n\n`;
-                resultado += `📋 Detalle:\n`;
-                ventasEliminadas.forEach(v => {
-                    resultado += `• Mesa ${v.mesa} - Puesto ${v.puesto}: ${v.comprador || 'Sin comprador'} (${v.estado})\n`;
-                });
-
-                showModal('🔓 Mesa liberada', resultado);
-                logDebug(`✅ Mesa ${mesaNum} liberada: ${puestosALiberar.length} puestos, ${ventasEliminadasTotal} ventas eliminadas`, 'success');
+                showModal('✅ Exportado', 'Informe de conciliación exportado correctamente.');
             }
 
             // ============================================================
             // ===== MODAL =====
             // ============================================================
-            function showModal(title, message, showForm = false, showZonaForm = false, showConciliacion = false, showModificar = false, showLiberar = false, isConfirm = false, onConfirm = null) {
+            function showModal(title, message, showForm = false, showZonaForm = false, showConciliacion = false, showModificar = false, isConfirm = false, onConfirm = null) {
                 modalTitle.textContent = title;
                 modalMessage.textContent = message;
 
@@ -1880,7 +2061,6 @@
                 modalZonaForm.style.display = showZonaForm ? 'block' : 'none';
                 modalConciliacion.style.display = showConciliacion ? 'block' : 'none';
                 modalModificar.style.display = showModificar ? 'block' : 'none';
-                modalLiberar.style.display = showLiberar ? 'block' : 'none';
 
                 if (showForm) {
                     buyerName.value = '';
@@ -1894,13 +2074,7 @@
                     pausarTimer();
                 } else if (showModificar) {
                     cargarMesasReservadas();
-                } else if (showLiberar) {
-                    cargarMesasLiberar();
-                    claveLiberar.value = '';
-                    liberarPuestos.value = 'todos';
-                    puestoIndividual.value = '';
-                    grupoPuestoIndividual.style.display = 'none';
-                } else if (!showConciliacion && !showModificar && !showLiberar) {
+                } else if (!showConciliacion && !showModificar) {
                     reanudarTimer();
                 }
 
@@ -1923,8 +2097,7 @@
                     showForm: showForm,
                     showZonaForm: showZonaForm,
                     showConciliacion: showConciliacion,
-                    showModificar: showModificar,
-                    showLiberar: showLiberar
+                    showModificar: showModificar
                 };
 
                 if (showConciliacion) {
@@ -1947,24 +2120,6 @@
                     modalCancelBtn.onclick = function() {
                         handleCancel();
                     };
-                } else if (showLiberar) {
-                    modalBtn.textContent = '🔓 Liberar Mesa';
-                    modalBtn.className = 'btn-close danger';
-                    modalBtn.style.background = '#ff6b6b';
-                    modalBtn.style.color = '#fff';
-                    modalCancelBtn.style.display = 'inline-block';
-                    modalBtn.style.display = 'inline-block';
-                    modalBtn.onclick = function() {
-                        liberarMesa();
-                    };
-                    modalCancelBtn.onclick = function() {
-                        handleCancel();
-                    };
-                    
-                    // Evento para mostrar/ocultar campo de puesto individual
-                    liberarPuestos.addEventListener('change', function() {
-                        grupoPuestoIndividual.style.display = this.value === 'individual' ? 'block' : 'none';
-                    });
                 } else if (isConfirm) {
                     modalBtn.textContent = 'Confirmar';
                     modalBtn.className = 'btn-close';
@@ -2004,8 +2159,7 @@
                     showForm: false,
                     showZonaForm: false,
                     showConciliacion: false,
-                    showModificar: false,
-                    showLiberar: false
+                    showModificar: false
                 };
                 modalBtn.style.display = 'inline-block';
                 modalCancelBtn.style.display = 'none';
@@ -2192,230 +2346,7 @@
             }
 
             // ============================================================
-            // ===== CONCILIACIÓN =====
-            // ============================================================
-            function generarConciliacion(filtro, fechaDiaVal, fechaInicioVal, fechaFinVal) {
-                let ventasFiltradas = [];
-                let textoFiltro = 'Todas las ventas';
-
-                const hoy = new Date();
-                const hoyStr = formatearFechaISO(hoy);
-
-                logDebug(`📅 Filtro: ${filtro}, Hoy: ${hoyStr}`, 'info');
-
-                if (filtro === 'todas') {
-                    ventasFiltradas = ventas;
-                    textoFiltro = 'Todas las ventas';
-                } else if (filtro === 'hoy') {
-                    ventasFiltradas = ventas.filter(v => {
-                        const fechaVenta = extraerFechaVenta(v.fecha);
-                        if (!fechaVenta) return false;
-                        return esMismoDia(fechaVenta, hoy);
-                    });
-                    textoFiltro = `Ventas de hoy (${hoy.toLocaleDateString()})`;
-                } else if (filtro === 'dia' && fechaDiaVal) {
-                    const fechaBuscar = new Date(fechaDiaVal);
-                    ventasFiltradas = ventas.filter(v => {
-                        const fechaVenta = extraerFechaVenta(v.fecha);
-                        if (!fechaVenta) return false;
-                        return esMismoDia(fechaVenta, fechaBuscar);
-                    });
-                    textoFiltro = `Ventas del ${fechaBuscar.toLocaleDateString()}`;
-                } else if (filtro === 'rango' && fechaInicioVal && fechaFinVal) {
-                    const inicio = new Date(fechaInicioVal);
-                    const fin = new Date(fechaFinVal);
-                    fin.setHours(23, 59, 59);
-                    
-                    ventasFiltradas = ventas.filter(v => {
-                        const fechaVenta = extraerFechaVenta(v.fecha);
-                        if (!fechaVenta) return false;
-                        return fechaVenta >= inicio && fechaVenta <= fin;
-                    });
-                    textoFiltro = `Ventas del ${inicio.toLocaleDateString()} al ${fin.toLocaleDateString()}`;
-                } else {
-                    ventasFiltradas = ventas;
-                    textoFiltro = 'Todas las ventas';
-                }
-
-                logDebug(`📊 Ventas filtradas: ${ventasFiltradas.length} de ${ventas.length}`, 'info');
-
-                const resumen = {};
-                let totalGeneral = 0;
-                let totalVentas = 0;
-
-                for (const key in FORMAS_PAGO) {
-                    resumen[key] = { total: 0, cantidad: 0 };
-                }
-
-                ventasFiltradas.forEach(v => {
-                    const metodo = v.formaPago || 'efectivo';
-                    if (!resumen[metodo]) {
-                        resumen[metodo] = { total: 0, cantidad: 0 };
-                    }
-                    resumen[metodo].total += v.precio || 0;
-                    resumen[metodo].cantidad++;
-                    totalGeneral += v.precio || 0;
-                    totalVentas++;
-                });
-
-                ventasFiltradas.forEach(v => {
-                    if (!v.formaPago) {
-                        if (!resumen['sin-registro']) {
-                            resumen['sin-registro'] = { total: 0, cantidad: 0 };
-                        }
-                        resumen['sin-registro'].total += v.precio || 0;
-                        resumen['sin-registro'].cantidad++;
-                    }
-                });
-
-                return { resumen, totalGeneral, totalVentas, textoFiltro, ventasFiltradas };
-            }
-
-            function mostrarConciliacion(filtro = 'todas', fechaDiaVal = null, fechaInicioVal = null, fechaFinVal = null) {
-                if (filtro === 'dia' && !fechaDiaVal) {
-                    fechaDiaVal = document.getElementById('fechaDia').value;
-                }
-                if (filtro === 'rango' && !fechaInicioVal) {
-                    fechaInicioVal = document.getElementById('fechaInicio').value;
-                    fechaFinVal = document.getElementById('fechaFin').value;
-                }
-
-                const data = generarConciliacion(filtro, fechaDiaVal, fechaInicioVal, fechaFinVal);
-
-                document.getElementById('filtroInfo').innerHTML = `Mostrando: <span>${data.textoFiltro}</span>`;
-                if (data.totalVentas === 0) {
-                    document.getElementById('filtroInfo').innerHTML += ` (⚠️ Sin ventas en este período)`;
-                }
-
-                let html = '';
-                
-                if (data.totalVentas === 0) {
-                    html += `<p style="color:#888;font-size:0.9rem;text-align:center;padding:20px 0;">📭 No hay ventas en el período seleccionado</p>`;
-                } else {
-                    html += `<p style="font-size:0.85rem;color:#aaa;">Total ventas: ${data.totalVentas}</p>`;
-                    html += '<div class="conciliacion-grid">';
-
-                    for (const [key, value] of Object.entries(data.resumen)) {
-                        if (value.cantidad === 0) continue;
-                        const label = FORMAS_PAGO[key] ? FORMAS_PAGO[key].label : '📋 Sin registro';
-                        const porcentaje = data.totalGeneral > 0 ? ((value.total / data.totalGeneral) * 100).toFixed(1) : 0;
-                        html += `
-                            <div class="conciliacion-item">
-                                <div class="metodo">${label}</div>
-                                <div class="total">$${value.total.toLocaleString()}</div>
-                                <div class="cantidad">${value.cantidad} transacciones (${porcentaje}%)</div>
-                            </div>
-                        `;
-                    }
-
-                    html += `</div>`;
-                    html += `
-                        <div class="conciliacion-total">
-                            <div class="label">💰 TOTAL RECAUDADO</div>
-                            <div class="number">$${data.totalGeneral.toLocaleString()}</div>
-                            <div style="color:#888;font-size:0.8rem;margin-top:4px;">
-                                ${data.totalVentas} ventas · ${Object.keys(data.resumen).filter(k => data.resumen[k].cantidad > 0).length} métodos de pago
-                            </div>
-                        </div>
-                    `;
-                }
-
-                html += `<div id="conciliacionData" style="display:none;">${JSON.stringify(data)}</div>`;
-
-                conciliacionContent.innerHTML = html;
-                modalConciliacion.style.display = 'block';
-                modalForm.style.display = 'none';
-                modalZonaForm.style.display = 'none';
-                modalModificar.style.display = 'none';
-                modalLiberar.style.display = 'none';
-                modalTitle.textContent = '🏦 Conciliación de Caja';
-                modalMessage.textContent = '';
-                modalBtn.style.display = 'none';
-                modalCancelBtn.style.display = 'none';
-                btnCerrarConciliacion.style.display = 'inline-block';
-                modal.classList.add('active');
-
-                btnConciliacionExcel.onclick = function() {
-                    const dataGuardada = JSON.parse(document.getElementById('conciliacionData').textContent);
-                    exportarConciliacionExcel(dataGuardada);
-                };
-                btnConciliacionExcel.style.display = 'inline-block';
-            }
-
-            function exportarConciliacionExcel(data) {
-                let tabla = `
-                    <html xmlns:o="urn:schemas-microsoft-com:office:office" 
-                          xmlns:x="urn:schemas-microsoft-com:office:excel" 
-                          xmlns="http://www.w3.org/TR/REC-html40">
-                    <head><meta charset="UTF-8">
-                        <style>
-                            th { background-color: #ffd700; color: #1a1a4e; font-weight: bold; padding: 8px; border: 1px solid #000; }
-                            td { padding: 6px; border: 1px solid #ccc; }
-                            .total { background-color: #f0f0f0; font-weight: bold; }
-                        </style>
-                    </head>
-                    <body>
-                        <h2>🏦 CONCILIACIÓN DE CAJA - CONCIERTO</h2>
-                        <p>Fecha de generación: ${new Date().toLocaleString()}</p>
-                        <p>${data.textoFiltro || 'Todas las ventas'}</p>
-                        <p>Total ventas: ${data.totalVentas}</p>
-                        <br/>
-                        <table>
-                            <thead><tr><th>Método de Pago</th><th>Cantidad</th><th>Total</th><th>%</th></tr></thead>
-                            <tbody>
-                `;
-
-                for (const [key, value] of Object.entries(data.resumen)) {
-                    if (value.cantidad === 0) continue;
-                    const label = FORMAS_PAGO[key] ? FORMAS_PAGO[key].label : '📋 Sin registro';
-                    const porcentaje = data.totalGeneral > 0 ? ((value.total / data.totalGeneral) * 100).toFixed(1) : 0;
-                    tabla +=
-                        `<tr><td>${label}</td><td>${value.cantidad}</td><td>$${value.total.toLocaleString()}</td><td>${porcentaje}%</td></tr>`;
-                }
-
-                tabla += `
-                            <tr class="total"><td><strong>TOTAL</strong></td><td><strong>${data.totalVentas}</strong></td><td><strong>$${data.totalGeneral.toLocaleString()}</strong></td><td><strong>100%</strong></td></tr>
-                        </tbody></table>
-                        <br/>
-                        <h3>📋 DETALLE DE VENTAS</h3>
-                        <table>
-                            <thead><tr><th>#</th><th>Fecha</th><th>Zona</th><th>Mesa</th><th>Puesto</th><th>Comprador</th><th>ID</th><th>Email</th><th>Teléfono</th><th>Tipo</th><th>Pago</th><th>Precio</th><th>Estado</th></tr></thead>
-                            <tbody>
-                `;
-
-                const ventasFiltradas = data.ventasFiltradas || data.ventas || [];
-                ventasFiltradas.forEach((v, i) => {
-                    const pago = FORMAS_PAGO[v.formaPago] ? FORMAS_PAGO[v.formaPago].label : 'Sin registro';
-                    const tipo = TIPOS_COMPRADOR[v.tipoComprador] ? TIPOS_COMPRADOR[v.tipoComprador].label : 'Sin tipo';
-                    const estado = v.estado || 'Completada';
-                    tabla +=
-                        `<tr><td>${i+1}</td><td>${v.fecha}</td><td>${v.zonaNombre}</td><td>${v.mesa}</td><td>${v.puesto}</td><td>${v.comprador}</td><td>${v.identificacion}</td><td>${v.email || 'N/A'}</td><td>${v.telefono || 'N/A'}</td><td>${tipo}</td><td>${pago}</td><td>$${(v.precio||0).toLocaleString()}</td><td>${estado}</td></tr>`;
-                });
-
-                tabla += `
-                            </tbody></table>
-                            <br/>
-                            <p><strong>Total recaudado:</strong> $${data.totalGeneral.toLocaleString()}</p>
-                            <p><strong>Total ventas:</strong> ${data.totalVentas}</p>
-                            <p><strong>Métodos de pago utilizados:</strong> ${Object.keys(data.resumen).filter(k => data.resumen[k].cantidad > 0).length}</p>
-                        </body></html>
-                `;
-
-                const blob = new Blob([tabla], { type: 'application/vnd.ms-excel;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Conciliacion_${new Date().toISOString().slice(0,10)}.xls`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                showModal('✅ Exportado', 'Informe de conciliación exportado correctamente.');
-            }
-
-            // ============================================================
-            // ===== MODIFICAR RESERVA =====
+            // ===== MODIFICAR RESERVA (CORREGIDO) =====
             // ============================================================
             function cargarMesasReservadas() {
                 const mesasReservadas = {};
@@ -2529,6 +2460,7 @@
                     }
                 });
 
+                // ===== REGISTRAR LA TRANSACCIÓN CON EL PRECIO CORRECTO =====
                 const nombre = puestosMesa[0].comprador || 'Cliente';
                 const id = puestosMesa[0].identificacion || 'N/A';
                 const email = puestosMesa[0].email || 'N/A';
@@ -2546,7 +2478,7 @@
                     email: email,
                     telefono: telefono,
                     tipoComprador: tipo,
-                    precio: montoAdicionalVal,
+                    precio: montoAdicionalVal, // ← SOLO EL MONTO ADICIONAL
                     formaPago: nuevaForma,
                     tipo: 'Abono Reserva',
                     estado: esCompleto ? 'Completada' : 'Parcial',
@@ -2574,102 +2506,6 @@
                 
                 showModal(esCompleto ? '🎉 Reserva completada' : '💰 Abono registrado', mensaje);
                 logDebug(`📝 Modificación de reserva: Mesa ${mesaNum} - ${esCompleto ? 'Completada' : 'Abono parcial'} - $${montoAdicionalVal.toLocaleString()}`, 'success');
-            }
-
-            // ============================================================
-            // ===== CREAR ESTRUCTURA =====
-            // ============================================================
-            function crearEstructuraZonas() {
-                if (zonas.length > 0) return true;
-                logDebug('📦 Creando zonas predefinidas...', 'info');
-                zonas = JSON.parse(JSON.stringify(ZONAS_PREDEFINIDAS));
-                return true;
-            }
-
-            function generarPuestosDesdeZonas() {
-                seats = [];
-                let id = 1;
-                zonas.forEach(zona => {
-                    for (let mesa = 1; mesa <= zona.mesas; mesa++) {
-                        let numeroMesa = mesa;
-                        if (zona.numeracion === 'personalizado') {
-                            const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-                                'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-                            ];
-                            numeroMesa = letras[mesa - 1] || mesa;
-                        }
-                        for (let puesto = 1; puesto <= zona.puestosPorMesa; puesto++) {
-                            seats.push({
-                                id: id++,
-                                zonaId: zona.id,
-                                zonaNombre: zona.nombre,
-                                mesa: numeroMesa,
-                                puesto: puesto,
-                                precio: zona.precio,
-                                estado: 'available',
-                                comprador: null,
-                                identificacion: null,
-                                email: null,
-                                telefono: null,
-                                tipoComprador: null,
-                                formaPago: null,
-                                montoPagado: 0,
-                                montoTotal: zona.precio,
-                                color: zona.color
-                            });
-                        }
-                    }
-                });
-                logDebug(`✅ Generados ${seats.length} puestos`, 'success');
-                return seats.length;
-            }
-
-            // ============================================================
-            // ===== AGREGAR ZONA =====
-            // ============================================================
-            function agregarZonaPersonalizada(nombre, mesas, puestosPorMesa, precio, color, numeracion) {
-                const id = 'zona-' + Date.now();
-                const nuevaZona = {
-                    id: id,
-                    nombre: nombre,
-                    mesas: mesas,
-                    puestosPorMesa: puestosPorMesa,
-                    precio: precio,
-                    color: color || '#ffb74d',
-                    numeracion: numeracion || 'consecutivo'
-                };
-                zonas.push(nuevaZona);
-
-                let maxId = seats.length > 0 ? Math.max(...seats.map(s => s.id)) : 0;
-                for (let mesa = 1; mesa <= mesas; mesa++) {
-                    for (let puesto = 1; puesto <= puestosPorMesa; puesto++) {
-                        seats.push({
-                            id: ++maxId,
-                            zonaId: nuevaZona.id,
-                            zonaNombre: nuevaZona.nombre,
-                            mesa: mesa,
-                            puesto: puesto,
-                            precio: precio,
-                            estado: 'available',
-                            comprador: null,
-                            identificacion: null,
-                            email: null,
-                            telefono: null,
-                            tipoComprador: null,
-                            formaPago: null,
-                            montoPagado: 0,
-                            montoTotal: precio,
-                            color: color || '#ffb74d'
-                        });
-                    }
-                }
-
-                logDebug(`✅ Zona "${nombre}" creada`, 'success');
-                guardarYRenderizar();
-                actualizarFiltros();
-                showModal('✅ Zona creada',
-                    `Zona "${nombre}" creada.\n\n📊 Mesas: ${mesas}\n🪑 Puestos/mesa: ${puestosPorMesa}\n💰 Precio: $${precio.toLocaleString()}\n🎫 Total: ${mesas * puestosPorMesa} puestos`
-                );
             }
 
             // ============================================================
@@ -3037,7 +2873,7 @@
             }
 
             // ============================================================
-            // ===== COMPRAR MÚLTIPLE =====
+            // ===== COMPRAR MÚLTIPLE (CORREGIDO) =====
             // ============================================================
             function buyMultiple() {
                 if (selectedSeats.length === 0) {
@@ -3148,7 +2984,7 @@
                                 email: email,
                                 telefono: telefono,
                                 tipoComprador: tipo,
-                                precio: montoPorPuesto,
+                                precio: montoPorPuesto, // ← SOLO EL MONTO ABONADO
                                 formaPago: pago,
                                 tipo: esReserva ? 'Reserva' : 'Individual',
                                 estado: esReserva ? 'Reservado' : 'Completada',
@@ -3195,7 +3031,7 @@
             }
 
             // ============================================================
-            // ===== COMPRAR PALCO =====
+            // ===== COMPRAR PALCO (CORREGIDO) =====
             // ============================================================
             function buyPalco() {
                 const valor = mesaSelect.value;
@@ -3332,7 +3168,7 @@
                                 email: email,
                                 telefono: telefono,
                                 tipoComprador: tipo,
-                                precio: montoPorPuesto,
+                                precio: montoPorPuesto, // ← SOLO EL MONTO ABONADO
                                 formaPago: pago,
                                 tipo: esReserva ? 'Reserva Palco' : 'Palco',
                                 estado: esReserva ? 'Reservado' : 'Completada',
@@ -3609,15 +3445,6 @@
                 }
                 showModal('🔄 Modificar Reserva', '', false, false, false, true, false);
             });
-            // ===== NUEVO EVENTO: LIBERAR MESA =====
-            btnLiberarMesa.addEventListener('click', function() {
-                const ocupados = seats.filter(s => s.estado === 'sold' || s.estado === 'reserved');
-                if (ocupados.length === 0) {
-                    showModal('🔓 Sin datos', 'No hay mesas ocupadas para liberar.');
-                    return;
-                }
-                showModal('🔓 Liberar Mesa', '', false, false, false, false, true, false);
-            });
             btnReset.addEventListener('click', resetAll);
             btnExcel.addEventListener('click', generarExcel);
             btnConciliacion.addEventListener('click', function() {
@@ -3674,105 +3501,10 @@
             });
 
             // ============================================================
-            // ===== MONITOREO DE ALMACENAMIENTO =====
-            // ============================================================
-            function getStorageSize() {
-                try {
-                    let total = 0;
-                    for (let key in localStorage) {
-                        if (localStorage.hasOwnProperty(key)) {
-                            total += localStorage[key].length * 2;
-                        }
-                    }
-                    return total;
-                } catch (e) {
-                    return 0;
-                }
-            }
-
-            function getStoragePercentage() {
-                const used = getStorageSize();
-                const limit = 5 * 1024 * 1024;
-                return (used / limit) * 100;
-            }
-
-            function canSaveData() {
-                try {
-                    const testKey = '_test_' + Date.now();
-                    localStorage.setItem(testKey, 'test');
-                    localStorage.removeItem(testKey);
-                    return true;
-                } catch (e) {
-                    return false;
-                }
-            }
-
-            function monitorStorage() {
-                const used = getStorageSize();
-                const percentage = getStoragePercentage();
-                const canSave = canSaveData();
-
-                let sizeText = '';
-                if (used < 1024) {
-                    sizeText = used + ' B';
-                } else if (used < 1024 * 1024) {
-                    sizeText = (used / 1024).toFixed(1) + ' KB';
-                } else {
-                    sizeText = (used / (1024 * 1024)).toFixed(2) + ' MB';
-                }
-
-                storageDetailEl.textContent = sizeText;
-
-                let status = 'green';
-                let label = 'OK';
-                let emoji = '🟢';
-                let barColor = '';
-
-                if (!canSave || percentage > 95) {
-                    status = 'red';
-                    emoji = '🔴';
-                    label = '⚠️ LLENO';
-                    barColor = 'danger';
-                    warningBanner.classList.add('active');
-                    warningBanner.classList.add('danger');
-                    warningMessage.textContent = '⚠️ ¡ALERTA! Almacenamiento COMPLETAMENTE LLENO.';
-                } else if (percentage > 75) {
-                    status = 'yellow';
-                    emoji = '🟡';
-                    label = '⚠️ Atención';
-                    barColor = 'warning';
-                    warningBanner.classList.add('active');
-                    warningBanner.classList.remove('danger');
-                    warningMessage.textContent = `⚠️ Almacenamiento al ${percentage.toFixed(1)}%.`;
-                } else {
-                    status = 'green';
-                    emoji = '🟢';
-                    label = '✅ OK';
-                    barColor = '';
-                    warningBanner.classList.remove('active');
-                    warningBanner.classList.remove('danger');
-                }
-
-                storageStatusEl.textContent = emoji;
-                storageIndicatorEl.className = `storage-indicator ${status}`;
-                storageIndicatorEl.textContent = label;
-
-                const barWidth = Math.min(percentage, 100);
-                storageBarEl.style.width = barWidth + '%';
-                storageBarEl.className = 'fill' + (barColor ? ' ' + barColor : '');
-
-                return { used, percentage, canSave };
-            }
-
-            window.exportarDatosUrgente = function() {
-                exportarBackup();
-            };
-
-            // ============================================================
             // ===== INICIAR =====
             // ============================================================
             function init() {
-                logDebug('🚀 Iniciando sistema con liberación de mesas...', 'info');
+                logDebug('🚀 Iniciando sistema con corrección de recaudo...', 'info');
 
                 if (cargarEstado()) {
                     if (zonas.length === 0) {
@@ -3795,14 +3527,15 @@
 
                 setInterval(monitorStorage, 30000);
 
-                console.log('🎫 Sistema de ventas multi-zona con LIBERACIÓN DE MESAS');
+                console.log('🎫 Sistema de ventas multi-zona con RECAUDO CORRECTO');
                 console.log('📊 Zonas:', zonas.length);
                 console.log('🪑 Puestos:', seats.length);
                 console.log('🔑 Clave:', RESET_KEY);
                 console.log('📧 Correo electrónico y teléfono requeridos');
                 console.log('🏷️ Tipos: Socio / Tercero externo');
                 console.log(`🔒 Reservas: ${PORCENTAJE_RESERVA}% mínimo`);
-                console.log('🔓 Liberar mesas: Selecciona una mesa y libérala');
+                console.log('💰 RECAUDO: Solo se suma el monto abonado, no el total');
+                console.log('🔄 Modificar reserva: Solo suma el excedente');
                 console.log('📅 Conciliación: Todas | Hoy | Día específico | Rango de fechas');
             }
 
@@ -3811,11 +3544,11 @@
             if (!localStorage.getItem(STORAGE_KEY)) {
                 setTimeout(() => {
                     showModal('🎵 Bienvenido',
-                        `Sistema multi-zona con liberación de mesas.\n\n` +
-                        `🔓 NUEVA FUNCIÓN: Liberar mesas ocupadas\n` +
-                        `• Selecciona una mesa ocupada\n` +
-                        `• Ingresa la clave de seguridad\n` +
-                        `• Confirma y la mesa quedará disponible\n\n` +
+                        `Sistema multi-zona con recaudo correcto.\n\n` +
+                        `💰 IMPORTANTE:\n` +
+                        `• Al reservar, se suma SOLO el monto abonado (${PORCENTAJE_RESERVA}% mínimo)\n` +
+                        `• Al modificar, se suma SOLO el excedente\n` +
+                        `• El total recaudado = suma de abonos = valor real de la venta\n\n` +
                         `🏛️ ${zonas.length} zonas\n` +
                         `🪑 ${seats.length} puestos\n` +
                         `💳 ${Object.keys(FORMAS_PAGO).length} métodos de pago`
