@@ -43,7 +43,6 @@
             font-size: 1rem;
         }
 
-        /* ===== BANNER ===== */
         .warning-banner {
             display: none;
             background: rgba(255, 215, 0, 0.15);
@@ -95,7 +94,6 @@
             transform: scale(1.05);
         }
 
-        /* ===== RESUMEN ===== */
         .summary {
             display: flex;
             justify-content: center;
@@ -134,7 +132,6 @@
             color: #51cf66;
         }
 
-        /* ===== INDICADOR DE ALMACENAMIENTO ===== */
         .storage-indicator {
             display: inline-block;
             padding: 3px 10px;
@@ -196,7 +193,6 @@
             margin-top: 2px;
         }
 
-        /* ===== CONTROLES ===== */
         .controls {
             display: flex;
             justify-content: center;
@@ -352,7 +348,17 @@
             transform: scale(1.05);
         }
 
-        /* ===== FILTRO DE ZONAS ===== */
+        .btn-modificar {
+            background: #f7971e;
+            color: #1a1a4e;
+            font-weight: bold;
+        }
+
+        .btn-modificar:hover {
+            background: #e6860d;
+            transform: scale(1.05);
+        }
+
         .zona-filtro {
             display: flex;
             justify-content: center;
@@ -394,7 +400,6 @@
             margin-right: 5px;
         }
 
-        /* ===== GRID ===== */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -418,7 +423,7 @@
             align-items: center;
         }
 
-        .seat:hover:not(.sold):not(.blocked) {
+        .seat:hover:not(.sold):not(.reserved):not(.blocked) {
             transform: scale(1.05);
             border-color: #ffd700;
             background: rgba(255, 215, 0, 0.1);
@@ -500,6 +505,21 @@
             text-decoration: line-through;
         }
 
+        .seat.reserved {
+            border-color: #ffa500;
+            background: rgba(255, 165, 0, 0.15);
+            cursor: pointer;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .seat.reserved .seat-number {
+            color: #ffa500;
+        }
+
+        .seat.reserved .badge.reserved-badge {
+            color: #ffa500;
+        }
+
         .seat.blocked {
             border-color: #ffd700;
             background: rgba(255, 215, 0, 0.15);
@@ -530,11 +550,14 @@
             color: #ff6b6b;
         }
 
+        .seat .badge.reserved-badge {
+            color: #ffa500;
+        }
+
         .seat .badge.blocked-badge {
             color: #ffd700;
         }
 
-        /* Colores por zona */
         .seat.zona-palco-socios {
             border-left: 4px solid #ffd700;
         }
@@ -559,7 +582,6 @@
             50% { opacity: 0.6; }
         }
 
-        /* ===== MODAL ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -642,7 +664,27 @@
             flex: 1;
         }
 
-        /* ===== FILTRO DE CONCILIACIÓN ===== */
+        .modal .info-box {
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid #ffa500;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .modal .info-box .label {
+            color: #aaa;
+            font-size: 0.7rem;
+            display: block;
+        }
+
+        .modal .info-box .value {
+            color: #ffd700;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
         .filtro-conciliacion {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 10px;
@@ -797,7 +839,6 @@
             flex-wrap: wrap;
         }
 
-        /* ===== CONCILIACIÓN ===== */
         .conciliacion-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -850,13 +891,6 @@
             color: #ffd700;
         }
 
-        .conciliacion-resumen-fechas {
-            font-size: 0.75rem;
-            color: #888;
-            margin: 8px 0;
-        }
-
-        /* ===== TIMER EN MODAL ===== */
         .timer-container {
             display: flex;
             align-items: center;
@@ -899,7 +933,6 @@
             color: #ffd700;
         }
 
-        /* ===== DEBUG ===== */
         .debug-panel {
             margin-top: 12px;
             padding: 10px;
@@ -935,7 +968,6 @@
             color: #ffd700;
         }
 
-        /* ===== FOOTER ===== */
         .footer {
             text-align: center;
             margin-top: 25px;
@@ -973,7 +1005,6 @@
             font-size: 0.9rem;
         }
 
-        /* ===== MESA INFO ===== */
         .mesa-info {
             font-size: 0.7rem;
             color: #888;
@@ -994,7 +1025,6 @@
             color: #ff6b6b;
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.6rem;
@@ -1056,7 +1086,7 @@
 <body>
     <div class="container">
         <h1>🎫 Venta de Concierto</h1>
-        <p class="subtitle">Múltiples zonas · Precios diferenciados · Compra múltiple · Conciliación por fechas</p>
+        <p class="subtitle">Múltiples zonas · Precios diferenciados · Compra múltiple · Reservas con 50%</p>
 
         <div class="warning-banner" id="storageWarning">
             <h3>⚠️ ALMACENAMIENTO CASI LLENO</h3>
@@ -1076,6 +1106,10 @@
             <div class="summary-item">
                 <span class="number sold" id="soldSeats">0</span>
                 <span class="label">Vendidos</span>
+            </div>
+            <div class="summary-item">
+                <span class="number" id="reservedSeats" style="color: #ffa500;">0</span>
+                <span class="label">Reservados</span>
             </div>
             <div class="summary-item">
                 <span class="number" id="blockedSeats" style="color: #ffd700;">0</span>
@@ -1120,6 +1154,7 @@
                 <input type="number" id="cantidadPuestos" value="1" min="1" max="9" style="min-width:50px;max-width:60px;padding:4px 8px;background:#0a0a2a;color:#fff;border:1px solid #444;border-radius:4px;text-align:center;" />
                 <span style="font-size:0.65rem;color:#888;">(1-9)</span>
             </div>
+            <button class="btn-modificar" id="btnModificar">🔄 Modificar Reserva</button>
             <button class="btn-excel" id="btnExcel">📊 Excel</button>
             <button class="btn-conciliacion" id="btnConciliacion">🏦 Conciliar</button>
             <button class="btn-export-data" id="btnExportData">💾 Exportar</button>
@@ -1138,7 +1173,7 @@
         </div>
 
         <div class="footer">
-            🎵 Sistema multi-zona · Compra múltiple (1-9 puestos) · Formas de pago · Conciliación por fechas · Clave: 12436219*
+            🎵 Sistema multi-zona · Reservas con 50% · Formas de pago · Clave: 12436219*
         </div>
     </div>
 
@@ -1166,8 +1201,59 @@
                     <input type="text" id="buyerId" placeholder="Ej: 1234567890" required />
                 </div>
                 <div class="form-group">
+                    <label for="buyerEmail">📧 Correo electrónico:</label>
+                    <input type="email" id="buyerEmail" placeholder="Ej: juan.perez@email.com" required />
+                </div>
+                <div class="form-group">
+                    <label for="buyerPhone">📱 Teléfono:</label>
+                    <input type="tel" id="buyerPhone" placeholder="Ej: 3001234567" required />
+                </div>
+                <div class="form-group">
+                    <label for="tipoComprador">🏷️ Tipo de comprador:</label>
+                    <select id="tipoComprador" required>
+                        <option value="socio">🤝 Socio</option>
+                        <option value="tercero">👤 Tercero externo</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="formaPago">Forma de pago:</label>
                     <select id="formaPago" required>
+                        <option value="efectivo">💵 Efectivo</option>
+                        <option value="debito">💳 Tarjeta Débito</option>
+                        <option value="credito">💳 Tarjeta Crédito</option>
+                        <option value="transferencia">🏦 Transferencia Bancaria</option>
+                        <option value="nequi">📱 Nequi</option>
+                        <option value="daviplata">📱 Daviplata</option>
+                        <option value="reservado" style="color: #ffa500;">🔒 Reservado (50%)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="montoRecibido" style="color: #4fc3f7;">Monto recibido ($):</label>
+                    <input type="number" id="montoRecibido" placeholder="Ej: 350000" min="0" step="1000" />
+                    <small style="color: #888; font-size: 0.7rem;">Para reservas debe ser al menos el 50% del total</small>
+                </div>
+                <div id="resumenCompra" style="background:rgba(255,215,0,0.05);border-radius:8px;padding:10px;margin-top:10px;border:1px solid rgba(255,215,0,0.1);">
+                    <p style="font-size:0.8rem;color:#aaa;margin:0;">📋 Resumen de compra</p>
+                    <p id="resumenText" style="font-size:0.9rem;color:#ffd700;margin:5px 0 0 0;"></p>
+                    <div id="resumenReserva" style="display:none;margin-top:8px;padding:8px;background:rgba(255,165,0,0.1);border-radius:6px;border:1px solid #ffa500;">
+                        <p style="font-size:0.8rem;color:#ffa500;margin:0;">🔒 Reserva - 50% mínimo requerido</p>
+                        <p id="resumenReservaText" style="font-size:0.8rem;color:#ccc;margin:4px 0 0 0;"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ===== MODAL DE MODIFICACIÓN DE RESERVA ===== -->
+            <div id="modalModificar" style="display: none;">
+                <p style="color:#ffa500;font-size:0.9rem;margin-bottom:15px;">🔒 Selecciona una mesa reservada para cambiar su forma de pago</p>
+                <div class="form-group">
+                    <label for="mesaReservadaSelect">Mesa reservada:</label>
+                    <select id="mesaReservadaSelect" required>
+                        <option value="">Selecciona una mesa reservada...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="nuevaFormaPago">Nueva forma de pago:</label>
+                    <select id="nuevaFormaPago" required>
                         <option value="efectivo">💵 Efectivo</option>
                         <option value="debito">💳 Tarjeta Débito</option>
                         <option value="credito">💳 Tarjeta Crédito</option>
@@ -1177,13 +1263,17 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="montoRecibido" style="color: #4fc3f7;">Monto recibido ($):</label>
-                    <input type="number" id="montoRecibido" placeholder="Ej: 350000" min="0" step="1000" />
-                    <small style="color: #888; font-size: 0.7rem;">Opcional: Para efectivo, registrar monto recibido para vueltas</small>
+                    <label for="montoAdicional">Monto adicional a pagar ($):</label>
+                    <input type="number" id="montoAdicional" placeholder="Ej: 175000" min="0" step="1000" />
+                    <small style="color: #888; font-size: 0.7rem;">Monto restante para completar el pago total</small>
                 </div>
-                <div id="resumenCompra" style="background:rgba(255,215,0,0.05);border-radius:8px;padding:10px;margin-top:10px;border:1px solid rgba(255,215,0,0.1);">
-                    <p style="font-size:0.8rem;color:#aaa;margin:0;">📋 Resumen de compra</p>
-                    <p id="resumenText" style="font-size:0.9rem;color:#ffd700;margin:5px 0 0 0;"></p>
+                <div id="infoReservaModificar" class="info-box">
+                    <span class="label">Total de la mesa</span>
+                    <span class="value" id="totalMesaModificar">$0</span>
+                    <span class="label" style="margin-top:4px;">Abonado</span>
+                    <span class="value" id="abonadoMesaModificar" style="font-size:0.9rem;">$0</span>
+                    <span class="label" style="margin-top:4px;">Saldo pendiente</span>
+                    <span class="value" id="saldoMesaModificar" style="font-size:0.9rem;color:#ff6b6b;">$0</span>
                 </div>
             </div>
             
@@ -1266,10 +1356,11 @@
             // ============================================================
             // ===== CONFIGURACIÓN =====
             // ============================================================
-            const STORAGE_KEY = 'concierto_ventas_v4';
+            const STORAGE_KEY = 'concierto_ventas_v5';
             const RESET_KEY = '12436219*';
             const MAX_PUESTOS_MULTI = 9;
             const TIEMPO_BLOQUEO = 30;
+            const PORCENTAJE_RESERVA = 50;
 
             const FORMAS_PAGO = {
                 efectivo: { label: '💵 Efectivo', icon: '💵' },
@@ -1277,7 +1368,13 @@
                 credito: { label: '💳 Tarjeta Crédito', icon: '💳' },
                 transferencia: { label: '🏦 Transferencia', icon: '🏦' },
                 nequi: { label: '📱 Nequi', icon: '📱' },
-                daviplata: { label: '📱 Daviplata', icon: '📱' }
+                daviplata: { label: '📱 Daviplata', icon: '📱' },
+                reservado: { label: '🔒 Reservado (50%)', icon: '🔒' }
+            };
+
+            const TIPOS_COMPRADOR = {
+                socio: { label: '🤝 Socio', icon: '🤝' },
+                tercero: { label: '👤 Tercero externo', icon: '👤' }
             };
 
             const ZONAS_PREDEFINIDAS = [{
@@ -1342,7 +1439,8 @@
                 onConfirm: null,
                 showForm: false,
                 showZonaForm: false,
-                showConciliacion: false
+                showConciliacion: false,
+                showModificar: false
             };
 
             // ============================================================
@@ -1354,6 +1452,7 @@
             const zonaSelect = document.getElementById('zonaSelect');
             const btnBuy = document.getElementById('btnBuy');
             const btnPalco = document.getElementById('btnPalco');
+            const btnModificar = document.getElementById('btnModificar');
             const btnReset = document.getElementById('btnReset');
             const btnExcel = document.getElementById('btnExcel');
             const btnConciliacion = document.getElementById('btnConciliacion');
@@ -1368,6 +1467,7 @@
             const totalSeatsEl = document.getElementById('totalSeats');
             const availableSeatsEl = document.getElementById('availableSeats');
             const soldSeatsEl = document.getElementById('soldSeats');
+            const reservedSeatsEl = document.getElementById('reservedSeats');
             const blockedSeatsEl = document.getElementById('blockedSeats');
             const totalVentasEl = document.getElementById('totalVentas');
             const totalRecaudadoEl = document.getElementById('totalRecaudado');
@@ -1383,14 +1483,28 @@
             const modalTitle = document.getElementById('modalTitle');
             const modalMessage = document.getElementById('modalMessage');
             const modalForm = document.getElementById('modalForm');
+            const modalModificar = document.getElementById('modalModificar');
             const modalZonaForm = document.getElementById('modalZonaForm');
             const modalConciliacion = document.getElementById('modalConciliacion');
             const conciliacionContent = document.getElementById('conciliacionContent');
             const buyerName = document.getElementById('buyerName');
             const buyerId = document.getElementById('buyerId');
+            const buyerEmail = document.getElementById('buyerEmail');
+            const buyerPhone = document.getElementById('buyerPhone');
+            const tipoComprador = document.getElementById('tipoComprador');
             const formaPago = document.getElementById('formaPago');
             const montoRecibido = document.getElementById('montoRecibido');
             const resumenText = document.getElementById('resumenText');
+            const resumenReserva = document.getElementById('resumenReserva');
+            const resumenReservaText = document.getElementById('resumenReservaText');
+            
+            const mesaReservadaSelect = document.getElementById('mesaReservadaSelect');
+            const nuevaFormaPago = document.getElementById('nuevaFormaPago');
+            const montoAdicional = document.getElementById('montoAdicional');
+            const totalMesaModificar = document.getElementById('totalMesaModificar');
+            const abonadoMesaModificar = document.getElementById('abonadoMesaModificar');
+            const saldoMesaModificar = document.getElementById('saldoMesaModificar');
+
             const zonaNombre = document.getElementById('zonaNombre');
             const zonaMesas = document.getElementById('zonaMesas');
             const zonaPuestos = document.getElementById('zonaPuestos');
@@ -1600,6 +1714,12 @@
                                 estado: 'available',
                                 comprador: null,
                                 identificacion: null,
+                                email: null,
+                                telefono: null,
+                                tipoComprador: null,
+                                formaPago: null,
+                                montoPagado: 0,
+                                montoTotal: zona.precio,
                                 color: zona.color
                             });
                         }
@@ -1638,6 +1758,12 @@
                             estado: 'available',
                             comprador: null,
                             identificacion: null,
+                            email: null,
+                            telefono: null,
+                            tipoComprador: null,
+                            formaPago: null,
+                            montoPagado: 0,
+                            montoTotal: precio,
                             color: color || '#ffb74d'
                         });
                     }
@@ -1652,44 +1778,41 @@
             }
 
             // ============================================================
-            // ===== CONCILIACIÓN CON FILTRO DE FECHAS (CORREGIDO) =====
+            // ===== FUNCIONES DE FECHA =====
             // ============================================================
-            
-            // Función para extraer la fecha de una venta
+            function obtenerFechaISO() {
+                const ahora = new Date();
+                return ahora.getFullYear() + '-' + 
+                       String(ahora.getMonth() + 1).padStart(2, '0') + '-' + 
+                       String(ahora.getDate()).padStart(2, '0') + ', ' +
+                       String(ahora.getHours()).padStart(2, '0') + ':' +
+                       String(ahora.getMinutes()).padStart(2, '0') + ':' +
+                       String(ahora.getSeconds()).padStart(2, '0');
+            }
+
             function extraerFechaVenta(fechaStr) {
                 if (!fechaStr) return null;
                 try {
-                    // Si la fecha ya está en formato ISO (YYYY-MM-DD)
                     if (fechaStr.includes('T') && fechaStr.includes('-')) {
                         return new Date(fechaStr);
                     }
-                    
-                    // Si la fecha tiene formato "8/13/2026, 15:30:45"
                     const partes = fechaStr.split(',');
                     if (partes.length === 0) return null;
-                    
-                    // Intentar crear la fecha
                     const fechaLimpia = partes[0].trim();
                     const fecha = new Date(fechaLimpia);
-                    
-                    // Verificar si la fecha es válida
                     if (isNaN(fecha.getTime())) {
-                        // Intentar con formato alternativo
                         const partesFecha = fechaLimpia.split('/');
                         if (partesFecha.length === 3) {
-                            // Formato MM/DD/YYYY
                             return new Date(partesFecha[2], partesFecha[0] - 1, partesFecha[1]);
                         }
                         return null;
                     }
-                    
                     return fecha;
                 } catch (e) {
                     return null;
                 }
             }
 
-            // Función para comparar si dos fechas son el mismo día
             function esMismoDia(fecha1, fecha2) {
                 if (!fecha1 || !fecha2) return false;
                 return fecha1.getFullYear() === fecha2.getFullYear() &&
@@ -1697,7 +1820,6 @@
                        fecha1.getDate() === fecha2.getDate();
             }
 
-            // Función para formatear fecha a YYYY-MM-DD
             function formatearFechaISO(fecha) {
                 if (!fecha) return '';
                 const d = new Date(fecha);
@@ -1706,11 +1828,13 @@
                        String(d.getDate()).padStart(2, '0');
             }
 
+            // ============================================================
+            // ===== CONCILIACIÓN =====
+            // ============================================================
             function generarConciliacion(filtro, fechaDiaVal, fechaInicioVal, fechaFinVal) {
                 let ventasFiltradas = [];
                 let textoFiltro = 'Todas las ventas';
 
-                // Obtener fecha actual
                 const hoy = new Date();
                 const hoyStr = formatearFechaISO(hoy);
 
@@ -1720,7 +1844,6 @@
                     ventasFiltradas = ventas;
                     textoFiltro = 'Todas las ventas';
                 } else if (filtro === 'hoy') {
-                    // Filtrar ventas de hoy usando comparación de fechas
                     ventasFiltradas = ventas.filter(v => {
                         const fechaVenta = extraerFechaVenta(v.fecha);
                         if (!fechaVenta) return false;
@@ -1753,7 +1876,6 @@
 
                 logDebug(`📊 Ventas filtradas: ${ventasFiltradas.length} de ${ventas.length}`, 'info');
 
-                // Generar resumen
                 const resumen = {};
                 let totalGeneral = 0;
                 let totalVentas = 0;
@@ -1786,34 +1908,6 @@
                 return { resumen, totalGeneral, totalVentas, textoFiltro, ventasFiltradas };
             }
 
-            // ============================================================
-            // ===== FUNCIONES DE COMPRA CON FECHA ISO =====
-            // ============================================================
-            
-            // Función para obtener fecha actual en formato ISO para guardar
-            function obtenerFechaISO() {
-                const ahora = new Date();
-                return ahora.getFullYear() + '-' + 
-                       String(ahora.getMonth() + 1).padStart(2, '0') + '-' + 
-                       String(ahora.getDate()).padStart(2, '0') + ', ' +
-                       String(ahora.getHours()).padStart(2, '0') + ':' +
-                       String(ahora.getMinutes()).padStart(2, '0') + ':' +
-                       String(ahora.getSeconds()).padStart(2, '0');
-            }
-
-            // ============================================================
-            // ===== MODIFICAR FUNCIONES DE COMPRA PARA USAR FECHA ISO =====
-            // ============================================================
-            
-            // Modificar la función que registra ventas individuales
-            // En buyMultiple y buyPalco, cambiar:
-            // fecha: new Date().toLocaleString(),
-            // POR:
-            // fecha: obtenerFechaISO(),
-
-            // ============================================================
-            // ===== MOSTRAR CONCILIACIÓN =====
-            // ============================================================
             function mostrarConciliacion(filtro = 'todas', fechaDiaVal = null, fechaInicioVal = null, fechaFinVal = null) {
                 if (filtro === 'dia' && !fechaDiaVal) {
                     fechaDiaVal = document.getElementById('fechaDia').value;
@@ -1869,6 +1963,7 @@
                 modalConciliacion.style.display = 'block';
                 modalForm.style.display = 'none';
                 modalZonaForm.style.display = 'none';
+                modalModificar.style.display = 'none';
                 modalTitle.textContent = '🏦 Conciliación de Caja';
                 modalMessage.textContent = '';
                 modalBtn.style.display = 'none';
@@ -1920,15 +2015,17 @@
                         <br/>
                         <h3>📋 DETALLE DE VENTAS</h3>
                         <table>
-                            <thead><tr><th>#</th><th>Fecha</th><th>Zona</th><th>Mesa</th><th>Puesto</th><th>Comprador</th><th>Pago</th><th>Precio</th></tr></thead>
+                            <thead><tr><th>#</th><th>Fecha</th><th>Zona</th><th>Mesa</th><th>Puesto</th><th>Comprador</th><th>ID</th><th>Email</th><th>Teléfono</th><th>Tipo</th><th>Pago</th><th>Precio</th><th>Estado</th></tr></thead>
                             <tbody>
                 `;
 
                 const ventasFiltradas = data.ventasFiltradas || data.ventas || [];
                 ventasFiltradas.forEach((v, i) => {
                     const pago = FORMAS_PAGO[v.formaPago] ? FORMAS_PAGO[v.formaPago].label : 'Sin registro';
+                    const tipo = TIPOS_COMPRADOR[v.tipoComprador] ? TIPOS_COMPRADOR[v.tipoComprador].label : 'Sin tipo';
+                    const estado = v.estado || 'Completada';
                     tabla +=
-                        `<tr><td>${i+1}</td><td>${v.fecha}</td><td>${v.zonaNombre}</td><td>${v.mesa}</td><td>${v.puesto}</td><td>${v.comprador}</td><td>${pago}</td><td>$${(v.precio||0).toLocaleString()}</td></tr>`;
+                        `<tr><td>${i+1}</td><td>${v.fecha}</td><td>${v.zonaNombre}</td><td>${v.mesa}</td><td>${v.puesto}</td><td>${v.comprador}</td><td>${v.identificacion}</td><td>${v.email || 'N/A'}</td><td>${v.telefono || 'N/A'}</td><td>${tipo}</td><td>${pago}</td><td>$${(v.precio||0).toLocaleString()}</td><td>${estado}</td></tr>`;
                 });
 
                 tabla += `
@@ -1956,23 +2053,28 @@
             // ============================================================
             // ===== MODAL =====
             // ============================================================
-            function showModal(title, message, showForm = false, showZonaForm = false, showConciliacion = false, isConfirm =
-                false, onConfirm = null) {
+            function showModal(title, message, showForm = false, showZonaForm = false, showConciliacion = false, showModificar = false, isConfirm = false, onConfirm = null) {
                 modalTitle.textContent = title;
                 modalMessage.textContent = message;
 
                 modalForm.style.display = showForm ? 'block' : 'none';
                 modalZonaForm.style.display = showZonaForm ? 'block' : 'none';
                 modalConciliacion.style.display = showConciliacion ? 'block' : 'none';
+                modalModificar.style.display = showModificar ? 'block' : 'none';
 
                 if (showForm) {
                     buyerName.value = '';
                     buyerId.value = '';
+                    buyerEmail.value = '';
+                    buyerPhone.value = '';
+                    tipoComprador.value = 'socio';
                     formaPago.value = 'efectivo';
                     montoRecibido.value = '';
                     actualizarResumenCompra();
                     pausarTimer();
-                } else if (!showConciliacion) {
+                } else if (showModificar) {
+                    cargarMesasReservadas();
+                } else if (!showConciliacion && !showModificar) {
                     reanudarTimer();
                 }
 
@@ -1994,7 +2096,8 @@
                     onConfirm: onConfirm,
                     showForm: showForm,
                     showZonaForm: showZonaForm,
-                    showConciliacion: showConciliacion
+                    showConciliacion: showConciliacion,
+                    showModificar: showModificar
                 };
 
                 if (showConciliacion) {
@@ -2003,6 +2106,19 @@
                     btnCerrarConciliacion.style.display = 'inline-block';
                     btnCerrarConciliacion.onclick = function() {
                         closeModal();
+                    };
+                } else if (showModificar) {
+                    modalBtn.textContent = 'Confirmar Cambio';
+                    modalBtn.className = 'btn-close';
+                    modalBtn.style.background = '#ffa500';
+                    modalBtn.style.color = '#1a1a4e';
+                    modalCancelBtn.style.display = 'inline-block';
+                    modalBtn.style.display = 'inline-block';
+                    modalBtn.onclick = function() {
+                        handleModificarReserva();
+                    };
+                    modalCancelBtn.onclick = function() {
+                        handleCancel();
                     };
                 } else if (isConfirm) {
                     modalBtn.textContent = 'Confirmar';
@@ -2042,7 +2158,8 @@
                     onConfirm: null,
                     showForm: false,
                     showZonaForm: false,
-                    showConciliacion: false
+                    showConciliacion: false,
+                    showModificar: false
                 };
                 modalBtn.style.display = 'inline-block';
                 modalCancelBtn.style.display = 'none';
@@ -2128,9 +2245,40 @@
                 if (modalConfig.showForm) {
                     const nombre = buyerName.value.trim();
                     const id = buyerId.value.trim();
-                    if (!nombre || !id) {
-                        showModal('⚠️ Datos incompletos', 'Completa todos los campos.', true, false);
+                    const email = buyerEmail.value.trim();
+                    const telefono = buyerPhone.value.trim();
+                    const tipo = tipoComprador.value;
+                    const pago = formaPago.value;
+                    const monto = parseInt(montoRecibido.value) || 0;
+                    
+                    if (!nombre || !id || !email || !telefono) {
+                        showModal('⚠️ Datos incompletos', 'Completa todos los campos (nombre, identificación, correo y teléfono).', true, false);
                         return;
+                    }
+                    
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        showModal('⚠️ Email inválido', 'Por favor, ingresa un correo electrónico válido.', true, false);
+                        return;
+                    }
+                    
+                    const telefonoLimpio = telefono.replace(/\D/g, '');
+                    if (telefonoLimpio.length < 7) {
+                        showModal('⚠️ Teléfono inválido', 'Por favor, ingresa un número de teléfono válido (mínimo 7 dígitos).', true, false);
+                        return;
+                    }
+
+                    if (pago === 'reservado') {
+                        const totalCompra = calcularTotalCompra();
+                        const minimoReserva = Math.ceil(totalCompra * (PORCENTAJE_RESERVA / 100));
+                        if (monto < minimoReserva) {
+                            showModal('⚠️ Monto insuficiente', 
+                                `Para reservar se requiere al menos el ${PORCENTAJE_RESERVA}% del total.\n\n` +
+                                `Total: $${totalCompra.toLocaleString()}\n` +
+                                `Mínimo requerido: $${minimoReserva.toLocaleString()}\n` +
+                                `Recibido: $${monto.toLocaleString()}`, true, false);
+                            return;
+                        }
                     }
                 }
 
@@ -2160,6 +2308,204 @@
                 logDebug('❌ Cancelado por usuario', 'warning');
                 reanudarTimer();
                 closeModal();
+            }
+
+            // ============================================================
+            // ===== CALCULAR TOTAL DE COMPRA =====
+            // ============================================================
+            function calcularTotalCompra() {
+                const seatsSeleccionados = selectedSeats.map(id => seats.find(s => s.id === id)).filter(s => s);
+                return seatsSeleccionados.reduce((sum, s) => sum + (s.precio || 0), 0);
+            }
+
+            // ============================================================
+            // ===== ACTUALIZAR RESUMEN =====
+            // ============================================================
+            function actualizarResumenCompra() {
+                const seatsSeleccionados = selectedSeats.map(id => seats.find(s => s.id === id)).filter(s => s);
+
+                if (seatsSeleccionados.length === 0) {
+                    resumenText.textContent = '⚠️ No hay puestos seleccionados';
+                    resumenReserva.style.display = 'none';
+                    return;
+                }
+
+                const total = seatsSeleccionados.reduce((sum, s) => sum + (s.precio || 0), 0);
+                const puestosInfo = seatsSeleccionados.map(s => `Mesa ${s.mesa} - Puesto ${s.puesto}`).join(', ');
+
+                resumenText.textContent = `📦 ${seatsSeleccionados.length} puestos | 💰 $${total.toLocaleString()} | ${puestosInfo}`;
+
+                const pago = formaPago.value;
+                if (pago === 'reservado') {
+                    const minimoReserva = Math.ceil(total * (PORCENTAJE_RESERVA / 100));
+                    resumenReserva.style.display = 'block';
+                    resumenReservaText.textContent = `🔒 Total: $${total.toLocaleString()} | Mínimo a pagar: $${minimoReserva.toLocaleString()} (${PORCENTAJE_RESERVA}%)`;
+                } else {
+                    resumenReserva.style.display = 'none';
+                }
+            }
+
+            // ============================================================
+            // ===== MODIFICAR RESERVA (CORREGIDO) =====
+            // ============================================================
+            function cargarMesasReservadas() {
+                const mesasReservadas = {};
+                seats.forEach(s => {
+                    if (s.estado === 'reserved') {
+                        const key = s.zonaId + '|' + s.mesa;
+                        if (!mesasReservadas[key]) {
+                            mesasReservadas[key] = {
+                                zonaId: s.zonaId,
+                                zonaNombre: s.zonaNombre,
+                                mesa: s.mesa,
+                                puestos: [],
+                                total: 0,
+                                montoPagado: 0,
+                                comprador: s.comprador
+                            };
+                        }
+                        mesasReservadas[key].puestos.push(s);
+                        mesasReservadas[key].total += s.precio;
+                        mesasReservadas[key].montoPagado += s.montoPagado || 0;
+                    }
+                });
+
+                mesaReservadaSelect.innerHTML = '<option value="">Selecciona una mesa reservada...</option>';
+                Object.values(mesasReservadas).forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.zonaId + '|' + m.mesa;
+                    const saldo = m.total - m.montoPagado;
+                    opt.textContent = `${m.zonaNombre} - Mesa ${m.mesa} | ${m.puestos.length} puestos | Abonado: $${m.montoPagado.toLocaleString()} | Saldo: $${saldo.toLocaleString()}`;
+                    mesaReservadaSelect.appendChild(opt);
+                });
+
+                mesaReservadaSelect.addEventListener('change', function() {
+                    const valor = this.value;
+                    if (!valor) {
+                        totalMesaModificar.textContent = '$0';
+                        abonadoMesaModificar.textContent = '$0';
+                        saldoMesaModificar.textContent = '$0';
+                        montoAdicional.value = '';
+                        return;
+                    }
+                    
+                    const [zonaId, mesaNum] = valor.split('|');
+                    const puestosMesa = seats.filter(s => s.zonaId === zonaId && String(s.mesa) === String(mesaNum) && s.estado === 'reserved');
+                    const total = puestosMesa.reduce((sum, s) => sum + (s.precio || 0), 0);
+                    const abonado = puestosMesa.reduce((sum, s) => sum + (s.montoPagado || 0), 0);
+                    const saldo = total - abonado;
+                    
+                    totalMesaModificar.textContent = '$' + total.toLocaleString();
+                    abonadoMesaModificar.textContent = '$' + abonado.toLocaleString();
+                    saldoMesaModificar.textContent = '$' + saldo.toLocaleString();
+                    montoAdicional.value = saldo;
+                    montoAdicional.placeholder = `Monto restante: $${saldo.toLocaleString()}`;
+                });
+            }
+
+            function handleModificarReserva() {
+                const valor = mesaReservadaSelect.value;
+                if (!valor) {
+                    showModal('⚠️ Selecciona una mesa', 'Por favor, selecciona una mesa reservada para modificar.');
+                    return;
+                }
+
+                const [zonaId, mesaNum] = valor.split('|');
+                const puestosMesa = seats.filter(s => s.zonaId === zonaId && String(s.mesa) === String(mesaNum) && s.estado === 'reserved');
+                
+                if (puestosMesa.length === 0) {
+                    showModal('⚠️ Error', 'No se encontraron puestos reservados en esta mesa.');
+                    return;
+                }
+
+                const nuevaForma = nuevaFormaPago.value;
+                const montoAdicionalVal = parseInt(montoAdicional.value) || 0;
+                const totalMesa = puestosMesa.reduce((sum, s) => sum + (s.precio || 0), 0);
+                const abonadoActual = puestosMesa.reduce((sum, s) => sum + (s.montoPagado || 0), 0);
+                const saldoPendiente = totalMesa - abonadoActual;
+
+                if (montoAdicionalVal < 0) {
+                    showModal('⚠️ Monto inválido', 'El monto adicional no puede ser negativo.');
+                    return;
+                }
+
+                if (montoAdicionalVal === 0 && saldoPendiente > 0) {
+                    showModal('⚠️ Monto requerido', 
+                        `El saldo pendiente es $${saldoPendiente.toLocaleString()}.\n\n` +
+                        `Por favor, ingresa el monto a abonar.`);
+                    return;
+                }
+
+                if (montoAdicionalVal > saldoPendiente) {
+                    showModal('⚠️ Monto excede saldo', 
+                        `El monto ingresado ($${montoAdicionalVal.toLocaleString()}) excede el saldo pendiente ($${saldoPendiente.toLocaleString()}).\n\n` +
+                        `Por favor, ingresa un monto menor o igual al saldo pendiente.`);
+                    return;
+                }
+
+                let pagoTotal = abonadoActual + montoAdicionalVal;
+                const esCompleto = pagoTotal >= totalMesa;
+
+                puestosMesa.forEach(s => {
+                    const proporcion = s.precio / totalMesa;
+                    const montoPorPuesto = Math.round(montoAdicionalVal * proporcion);
+                    s.montoPagado = (s.montoPagado || 0) + montoPorPuesto;
+                    s.formaPago = nuevaForma;
+                    s.montoTotal = s.precio;
+                    
+                    if (esCompleto) {
+                        s.estado = 'sold';
+                    } else {
+                        s.estado = 'reserved';
+                    }
+                });
+
+                // ===== REGISTRAR LA TRANSACCIÓN CON EL PRECIO CORRECTO =====
+                const nombre = puestosMesa[0].comprador || 'Cliente';
+                const id = puestosMesa[0].identificacion || 'N/A';
+                const email = puestosMesa[0].email || 'N/A';
+                const telefono = puestosMesa[0].telefono || 'N/A';
+                const tipo = puestosMesa[0].tipoComprador || 'socio';
+
+                const venta = {
+                    fecha: obtenerFechaISO(),
+                    zonaId: zonaId,
+                    zonaNombre: puestosMesa[0].zonaNombre,
+                    mesa: mesaNum,
+                    puesto: 'Todos (Palco)',
+                    comprador: nombre,
+                    identificacion: id,
+                    email: email,
+                    telefono: telefono,
+                    tipoComprador: tipo,
+                    precio: montoAdicionalVal, // ← SOLO EL MONTO ADICIONAL
+                    formaPago: nuevaForma,
+                    tipo: 'Abono Reserva',
+                    estado: esCompleto ? 'Completada' : 'Parcial',
+                    compraMultiple: puestosMesa.length,
+                    montoPagadoTotal: pagoTotal,
+                    totalMesa: totalMesa,
+                    abonoPrevio: abonadoActual
+                };
+                ventas.push(venta);
+
+                guardarYRenderizar();
+                closeModal();
+                
+                const mensaje = esCompleto ? 
+                    `✅ Reserva completada exitosamente.\n\n` +
+                    `📍 Mesa ${mesaNum}\n` +
+                    `💰 Total: $${totalMesa.toLocaleString()}\n` +
+                    `💵 Pagado: $${pagoTotal.toLocaleString()}\n` +
+                    `📌 Forma de pago: ${FORMAS_PAGO[nuevaForma].label}` :
+                    `✅ Abono registrado exitosamente.\n\n` +
+                    `📍 Mesa ${mesaNum}\n` +
+                    `💵 Abonado: $${montoAdicionalVal.toLocaleString()}\n` +
+                    `📊 Total abonado: $${pagoTotal.toLocaleString()}\n` +
+                    `📌 Saldo pendiente: $${(totalMesa - pagoTotal).toLocaleString()}`;
+                
+                showModal(esCompleto ? '🎉 Reserva completada' : '💰 Abono registrado', mensaje);
+                logDebug(`📝 Modificación de reserva: Mesa ${mesaNum} - ${esCompleto ? 'Completada' : 'Abono parcial'} - $${montoAdicionalVal.toLocaleString()}`, 'success');
             }
 
             // ============================================================
@@ -2256,23 +2602,6 @@
             }
 
             // ============================================================
-            // ===== ACTUALIZAR RESUMEN =====
-            // ============================================================
-            function actualizarResumenCompra() {
-                const seatsSeleccionados = selectedSeats.map(id => seats.find(s => s.id === id)).filter(s => s);
-
-                if (seatsSeleccionados.length === 0) {
-                    resumenText.textContent = '⚠️ No hay puestos seleccionados';
-                    return;
-                }
-
-                const total = seatsSeleccionados.reduce((sum, s) => sum + (s.precio || 0), 0);
-                const puestosInfo = seatsSeleccionados.map(s => `Mesa ${s.mesa} - Puesto ${s.puesto}`).join(', ');
-
-                resumenText.textContent = `📦 ${seatsSeleccionados.length} puestos | 💰 $${total.toLocaleString()} | ${puestosInfo}`;
-            }
-
-            // ============================================================
             // ===== FILTROS =====
             // ============================================================
             function actualizarFiltros() {
@@ -2341,11 +2670,13 @@
                 const total = seats.length;
                 const disponibles = seats.filter(s => s.estado === 'available').length;
                 const vendidos = seats.filter(s => s.estado === 'sold').length;
+                const reservados = seats.filter(s => s.estado === 'reserved').length;
                 const bloqueados = seats.filter(s => s.estado === 'blocked').length;
 
                 totalSeatsEl.textContent = total;
                 availableSeatsEl.textContent = disponibles;
                 soldSeatsEl.textContent = vendidos;
+                reservedSeatsEl.textContent = reservados;
                 blockedSeatsEl.textContent = bloqueados;
                 totalVentasEl.textContent = ventas.length;
 
@@ -2367,13 +2698,16 @@
                             zonaNombre: s.zonaNombre,
                             mesa: s.mesa,
                             disponibles: 0,
+                            reservados: 0,
                             total: 0,
                             precio: s.precio,
-                            estaCompleta: false
+                            estaCompleta: false,
+                            estaReservada: false
                         };
                     }
                     mesasUnicas[key].total++;
                     if (s.estado === 'available') mesasUnicas[key].disponibles++;
+                    if (s.estado === 'reserved') mesasUnicas[key].reservados++;
                 });
 
                 Object.values(mesasUnicas).forEach(m => {
@@ -2381,16 +2715,26 @@
                         m.estaCompleta = true;
                         mesasCompletas++;
                     }
+                    if (m.reservados === m.total && m.total > 0) {
+                        m.estaReservada = true;
+                    }
                 });
 
                 Object.values(mesasUnicas).forEach(m => {
                     const opt = document.createElement('option');
                     opt.value = m.zonaId + '|' + m.mesa;
-                    const estadoLabel = m.estaCompleta ? '✅ COMPLETA' : `❌ ${m.disponibles}/${m.total} libres`;
+                    let estadoLabel = '';
+                    if (m.estaCompleta) {
+                        estadoLabel = '✅ COMPLETA';
+                    } else if (m.estaReservada) {
+                        estadoLabel = `🔒 RESERVADA (${m.reservados}/${m.total})`;
+                    } else {
+                        estadoLabel = `❌ ${m.disponibles}/${m.total} libres`;
+                    }
                     opt.textContent = `${m.zonaNombre} - Mesa ${m.mesa} (${estadoLabel}) - $${m.precio.toLocaleString()}`;
                     if (!m.estaCompleta) {
                         opt.disabled = true;
-                        opt.style.color = '#666';
+                        opt.style.color = m.estaReservada ? '#ffa500' : '#666';
                     }
                     mesaSelect.appendChild(opt);
                 });
@@ -2400,7 +2744,12 @@
                     mesaInfo.className = 'mesa-info warning';
                     btnPalco.disabled = true;
                 } else if (mesasCompletas === 0) {
-                    mesaInfo.textContent = `⚠️ Hay ${Object.keys(mesasUnicas).length} mesas, pero ninguna está completa para palco`;
+                    const reservadas = Object.values(mesasUnicas).filter(m => m.estaReservada).length;
+                    if (reservadas > 0) {
+                        mesaInfo.textContent = `⚠️ Hay ${reservadas} mesas reservadas, pero ninguna completa para palco`;
+                    } else {
+                        mesaInfo.textContent = `⚠️ Hay ${Object.keys(mesasUnicas).length} mesas, pero ninguna está completa para palco`;
+                    }
                     mesaInfo.className = 'mesa-info error';
                     btnPalco.disabled = true;
                 } else {
@@ -2424,6 +2773,24 @@
 
                     const precioFormateado = '$' + (seat.precio || 0).toLocaleString();
 
+                    let tipoLabel = '';
+                    if (seat.tipoComprador) {
+                        tipoLabel = TIPOS_COMPRADOR[seat.tipoComprador] ? TIPOS_COMPRADOR[seat.tipoComprador].label : '';
+                    }
+
+                    let badge = '';
+                    if (seat.estado === 'sold') {
+                        badge = '<div class="badge sold-badge">VENDIDO</div>';
+                    } else if (seat.estado === 'reserved') {
+                        const pagoLabel = seat.formaPago ? FORMAS_PAGO[seat.formaPago]?.label || '' : '';
+                        const monto = seat.montoPagado || 0;
+                        const total = seat.montoTotal || seat.precio || 0;
+                        const porcentaje = total > 0 ? Math.round((monto / total) * 100) : 0;
+                        badge = `<div class="badge reserved-badge">🔒 RESERVADO ${porcentaje}%</div>`;
+                    } else if (seat.estado === 'blocked' && !isSelected) {
+                        badge = '<div class="badge blocked-badge">BLOQUEADO</div>';
+                    }
+
                     div.innerHTML = `
                         <div class="seat-number">Puesto ${seat.puesto}</div>
                         <div class="seat-mesa">Mesa ${seat.mesa}</div>
@@ -2431,13 +2798,29 @@
                         <div class="seat-price">${precioFormateado}</div>
                         ${isSelected ? `<div class="seat-selected active">${selectedSeats.indexOf(seat.id) + 1}</div>` : '<div class="seat-selected"></div>'}
                         ${seat.estado === 'sold' && seat.comprador ? `<div class="seat-buyer">${seat.comprador}</div>` : ''}
-                        ${seat.estado === 'sold' ? '<div class="badge sold-badge">VENDIDO</div>' : ''}
-                        ${seat.estado === 'blocked' && !isSelected ? '<div class="badge blocked-badge">BLOQUEADO</div>' : ''}
+                        ${seat.estado === 'reserved' && seat.comprador ? `<div class="seat-buyer" style="color:#ffa500;">${seat.comprador}</div>` : ''}
+                        ${seat.estado === 'sold' && seat.tipoComprador ? `<div class="seat-buyer" style="color:#888;">${tipoLabel}</div>` : ''}
+                        ${badge}
                     `;
 
                     if (seat.estado === 'available') {
                         div.addEventListener('click', () => toggleSeatSelection(seat.id));
+                    } else if (seat.estado === 'reserved') {
+                        div.addEventListener('click', () => {
+                            showModal('🔒 Mesa Reservada', 
+                                `Esta mesa está reservada.\n\n` +
+                                `📋 Datos de la reserva:\n` +
+                                `• Comprador: ${seat.comprador || 'N/A'}\n` +
+                                `• Teléfono: ${seat.telefono || 'N/A'}\n` +
+                                `• Email: ${seat.email || 'N/A'}\n` +
+                                `• Abonado: $${(seat.montoPagado || 0).toLocaleString()}\n` +
+                                `• Total: $${(seat.montoTotal || seat.precio || 0).toLocaleString()}\n` +
+                                `• Pago: ${seat.formaPago ? FORMAS_PAGO[seat.formaPago]?.label || 'N/A' : 'N/A'}\n\n` +
+                                `💡 Usa el botón "🔄 Modificar Reserva" para cambiar la forma de pago.`
+                            );
+                        });
                     }
+
                     gridEl.appendChild(div);
                 });
 
@@ -2490,7 +2873,7 @@
             }
 
             // ============================================================
-            // ===== COMPRAR MÚLTIPLE =====
+            // ===== COMPRAR MÚLTIPLE (CORREGIDO) =====
             // ============================================================
             function buyMultiple() {
                 if (selectedSeats.length === 0) {
@@ -2526,39 +2909,89 @@
                     true,
                     false,
                     false,
+                    false,
                     true,
                     function() {
                         const nombre = buyerName.value.trim();
                         const id = buyerId.value.trim();
+                        const email = buyerEmail.value.trim();
+                        const telefono = buyerPhone.value.trim();
+                        const tipo = tipoComprador.value;
                         const pago = formaPago.value;
                         const monto = parseInt(montoRecibido.value) || 0;
 
-                        if (!nombre || !id) {
-                            showModal('⚠️ Datos incompletos', 'Completa todos los campos.', true, false);
+                        if (!nombre || !id || !email || !telefono) {
+                            showModal('⚠️ Datos incompletos', 'Completa todos los campos (nombre, identificación, correo y teléfono).', true, false);
                             return;
+                        }
+                        
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(email)) {
+                            showModal('⚠️ Email inválido', 'Por favor, ingresa un correo electrónico válido.', true, false);
+                            return;
+                        }
+                        
+                        const telefonoLimpio = telefono.replace(/\D/g, '');
+                        if (telefonoLimpio.length < 7) {
+                            showModal('⚠️ Teléfono inválido', 'Por favor, ingresa un número de teléfono válido (mínimo 7 dígitos).', true, false);
+                            return;
+                        }
+
+                        let esReserva = false;
+                        let montoRegistrar = monto;
+                        
+                        if (pago === 'reservado') {
+                            const minimoReserva = Math.ceil(total * (PORCENTAJE_RESERVA / 100));
+                            if (monto < minimoReserva) {
+                                showModal('⚠️ Monto insuficiente', 
+                                    `Para reservar se requiere al menos el ${PORCENTAJE_RESERVA}% del total.\n\n` +
+                                    `Total: $${total.toLocaleString()}\n` +
+                                    `Mínimo requerido: $${minimoReserva.toLocaleString()}\n` +
+                                    `Recibido: $${monto.toLocaleString()}`, true, false);
+                                return;
+                            }
+                            esReserva = true;
                         }
 
                         cancelarTimer();
 
                         seatsSeleccionados.forEach((seat) => {
-                            seat.estado = 'sold';
+                            const proporcion = seat.precio / total;
+                            const montoPorPuesto = Math.round(monto * proporcion);
+                            
+                            if (esReserva || pago === 'reservado') {
+                                seat.estado = 'reserved';
+                            } else {
+                                seat.estado = 'sold';
+                            }
                             seat.comprador = nombre;
                             seat.identificacion = id;
+                            seat.email = email;
+                            seat.telefono = telefono;
+                            seat.tipoComprador = tipo;
+                            seat.formaPago = pago;
+                            seat.montoPagado = montoPorPuesto;
+                            seat.montoTotal = seat.precio;
 
                             const venta = {
-                                fecha: obtenerFechaISO(), // ← FECHA EN FORMATO ISO
+                                fecha: obtenerFechaISO(),
                                 zonaId: seat.zonaId,
                                 zonaNombre: seat.zonaNombre,
                                 mesa: seat.mesa,
                                 puesto: seat.puesto,
                                 comprador: nombre,
                                 identificacion: id,
-                                precio: seat.precio,
-                                tipo: 'Individual',
+                                email: email,
+                                telefono: telefono,
+                                tipoComprador: tipo,
+                                precio: montoPorPuesto, // ← SOLO EL MONTO ABONADO
                                 formaPago: pago,
-                                montoRecibido: monto > 0 ? Math.round(monto / seatsSeleccionados.length) : 0,
-                                vueltas: 0,
-                                compraMultiple: seatsSeleccionados.length
+                                tipo: esReserva ? 'Reserva' : 'Individual',
+                                estado: esReserva ? 'Reservado' : 'Completada',
+                                compraMultiple: seatsSeleccionados.length,
+                                montoPagado: montoPorPuesto,
+                                montoTotal: seat.precio,
+                                saldoPendiente: seat.precio - montoPorPuesto
                             };
                             ventas.push(venta);
                         });
@@ -2566,8 +2999,14 @@
                         limpiarSeleccion();
                         guardarYRenderizar();
 
+                        const tipoLabel = TIPOS_COMPRADOR[tipo] ? TIPOS_COMPRADOR[tipo].label : '';
                         let mensajePago = `💰 Pago: ${FORMAS_PAGO[pago].label}`;
-                        if (pago === 'efectivo' && monto > 0) {
+                        if (pago === 'reservado') {
+                            const porcentajePagado = Math.round((monto / total) * 100);
+                            mensajePago += `\n🔒 Reserva del ${porcentajePagado}% (mínimo ${PORCENTAJE_RESERVA}%)`;
+                            mensajePago += `\n💵 Recibido: $${monto.toLocaleString()}`;
+                            mensajePago += `\n📌 Saldo pendiente: $${(total - monto).toLocaleString()}`;
+                        } else if (pago === 'efectivo' && monto > 0) {
                             mensajePago += `\n💵 Recibido: $${monto.toLocaleString()}`;
                             const vueltas = monto - total;
                             if (vueltas > 0) {
@@ -2575,20 +3014,24 @@
                             }
                         }
 
-                        showModal('✅ ¡Compra exitosa!',
-                            `🛒 ${seatsSeleccionados.length} puestos vendidos\n\n` +
-                            `Comprador: ${nombre}\n` +
-                            `Total: ${precioFormateado}\n` +
+                        const titulo = esReserva ? '🔒 ¡Reserva exitosa!' : '✅ ¡Compra exitosa!';
+                        showModal(titulo,
+                            `${esReserva ? '🔒' : '🛒'} ${seatsSeleccionados.length} puestos ${esReserva ? 'reservados' : 'vendidos'}\n\n` +
+                            `👤 Comprador: ${nombre}\n` +
+                            `📧 Email: ${email}\n` +
+                            `📱 Teléfono: ${telefono}\n` +
+                            `🏷️ Tipo: ${tipoLabel}\n` +
+                            `💰 Total: ${precioFormateado}\n` +
                             `${mensajePago}\n\n` +
                             `📋 Puestos:\n${seatsSeleccionados.map(s => `Mesa ${s.mesa} - Puesto ${s.puesto}`).join('\n')}`
                         );
-                        logDebug(`🎉 Multi-compra: ${seatsSeleccionados.length} puestos (${pago})`, 'success');
+                        logDebug(`🎉 ${esReserva ? 'Reserva' : 'Compra'}: ${seatsSeleccionados.length} puestos - $${monto.toLocaleString()} (${tipo}) (${pago})`, 'success');
                     }
                 );
             }
 
             // ============================================================
-            // ===== COMPRAR PALCO =====
+            // ===== COMPRAR PALCO (CORREGIDO) =====
             // ============================================================
             function buyPalco() {
                 const valor = mesaSelect.value;
@@ -2621,11 +3064,13 @@
                 const available = seatsInMesa.filter(s => s.estado === 'available');
                 if (available.length !== seatsInMesa.length) {
                     const vendidos = seatsInMesa.filter(s => s.estado === 'sold').length;
+                    const reservados = seatsInMesa.filter(s => s.estado === 'reserved').length;
                     const bloqueados = seatsInMesa.filter(s => s.estado === 'blocked').length;
                     showModal('⚠️ Mesa no disponible',
                         `La mesa ${mesaNum} no está completa.\n\n` +
                         `📊 ${available.length} libres\n` +
                         `❌ ${vendidos} vendidos\n` +
+                        `🔒 ${reservados} reservados\n` +
                         `🔒 ${bloqueados} bloqueados`
                     );
                     return;
@@ -2633,6 +3078,7 @@
 
                 const precioTotal = seatsInMesa.reduce((sum, s) => sum + (s.precio || 0), 0);
                 const zonaNombre = seatsInMesa[0].zonaNombre || 'Zona';
+                const precioPorPuesto = seatsInMesa[0].precio || 0;
 
                 logDebug(`✅ Mesa ${mesaNum} disponible - ${seatsInMesa.length} puestos - Total: $${precioTotal.toLocaleString()}`, 'success');
 
@@ -2644,51 +3090,106 @@
                     `📍 Zona: ${zonaNombre}\n` +
                     `🪑 Mesa: ${mesaNum}\n` +
                     `📦 ${seatsInMesa.length} puestos\n` +
-                    `💰 Total: $${precioTotal.toLocaleString()}`,
+                    `💰 Total: $${precioTotal.toLocaleString()}\n` +
+                    `💰 Por puesto: $${precioPorPuesto.toLocaleString()}`,
                     true,
+                    false,
                     false,
                     false,
                     true,
                     function() {
                         const nombre = buyerName.value.trim();
                         const id = buyerId.value.trim();
+                        const email = buyerEmail.value.trim();
+                        const telefono = buyerPhone.value.trim();
+                        const tipo = tipoComprador.value;
                         const pago = formaPago.value;
                         const monto = parseInt(montoRecibido.value) || 0;
 
-                        if (!nombre || !id) {
-                            showModal('⚠️ Datos incompletos', 'Completa todos los campos.', true, false);
+                        if (!nombre || !id || !email || !telefono) {
+                            showModal('⚠️ Datos incompletos', 'Completa todos los campos (nombre, identificación, correo y teléfono).', true, false);
                             return;
+                        }
+                        
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(email)) {
+                            showModal('⚠️ Email inválido', 'Por favor, ingresa un correo electrónico válido.', true, false);
+                            return;
+                        }
+                        
+                        const telefonoLimpio = telefono.replace(/\D/g, '');
+                        if (telefonoLimpio.length < 7) {
+                            showModal('⚠️ Teléfono inválido', 'Por favor, ingresa un número de teléfono válido (mínimo 7 dígitos).', true, false);
+                            return;
+                        }
+
+                        let esReserva = false;
+                        if (pago === 'reservado') {
+                            const minimoReserva = Math.ceil(precioTotal * (PORCENTAJE_RESERVA / 100));
+                            if (monto < minimoReserva) {
+                                showModal('⚠️ Monto insuficiente', 
+                                    `Para reservar se requiere al menos el ${PORCENTAJE_RESERVA}% del total.\n\n` +
+                                    `Total: $${precioTotal.toLocaleString()}\n` +
+                                    `Mínimo requerido: $${minimoReserva.toLocaleString()}\n` +
+                                    `Recibido: $${monto.toLocaleString()}`, true, false);
+                                return;
+                            }
+                            esReserva = true;
                         }
 
                         cancelarTimer();
 
                         seatsInMesa.forEach(s => {
-                            s.estado = 'sold';
+                            const proporcion = s.precio / precioTotal;
+                            const montoPorPuesto = Math.round(monto * proporcion);
+                            
+                            if (esReserva || pago === 'reservado') {
+                                s.estado = 'reserved';
+                            } else {
+                                s.estado = 'sold';
+                            }
                             s.comprador = nombre;
                             s.identificacion = id;
+                            s.email = email;
+                            s.telefono = telefono;
+                            s.tipoComprador = tipo;
+                            s.formaPago = pago;
+                            s.montoPagado = montoPorPuesto;
+                            s.montoTotal = s.precio;
                             
                             const venta = {
-                                fecha: obtenerFechaISO(), // ← FECHA EN FORMATO ISO
+                                fecha: obtenerFechaISO(),
                                 zonaId: s.zonaId,
                                 zonaNombre: s.zonaNombre,
                                 mesa: s.mesa,
                                 puesto: s.puesto,
                                 comprador: nombre,
                                 identificacion: id,
-                                precio: s.precio,
-                                tipo: 'Palco',
+                                email: email,
+                                telefono: telefono,
+                                tipoComprador: tipo,
+                                precio: montoPorPuesto, // ← SOLO EL MONTO ABONADO
                                 formaPago: pago,
-                                montoRecibido: monto > 0 ? Math.round(monto / seatsInMesa.length) : 0,
-                                vueltas: 0,
-                                compraMultiple: seatsInMesa.length
+                                tipo: esReserva ? 'Reserva Palco' : 'Palco',
+                                estado: esReserva ? 'Reservado' : 'Completada',
+                                compraMultiple: seatsInMesa.length,
+                                montoPagado: montoPorPuesto,
+                                montoTotal: s.precio,
+                                saldoPendiente: s.precio - montoPorPuesto
                             };
                             ventas.push(venta);
                         });
 
                         guardarYRenderizar();
 
+                        const tipoLabel = TIPOS_COMPRADOR[tipo] ? TIPOS_COMPRADOR[tipo].label : '';
                         let mensajePago = `💰 Pago: ${FORMAS_PAGO[pago].label}`;
-                        if (pago === 'efectivo' && monto > 0) {
+                        if (pago === 'reservado') {
+                            const porcentajePagado = Math.round((monto / precioTotal) * 100);
+                            mensajePago += `\n🔒 Reserva del ${porcentajePagado}% (mínimo ${PORCENTAJE_RESERVA}%)`;
+                            mensajePago += `\n💵 Recibido: $${monto.toLocaleString()}`;
+                            mensajePago += `\n📌 Saldo pendiente: $${(precioTotal - monto).toLocaleString()}`;
+                        } else if (pago === 'efectivo' && monto > 0) {
                             mensajePago += `\n💵 Recibido: $${monto.toLocaleString()}`;
                             const vueltas = monto - precioTotal;
                             if (vueltas > 0) {
@@ -2696,16 +3197,20 @@
                             }
                         }
 
-                        showModal('🎪 ¡Palco completo!',
-                            `🎪 Palco vendido exitosamente\n\n` +
+                        const titulo = esReserva ? '🔒 ¡Palco reservado!' : '🎪 ¡Palco completo!';
+                        showModal(titulo,
+                            `${esReserva ? '🔒' : '🎪'} Palco ${esReserva ? 'reservado' : 'vendido'} exitosamente\n\n` +
                             `📍 Zona: ${zonaNombre}\n` +
                             `🪑 Mesa: ${mesaNum}\n` +
                             `📦 ${seatsInMesa.length} puestos\n` +
                             `👤 Comprador: ${nombre}\n` +
+                            `📧 Email: ${email}\n` +
+                            `📱 Teléfono: ${telefono}\n` +
+                            `🏷️ Tipo: ${tipoLabel}\n` +
                             `💰 Total: $${precioTotal.toLocaleString()}\n` +
                             `${mensajePago}`
                         );
-                        logDebug(`🎉 Palco vendido: ${zonaNombre} - Mesa ${mesaNum} (${pago})`, 'success');
+                        logDebug(`🎉 ${esReserva ? 'Reserva Palco' : 'Palco'}: ${zonaNombre} - Mesa ${mesaNum} - $${monto.toLocaleString()} (${tipo}) (${pago})`, 'success');
                     }
                 );
             }
@@ -2737,8 +3242,10 @@
                     `¿Reiniciar TODAS las ventas?\n\n` +
                     `📊 Datos actuales:\n` +
                     `• Ventas: ${ventas.length}\n` +
-                    `• Puestos vendidos: ${seats.filter(s => s.estado === 'sold').length}\n\n` +
+                    `• Puestos vendidos: ${seats.filter(s => s.estado === 'sold').length}\n` +
+                    `• Puestos reservados: ${seats.filter(s => s.estado === 'reserved').length}\n\n` +
                     `⚠️ Esta acción es irreversible.`,
+                    false,
                     false,
                     false,
                     false,
@@ -2753,6 +3260,12 @@
                             s.estado = 'available';
                             s.comprador = null;
                             s.identificacion = null;
+                            s.email = null;
+                            s.telefono = null;
+                            s.tipoComprador = null;
+                            s.formaPago = null;
+                            s.montoPagado = 0;
+                            s.montoTotal = s.precio;
                         });
                         
                         const ventasEliminadas = ventas.length;
@@ -2797,7 +3310,7 @@
                         <p>Total ventas: ${ventas.length}</p>
                         <br/>
                         <table>
-                            <thead><tr><th>#</th><th>Fecha</th><th>Zona</th><th>Mesa</th><th>Puesto</th><th>Comprador</th><th>ID</th><th>Pago</th><th>Precio</th><th>Tipo</th><th>Multi</th></tr></thead>
+                            <thead><tr><th>#</th><th>Fecha</th><th>Zona</th><th>Mesa</th><th>Puesto</th><th>Comprador</th><th>ID</th><th>Email</th><th>Teléfono</th><th>Tipo</th><th>Pago</th><th>Precio</th><th>Estado</th><th>Multi</th></tr></thead>
                             <tbody>
                 `;
 
@@ -2805,12 +3318,14 @@
                 ventas.forEach((v, i) => {
                     totalRecaudado += v.precio || 0;
                     const pago = FORMAS_PAGO[v.formaPago] ? FORMAS_PAGO[v.formaPago].label : 'Sin registro';
+                    const tipo = TIPOS_COMPRADOR[v.tipoComprador] ? TIPOS_COMPRADOR[v.tipoComprador].label : 'Sin tipo';
+                    const estado = v.estado || 'Completada';
                     tabla +=
-                        `<tr><td>${i+1}</td><td>${v.fecha}</td><td>${v.zonaNombre}</td><td>${v.mesa}</td><td>${v.puesto}</td><td>${v.comprador}</td><td>${v.identificacion}</td><td>${pago}</td><td>$${(v.precio||0).toLocaleString()}</td><td>${v.tipo}</td><td>${v.compraMultiple || 1}</td></tr>`;
+                        `<tr><td>${i+1}</td><td>${v.fecha}</td><td>${v.zonaNombre}</td><td>${v.mesa}</td><td>${v.puesto}</td><td>${v.comprador}</td><td>${v.identificacion}</td><td>${v.email || 'N/A'}</td><td>${v.telefono || 'N/A'}</td><td>${tipo}</td><td>${pago}</td><td>$${(v.precio||0).toLocaleString()}</td><td>${estado}</td><td>${v.compraMultiple || 1}</td></tr>`;
                 });
 
                 tabla += `
-                            <tr class="total"><td colspan="9"><strong>TOTAL RECAUDADO</strong></td><td><strong>$${totalRecaudado.toLocaleString()}</strong></td><td></td></tr>
+                            <tr class="total"><td colspan="12"><strong>TOTAL RECAUDADO</strong></td><td><strong>$${totalRecaudado.toLocaleString()}</strong></td><td></td></tr>
                         </tbody></table>
                         <br/>
                         <p><strong>Total puestos vendidos:</strong> ${ventas.length}</p>
@@ -2874,6 +3389,7 @@
                                 false,
                                 false,
                                 false,
+                                false,
                                 true,
                                 function() {
                                     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -2900,12 +3416,19 @@
                     logDebug(`📊 ${seats.length} puestos, ${ventas.length} ventas, ${zonas.length} zonas`, 'info');
                     logDebug(`🪑 Seleccionados: ${selectedSeats.length}`, 'info');
                     logDebug(`⏱️ Timer: ${timerPausado ? 'PAUSADO' : 'ACTIVO'} (${timerSegundos}s)`, 'info');
+                    logDebug(`🔒 Reservados: ${seats.filter(s => s.estado === 'reserved').length}`, 'info');
                     const pagos = {};
                     ventas.forEach(v => {
                         const p = v.formaPago || 'sin-registro';
                         pagos[p] = (pagos[p] || 0) + 1;
                     });
                     logDebug(`💳 Pagos: ${JSON.stringify(pagos)}`, 'info');
+                    const tipos = {};
+                    ventas.forEach(v => {
+                        const t = v.tipoComprador || 'sin-tipo';
+                        tipos[t] = (tipos[t] || 0) + 1;
+                    });
+                    logDebug(`🏷️ Tipos: ${JSON.stringify(tipos)}`, 'info');
                 }
             }
 
@@ -2914,6 +3437,14 @@
             // ============================================================
             btnBuy.addEventListener('click', buyMultiple);
             btnPalco.addEventListener('click', buyPalco);
+            btnModificar.addEventListener('click', function() {
+                const reservados = seats.filter(s => s.estado === 'reserved');
+                if (reservados.length === 0) {
+                    showModal('🔒 Sin reservas', 'No hay mesas reservadas para modificar.');
+                    return;
+                }
+                showModal('🔄 Modificar Reserva', '', false, false, false, true, false);
+            });
             btnReset.addEventListener('click', resetAll);
             btnExcel.addEventListener('click', generarExcel);
             btnConciliacion.addEventListener('click', function() {
@@ -2943,6 +3474,12 @@
                 }
             });
 
+            formaPago.addEventListener('change', function() {
+                if (selectedSeats.length > 0) {
+                    actualizarResumenCompra();
+                }
+            });
+
             resetKeyInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') resetAll();
             });
@@ -2967,7 +3504,7 @@
             // ===== INICIAR =====
             // ============================================================
             function init() {
-                logDebug('🚀 Iniciando sistema con conciliación por fechas...', 'info');
+                logDebug('🚀 Iniciando sistema con corrección de recaudo...', 'info');
 
                 if (cargarEstado()) {
                     if (zonas.length === 0) {
@@ -2990,12 +3527,16 @@
 
                 setInterval(monitorStorage, 30000);
 
-                console.log('🎫 Sistema de ventas multi-zona con CONCILIACIÓN POR FECHAS');
+                console.log('🎫 Sistema de ventas multi-zona con RECAUDO CORRECTO');
                 console.log('📊 Zonas:', zonas.length);
                 console.log('🪑 Puestos:', seats.length);
                 console.log('🔑 Clave:', RESET_KEY);
+                console.log('📧 Correo electrónico y teléfono requeridos');
+                console.log('🏷️ Tipos: Socio / Tercero externo');
+                console.log(`🔒 Reservas: ${PORCENTAJE_RESERVA}% mínimo`);
+                console.log('💰 RECAUDO: Solo se suma el monto abonado, no el total');
+                console.log('🔄 Modificar reserva: Solo suma el excedente');
                 console.log('📅 Conciliación: Todas | Hoy | Día específico | Rango de fechas');
-                console.log('📝 Las fechas se guardan en formato ISO (YYYY-MM-DD)');
             }
 
             init();
@@ -3003,16 +3544,14 @@
             if (!localStorage.getItem(STORAGE_KEY)) {
                 setTimeout(() => {
                     showModal('🎵 Bienvenido',
-                        `Sistema multi-zona con conciliación por fechas.\n\n` +
+                        `Sistema multi-zona con recaudo correcto.\n\n` +
+                        `💰 IMPORTANTE:\n` +
+                        `• Al reservar, se suma SOLO el monto abonado (${PORCENTAJE_RESERVA}% mínimo)\n` +
+                        `• Al modificar, se suma SOLO el excedente\n` +
+                        `• El total recaudado = suma de abonos = valor real de la venta\n\n` +
                         `🏛️ ${zonas.length} zonas\n` +
                         `🪑 ${seats.length} puestos\n` +
-                        `💳 ${Object.keys(FORMAS_PAGO).length} métodos de pago\n` +
-                        `📦 Compra de 1 a ${MAX_PUESTOS_MULTI} puestos\n\n` +
-                        `📅 La conciliación permite filtrar por:\n` +
-                        `• Todas las ventas\n` +
-                        `• Ventas de hoy\n` +
-                        `• Día específico\n` +
-                        `• Rango de fechas`
+                        `💳 ${Object.keys(FORMAS_PAGO).length} métodos de pago`
                     );
                 }, 500);
             }
