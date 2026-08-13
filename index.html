@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Venta de Concierto - Sistema de Zonas</title>
-    
-    <!-- Favicon -->
+    <title>Venta de Concierto - Multi-Compra</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎫</text></svg>">
-    
     <style>
         /* ===== RESET Y BASE ===== */
         * {
@@ -102,29 +99,29 @@
         .summary {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             flex-wrap: wrap;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border-radius: 15px;
-            padding: 15px 25px;
-            margin-bottom: 20px;
+            padding: 12px 20px;
+            margin-bottom: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .summary-item {
             text-align: center;
-            min-width: 60px;
+            min-width: 55px;
         }
 
         .summary-item .number {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: #ffd700;
         }
 
         .summary-item .label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #ccc;
             display: block;
         }
@@ -142,7 +139,7 @@
             display: inline-block;
             padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: bold;
             margin-top: 3px;
         }
@@ -168,7 +165,7 @@
         }
 
         .storage-bar-container {
-            width: 80px;
+            width: 70px;
             height: 5px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 3px;
@@ -193,7 +190,7 @@
         }
 
         .storage-detail {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: #888;
             display: block;
             margin-top: 2px;
@@ -203,10 +200,10 @@
         .controls {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 20px;
-            padding: 15px;
+            margin-bottom: 15px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -215,10 +212,10 @@
         .controls select,
         .controls button,
         .controls input {
-            padding: 10px 16px;
+            padding: 8px 14px;
             border-radius: 8px;
             border: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -226,7 +223,7 @@
         .controls select {
             background: #2a2a5e;
             color: #fff;
-            min-width: 160px;
+            min-width: 140px;
         }
 
         .controls select:disabled {
@@ -237,12 +234,18 @@
         .controls input {
             background: #2a2a5e;
             color: #fff;
-            min-width: 140px;
+            min-width: 120px;
             cursor: text;
         }
 
         .controls input::placeholder {
             color: #888;
+        }
+
+        .controls input[type="number"] {
+            min-width: 70px;
+            max-width: 80px;
+            text-align: center;
         }
 
         .btn-buy {
@@ -299,6 +302,16 @@
             transform: scale(1.05);
         }
 
+        .btn-conciliacion {
+            background: #0d6efd;
+            color: #fff;
+        }
+
+        .btn-conciliacion:hover {
+            background: #0b5ed7;
+            transform: scale(1.05);
+        }
+
         .btn-export-data {
             background: #4a6fa5;
             color: #fff;
@@ -330,22 +343,12 @@
         }
 
         .btn-zona {
-            background: #0d6efd;
+            background: #fd7e14;
             color: #fff;
         }
 
         .btn-zona:hover {
-            background: #0b5ed7;
-            transform: scale(1.05);
-        }
-
-        .btn-zona-danger {
-            background: #dc3545;
-            color: #fff;
-        }
-
-        .btn-zona-danger:hover {
-            background: #c82333;
+            background: #e96b0a;
             transform: scale(1.05);
         }
 
@@ -353,22 +356,22 @@
         .zona-filtro {
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
-            margin-bottom: 15px;
-            padding: 10px;
+            margin-bottom: 12px;
+            padding: 8px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 10px;
         }
 
         .zona-filtro button {
-            padding: 6px 16px;
+            padding: 5px 14px;
             border-radius: 20px;
             border: 2px solid rgba(255, 255, 255, 0.1);
             background: rgba(255, 255, 255, 0.05);
             color: #ccc;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             transition: all 0.3s ease;
         }
 
@@ -394,21 +397,21 @@
         /* ===== GRID ===== */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 8px;
+            margin-top: 12px;
         }
 
         .seat {
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            padding: 10px 6px;
+            padding: 8px 5px;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
-            min-height: 75px;
+            min-height: 70px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -422,37 +425,58 @@
         }
 
         .seat .seat-number {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #ccc;
         }
 
         .seat .seat-mesa {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #888;
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
         .seat .seat-zona {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: #666;
             margin-top: 1px;
         }
 
         .seat .seat-price {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: #4fc3f7;
-            margin-top: 2px;
+            margin-top: 1px;
             font-weight: bold;
         }
 
         .seat .seat-buyer {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: #666;
             margin-top: 2px;
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        .seat .seat-selected {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ffd700;
+            color: #1a1a4e;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #1a1a4e;
+        }
+
+        .seat .seat-selected.active {
+            display: flex;
         }
 
         .seat.available {
@@ -487,12 +511,19 @@
             color: #ffd700;
         }
 
+        .seat.selected {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.25);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            transform: scale(1.02);
+        }
+
         .seat .badge {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             background: rgba(0, 0, 0, 0.5);
-            padding: 2px 8px;
+            padding: 2px 6px;
             border-radius: 10px;
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
         .seat .badge.sold-badge {
@@ -551,17 +582,17 @@
             background: #1a1a4e;
             border-radius: 20px;
             padding: 30px;
-            max-width: 500px;
-            width: 90%;
+            max-width: 580px;
+            width: 92%;
             text-align: center;
             border: 1px solid rgba(255, 215, 0, 0.3);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-            max-height: 90vh;
+            max-height: 92vh;
             overflow-y: auto;
         }
 
         .modal h2 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-bottom: 10px;
             color: #ffd700;
         }
@@ -569,7 +600,7 @@
         .modal p {
             color: #ccc;
             margin-bottom: 15px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             white-space: pre-line;
         }
 
@@ -611,11 +642,126 @@
             flex: 1;
         }
 
+        /* ===== FILTRO DE CONCILIACIÓN ===== */
+        .filtro-conciliacion {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .filtro-conciliacion .filtro-titulo {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .filtro-conciliacion .filtro-opciones {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filtro-conciliacion .filtro-opciones button {
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #aaa;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .filtro-conciliacion .filtro-opciones button:hover {
+            border-color: #ffd700;
+            color: #fff;
+        }
+
+        .filtro-conciliacion .filtro-opciones button.active {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+
+        .filtro-conciliacion .filtro-fechas {
+            display: none;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .filtro-conciliacion .filtro-fechas.active {
+            display: flex;
+        }
+
+        .filtro-conciliacion .filtro-fechas .form-group {
+            flex: 1;
+            min-width: 120px;
+            text-align: left;
+        }
+
+        .filtro-conciliacion .filtro-fechas .form-group label {
+            display: block;
+            color: #aaa;
+            font-size: 0.7rem;
+            margin-bottom: 4px;
+        }
+
+        .filtro-conciliacion .filtro-fechas .form-group input {
+            width: 100%;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #0a0a2a;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+
+        .filtro-conciliacion .filtro-fechas .form-group input:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+
+        .filtro-conciliacion .btn-aplicar-filtro {
+            background: #ffd700;
+            color: #1a1a4e;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .filtro-conciliacion .btn-aplicar-filtro:hover {
+            transform: scale(1.05);
+        }
+
+        .filtro-conciliacion .filtro-info {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .filtro-conciliacion .filtro-info span {
+            color: #ffd700;
+        }
+
         .modal .btn-close {
             background: #ffd700;
             color: #1a1a4e;
             border: none;
-            padding: 10px 35px;
+            padding: 10px 30px;
             border-radius: 8px;
             font-size: 0.9rem;
             font-weight: bold;
@@ -638,6 +784,11 @@
             color: #fff;
         }
 
+        .modal .btn-close.success {
+            background: #51cf66;
+            color: #fff;
+        }
+
         .modal .modal-actions {
             display: flex;
             gap: 10px;
@@ -646,14 +797,116 @@
             flex-wrap: wrap;
         }
 
+        /* ===== CONCILIACIÓN ===== */
+        .conciliacion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .conciliacion-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .conciliacion-item .metodo {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 4px;
+        }
+
+        .conciliacion-item .total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .conciliacion-item .cantidad {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .conciliacion-total {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .conciliacion-total .label {
+            color: #aaa;
+            font-size: 0.8rem;
+        }
+
+        .conciliacion-total .number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .conciliacion-resumen-fechas {
+            font-size: 0.75rem;
+            color: #888;
+            margin: 8px 0;
+        }
+
+        /* ===== TIMER EN MODAL ===== */
+        .timer-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 10px 0;
+        }
+
+        .timer-container .timer-icon {
+            font-size: 1.2rem;
+        }
+
+        .timer-container .timer-count {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffd700;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .timer-container .timer-label {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .timer-container .timer-status {
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 12px;
+            background: rgba(81, 207, 102, 0.2);
+            color: #51cf66;
+        }
+
+        .timer-container .timer-status.paused {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+        }
+
         /* ===== DEBUG ===== */
         .debug-panel {
-            margin-top: 15px;
-            padding: 12px;
+            margin-top: 12px;
+            padding: 10px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             border: 1px solid #444;
-            max-height: 150px;
+            max-height: 120px;
             overflow-y: auto;
             display: none;
         }
@@ -663,7 +916,7 @@
         }
 
         .debug-panel .log-entry {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #aaa;
             padding: 2px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -685,11 +938,11 @@
         /* ===== FOOTER ===== */
         .footer {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 25px;
             color: #666;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 15px;
+            padding-top: 12px;
         }
 
         ::-webkit-scrollbar {
@@ -703,18 +956,56 @@
             border-radius: 10px;
         }
 
+        .info-multi {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-multi .count {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* ===== MESA INFO ===== */
+        .mesa-info {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 4px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .mesa-info.success {
+            color: #51cf66;
+        }
+
+        .mesa-info.warning {
+            color: #ffd700;
+        }
+
+        .mesa-info.error {
+            color: #ff6b6b;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
             h1 {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
             }
             .grid {
-                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-                gap: 6px;
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 5px;
             }
             .seat {
-                min-height: 60px;
-                padding: 6px 4px;
+                min-height: 55px;
+                padding: 5px 3px;
             }
             .controls {
                 flex-direction: column;
@@ -725,25 +1016,39 @@
                 min-width: 100%;
             }
             .summary {
-                gap: 10px;
-                padding: 10px;
+                gap: 8px;
+                padding: 8px 12px;
             }
             .summary-item .number {
-                font-size: 1.2rem;
+                font-size: 1rem;
             }
             .modal {
-                padding: 20px;
+                padding: 15px;
             }
             .modal .form-row {
                 flex-direction: column;
                 gap: 0;
             }
             .storage-bar-container {
-                width: 60px;
+                width: 50px;
             }
             .zona-filtro button {
-                font-size: 0.7rem;
-                padding: 4px 10px;
+                font-size: 0.65rem;
+                padding: 3px 8px;
+            }
+            .conciliacion-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            .controls input[type="number"] {
+                min-width: 60px;
+                max-width: 70px;
+            }
+            .timer-container {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .filtro-conciliacion .filtro-fechas .form-group {
+                min-width: 100%;
             }
         }
     </style>
@@ -751,20 +1056,18 @@
 <body>
     <div class="container">
         <h1>🎫 Venta de Concierto</h1>
-        <p class="subtitle">Múltiples zonas · Precios diferenciados · Gestión de puestos</p>
+        <p class="subtitle">Múltiples zonas · Precios diferenciados · Compra múltiple · Conciliación por fechas</p>
 
-        <!-- ===== BANNER ===== -->
         <div class="warning-banner" id="storageWarning">
             <h3>⚠️ ALMACENAMIENTO CASI LLENO</h3>
-            <p id="storageWarningMessage">El espacio de almacenamiento está llegando a su límite.</p>
-            <button class="btn-export-urgent" onclick="window.exportarDatosUrgente()">💾 Exportar datos ahora</button>
+            <p id="storageWarningMessage">Exporta tus datos para evitar pérdidas.</p>
+            <button class="btn-export-urgent" onclick="window.exportarDatosUrgente()">💾 Exportar ahora</button>
         </div>
 
-        <!-- ===== RESUMEN ===== -->
         <div class="summary" id="summary">
             <div class="summary-item">
                 <span class="number" id="totalSeats">0</span>
-                <span class="label">Total puestos</span>
+                <span class="label">Total</span>
             </div>
             <div class="summary-item">
                 <span class="number available" id="availableSeats">0</span>
@@ -780,16 +1083,16 @@
             </div>
             <div class="summary-item">
                 <span class="number" id="totalVentas" style="color: #4fc3f7;">0</span>
-                <span class="label">Total ventas</span>
+                <span class="label">Ventas</span>
             </div>
             <div class="summary-item">
                 <span class="number" id="totalRecaudado" style="color: #51cf66;">$0</span>
-                <span class="label">Total recaudado</span>
+                <span class="label">Recaudado</span>
             </div>
             <div class="summary-item">
-                <span class="number" id="storageStatus" style="font-size: 1.5rem;">🟢</span>
-                <span class="label">Almacenamiento</span>
-                <span class="storage-indicator green" id="storageIndicator">Excelente</span>
+                <span class="number" id="storageStatus" style="font-size: 1.3rem;">🟢</span>
+                <span class="label">Storage</span>
+                <span class="storage-indicator green" id="storageIndicator">OK</span>
                 <div class="storage-bar-container">
                     <div class="fill" id="storageBar" style="width: 0%;"></div>
                 </div>
@@ -797,42 +1100,45 @@
             </div>
         </div>
 
-        <!-- ===== FILTRO DE ZONAS ===== -->
         <div class="zona-filtro" id="zonaFiltro">
             <button class="active" data-zona="todas">🌐 Todas</button>
         </div>
 
-        <!-- ===== CONTROLES ===== -->
         <div class="controls">
             <select id="mesaSelect">
-                <option value="">Selecciona una mesa...</option>
+                <option value="">Selecciona mesa...</option>
             </select>
+            <div id="mesaInfo" class="mesa-info">✅ Selecciona una zona para ver mesas disponibles</div>
             <select id="zonaSelect">
-                <option value="">Filtrar por zona...</option>
+                <option value="">Todas las zonas</option>
             </select>
-            <button class="btn-palco" id="btnPalco">🎪 Comprar Palco</button>
-            <button class="btn-buy" id="btnBuy">🎟️ Comprar Individual</button>
-            <button class="btn-excel" id="btnExcel">📊 Informe Excel</button>
+            <button class="btn-palco" id="btnPalco">🎪 Palco</button>
+            <button class="btn-buy" id="btnBuy">🎟️ Individual</button>
+            <div class="info-multi">
+                <span>📦</span>
+                <span>Cantidad:</span>
+                <input type="number" id="cantidadPuestos" value="1" min="1" max="9" style="min-width:50px;max-width:60px;padding:4px 8px;background:#0a0a2a;color:#fff;border:1px solid #444;border-radius:4px;text-align:center;" />
+                <span style="font-size:0.65rem;color:#888;">(1-9)</span>
+            </div>
+            <button class="btn-excel" id="btnExcel">📊 Excel</button>
+            <button class="btn-conciliacion" id="btnConciliacion">🏦 Conciliar</button>
             <button class="btn-export-data" id="btnExportData">💾 Exportar</button>
             <button class="btn-import-data" id="btnImportData">📂 Importar</button>
-            <button class="btn-zona" id="btnAgregarZona">➕ Nueva Zona</button>
-            <input type="password" id="resetKeyInput" placeholder="🔑 Clave" style="min-width: 120px;" />
+            <button class="btn-zona" id="btnAgregarZona">➕ Zona</button>
+            <input type="password" id="resetKeyInput" placeholder="🔑 Clave" style="min-width: 100px;" />
             <button class="btn-reset" id="btnReset">🔄 Reiniciar</button>
-            <button class="btn-debug" id="btnDebug">🐛 Debug</button>
+            <button class="btn-debug" id="btnDebug">🐛</button>
         </div>
 
-        <!-- ===== GRID ===== -->
         <div class="grid" id="seatGrid"></div>
 
-        <!-- ===== DEBUG ===== -->
         <div class="debug-panel" id="debugPanel">
-            <h4 style="color: #ffd700; margin-bottom: 8px;">📋 Registro</h4>
+            <h4 style="color: #ffd700; margin-bottom: 6px; font-size: 0.8rem;">📋 Registro</h4>
             <div id="debugLogs"></div>
         </div>
 
-        <!-- ===== FOOTER ===== -->
         <div class="footer">
-            🎵 Sistema multi-zona · Datos guardados automáticamente · Clave: 12436219*
+            🎵 Sistema multi-zona · Compra múltiple (1-9 puestos) · Formas de pago · Conciliación por fechas · Clave: 12436219*
         </div>
     </div>
 
@@ -841,16 +1147,46 @@
         <div class="modal">
             <h2 id="modalTitle">✅ ¡Venta realizada!</h2>
             <p id="modalMessage">Has comprado el puesto correctamente.</p>
+            
+            <div class="timer-container" id="timerContainer">
+                <span class="timer-icon">⏰</span>
+                <span class="timer-label">Tiempo restante:</span>
+                <span class="timer-count" id="timerCount">30</span>
+                <span class="timer-label">segundos</span>
+                <span class="timer-status" id="timerStatus">⏱️ Activo</span>
+            </div>
+            
             <div id="modalForm" style="display: none;">
                 <div class="form-group">
                     <label for="buyerName">Nombre completo:</label>
                     <input type="text" id="buyerName" placeholder="Ej: Juan Pérez" required />
                 </div>
                 <div class="form-group">
-                    <label for="buyerId">Número de identificación:</label>
+                    <label for="buyerId">Identificación:</label>
                     <input type="text" id="buyerId" placeholder="Ej: 1234567890" required />
                 </div>
+                <div class="form-group">
+                    <label for="formaPago">Forma de pago:</label>
+                    <select id="formaPago" required>
+                        <option value="efectivo">💵 Efectivo</option>
+                        <option value="debito">💳 Tarjeta Débito</option>
+                        <option value="credito">💳 Tarjeta Crédito</option>
+                        <option value="transferencia">🏦 Transferencia Bancaria</option>
+                        <option value="nequi">📱 Nequi</option>
+                        <option value="daviplata">📱 Daviplata</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="montoRecibido" style="color: #4fc3f7;">Monto recibido ($):</label>
+                    <input type="number" id="montoRecibido" placeholder="Ej: 350000" min="0" step="1000" />
+                    <small style="color: #888; font-size: 0.7rem;">Opcional: Para efectivo, registrar monto recibido para vueltas</small>
+                </div>
+                <div id="resumenCompra" style="background:rgba(255,215,0,0.05);border-radius:8px;padding:10px;margin-top:10px;border:1px solid rgba(255,215,0,0.1);">
+                    <p style="font-size:0.8rem;color:#aaa;margin:0;">📋 Resumen de compra</p>
+                    <p id="resumenText" style="font-size:0.9rem;color:#ffd700;margin:5px 0 0 0;"></p>
+                </div>
             </div>
+            
             <div id="modalZonaForm" style="display: none;">
                 <div class="form-group">
                     <label for="zonaNombre">Nombre de la zona:</label>
@@ -858,30 +1194,66 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="zonaMesas">Número de mesas:</label>
-                        <input type="number" id="zonaMesas" placeholder="Ej: 10" min="1" required />
+                        <label for="zonaMesas">Mesas:</label>
+                        <input type="number" id="zonaMesas" placeholder="10" min="1" required />
                     </div>
                     <div class="form-group">
-                        <label for="zonaPuestos">Puestos por mesa:</label>
-                        <input type="number" id="zonaPuestos" placeholder="Ej: 10" min="1" required />
+                        <label for="zonaPuestos">Puestos/mesa:</label>
+                        <input type="number" id="zonaPuestos" placeholder="10" min="1" required />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="zonaPrecio">Precio unitario ($):</label>
-                    <input type="number" id="zonaPrecio" placeholder="Ej: 350000" min="0" required />
+                    <input type="number" id="zonaPrecio" placeholder="350000" min="0" required />
                 </div>
                 <div class="form-group">
-                    <label for="zonaColor">Color identificador:</label>
+                    <label for="zonaColor">Color:</label>
                     <input type="color" id="zonaColor" value="#ffb74d" />
                 </div>
                 <div class="form-group">
-                    <label for="zonaNumeracion">Tipo de numeración:</label>
+                    <label for="zonaNumeracion">Numeración:</label>
                     <select id="zonaNumeracion">
                         <option value="consecutivo">Consecutivo (1, 2, 3...)</option>
-                        <option value="personalizado">Personalizado (no consecutivo)</option>
+                        <option value="personalizado">Personalizado</option>
                     </select>
                 </div>
             </div>
+            
+            <div id="modalConciliacion" style="display: none;">
+                <div class="filtro-conciliacion">
+                    <span class="filtro-titulo">📅 Filtrar por fecha</span>
+                    <div class="filtro-opciones">
+                        <button class="active" data-filtro="todas">🌐 Todas</button>
+                        <button data-filtro="hoy">📅 Hoy</button>
+                        <button data-filtro="dia">📅 Día específico</button>
+                        <button data-filtro="rango">📆 Rango de fechas</button>
+                    </div>
+                    <div class="filtro-fechas" id="filtroDia">
+                        <div class="form-group">
+                            <label for="fechaDia">Fecha:</label>
+                            <input type="date" id="fechaDia" />
+                        </div>
+                    </div>
+                    <div class="filtro-fechas" id="filtroRango">
+                        <div class="form-group">
+                            <label for="fechaInicio">Fecha inicio:</label>
+                            <input type="date" id="fechaInicio" />
+                        </div>
+                        <div class="form-group">
+                            <label for="fechaFin">Fecha fin:</label>
+                            <input type="date" id="fechaFin" />
+                        </div>
+                    </div>
+                    <button class="btn-aplicar-filtro" id="btnAplicarFiltro">🔍 Aplicar filtro</button>
+                    <div class="filtro-info" id="filtroInfo">Mostrando: <span>Todas las ventas</span></div>
+                </div>
+                <div id="conciliacionContent"></div>
+                <div class="modal-actions">
+                    <button class="btn-close success" id="btnConciliacionExcel">📊 Exportar Excel</button>
+                    <button class="btn-close secondary" id="btnCerrarConciliacion">🔒 Cerrar</button>
+                </div>
+            </div>
+            
             <div class="modal-actions">
                 <button class="btn-close" id="modalBtn">Aceptar</button>
                 <button class="btn-close secondary" id="modalCancelBtn" style="display: none;">Cancelar</button>
@@ -894,10 +1266,20 @@
             // ============================================================
             // ===== CONFIGURACIÓN =====
             // ============================================================
-            const STORAGE_KEY = 'concierto_ventas_v2';
+            const STORAGE_KEY = 'concierto_ventas_v4';
             const RESET_KEY = '12436219*';
+            const MAX_PUESTOS_MULTI = 9;
+            const TIEMPO_BLOQUEO = 30;
 
-            // ===== DEFINICIÓN DE ZONAS =====
+            const FORMAS_PAGO = {
+                efectivo: { label: '💵 Efectivo', icon: '💵' },
+                debito: { label: '💳 Tarjeta Débito', icon: '💳' },
+                credito: { label: '💳 Tarjeta Crédito', icon: '💳' },
+                transferencia: { label: '🏦 Transferencia', icon: '🏦' },
+                nequi: { label: '📱 Nequi', icon: '📱' },
+                daviplata: { label: '📱 Daviplata', icon: '📱' }
+            };
+
             const ZONAS_PREDEFINIDAS = [{
                 id: 'palco-socios',
                 nombre: '🏛️ Palco Socios',
@@ -946,14 +1328,21 @@
             let seats = [];
             let zonas = [];
             let ventas = [];
-            let selectedSeatIndex = null;
+            let selectedSeats = [];
             let timeoutBlock = null;
+            let timerInterval = null;
+            let timerSegundos = TIEMPO_BLOQUEO;
+            let timerPausado = false;
             let zonaFiltroActual = 'todas';
+            let isModalOpen = false;
+            let filtroConciliacion = 'todas';
+            
             let modalConfig = {
                 isConfirm: false,
                 onConfirm: null,
                 showForm: false,
-                showZonaForm: false
+                showZonaForm: false,
+                showConciliacion: false
             };
 
             // ============================================================
@@ -961,17 +1350,20 @@
             // ============================================================
             const gridEl = document.getElementById('seatGrid');
             const mesaSelect = document.getElementById('mesaSelect');
+            const mesaInfo = document.getElementById('mesaInfo');
             const zonaSelect = document.getElementById('zonaSelect');
             const btnBuy = document.getElementById('btnBuy');
             const btnPalco = document.getElementById('btnPalco');
             const btnReset = document.getElementById('btnReset');
             const btnExcel = document.getElementById('btnExcel');
+            const btnConciliacion = document.getElementById('btnConciliacion');
             const btnDebug = document.getElementById('btnDebug');
             const btnExportData = document.getElementById('btnExportData');
             const btnImportData = document.getElementById('btnImportData');
             const btnAgregarZona = document.getElementById('btnAgregarZona');
             const resetKeyInput = document.getElementById('resetKeyInput');
             const zonaFiltro = document.getElementById('zonaFiltro');
+            const cantidadPuestos = document.getElementById('cantidadPuestos');
 
             const totalSeatsEl = document.getElementById('totalSeats');
             const availableSeatsEl = document.getElementById('availableSeats');
@@ -992,8 +1384,13 @@
             const modalMessage = document.getElementById('modalMessage');
             const modalForm = document.getElementById('modalForm');
             const modalZonaForm = document.getElementById('modalZonaForm');
+            const modalConciliacion = document.getElementById('modalConciliacion');
+            const conciliacionContent = document.getElementById('conciliacionContent');
             const buyerName = document.getElementById('buyerName');
             const buyerId = document.getElementById('buyerId');
+            const formaPago = document.getElementById('formaPago');
+            const montoRecibido = document.getElementById('montoRecibido');
+            const resumenText = document.getElementById('resumenText');
             const zonaNombre = document.getElementById('zonaNombre');
             const zonaMesas = document.getElementById('zonaMesas');
             const zonaPuestos = document.getElementById('zonaPuestos');
@@ -1002,6 +1399,15 @@
             const zonaNumeracion = document.getElementById('zonaNumeracion');
             const modalBtn = document.getElementById('modalBtn');
             const modalCancelBtn = document.getElementById('modalCancelBtn');
+            const btnConciliacionExcel = document.getElementById('btnConciliacionExcel');
+            const btnCerrarConciliacion = document.getElementById('btnCerrarConciliacion');
+            const btnAplicarFiltro = document.getElementById('btnAplicarFiltro');
+            const filtroInfo = document.getElementById('filtroInfo');
+            const timerCount = document.getElementById('timerCount');
+            const timerStatus = document.getElementById('timerStatus');
+            const fechaDia = document.getElementById('fechaDia');
+            const fechaInicio = document.getElementById('fechaInicio');
+            const fechaFin = document.getElementById('fechaFin');
 
             // ============================================================
             // ===== DEBUG =====
@@ -1029,11 +1435,11 @@
                         timestamp: Date.now()
                     };
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
-                    logDebug(`✅ Estado guardado: ${ventas.length} ventas`, 'success');
+                    logDebug(`✅ Guardado: ${ventas.length} ventas`, 'success');
                     monitorStorage();
                     return true;
                 } catch (e) {
-                    logDebug(`❌ Error al guardar: ${e.message}`, 'error');
+                    logDebug(`❌ Error: ${e.message}`, 'error');
                     return false;
                 }
             }
@@ -1042,23 +1448,21 @@
                 try {
                     const data = localStorage.getItem(STORAGE_KEY);
                     if (!data) {
-                        logDebug('No hay datos guardados previamente.', 'warning');
+                        logDebug('No hay datos previos', 'warning');
                         return false;
                     }
-
                     const estado = JSON.parse(data);
                     if (!estado.seats || !Array.isArray(estado.seats)) {
                         logDebug('❌ Datos inválidos', 'error');
                         return false;
                     }
-
                     seats = estado.seats;
                     zonas = estado.zonas || [];
                     ventas = estado.ventas || [];
-                    logDebug(`✅ Datos cargados: ${ventas.length} ventas, ${zonas.length} zonas`, 'success');
+                    logDebug(`✅ Cargados: ${ventas.length} ventas, ${zonas.length} zonas`, 'success');
                     return true;
                 } catch (e) {
-                    logDebug(`❌ Error al cargar: ${e.message}`, 'error');
+                    logDebug(`❌ Error: ${e.message}`, 'error');
                     return false;
                 }
             }
@@ -1093,7 +1497,7 @@
 
             function canSaveData() {
                 try {
-                    const testKey = '_test_save_' + Date.now();
+                    const testKey = '_test_' + Date.now();
                     localStorage.setItem(testKey, 'test');
                     localStorage.removeItem(testKey);
                     return true;
@@ -1119,7 +1523,7 @@
                 storageDetailEl.textContent = sizeText;
 
                 let status = 'green';
-                let label = 'Excelente';
+                let label = 'OK';
                 let emoji = '🟢';
                 let barColor = '';
 
@@ -1130,7 +1534,7 @@
                     barColor = 'danger';
                     warningBanner.classList.add('active');
                     warningBanner.classList.add('danger');
-                    warningMessage.textContent = '⚠️ ¡ALERTA! Almacenamiento COMPLETAMENTE LLENO. Exporta tus datos inmediatamente.';
+                    warningMessage.textContent = '⚠️ ¡ALERTA! Almacenamiento COMPLETAMENTE LLENO.';
                 } else if (percentage > 75) {
                     status = 'yellow';
                     emoji = '🟡';
@@ -1138,7 +1542,7 @@
                     barColor = 'warning';
                     warningBanner.classList.add('active');
                     warningBanner.classList.remove('danger');
-                    warningMessage.textContent = `⚠️ Almacenamiento al ${percentage.toFixed(1)}%. Considera exportar tus datos.`;
+                    warningMessage.textContent = `⚠️ Almacenamiento al ${percentage.toFixed(1)}%.`;
                 } else {
                     status = 'green';
                     emoji = '🟢';
@@ -1164,15 +1568,11 @@
             };
 
             // ============================================================
-            // ===== CREAR ESTRUCTURA DE ZONAS =====
+            // ===== CREAR ESTRUCTURA =====
             // ============================================================
             function crearEstructuraZonas() {
-                // Si ya hay zonas definidas, usarlas
-                if (zonas.length > 0) {
-                    return true;
-                }
-
-                logDebug('📦 Creando estructura de zonas predefinidas...', 'info');
+                if (zonas.length > 0) return true;
+                logDebug('📦 Creando zonas predefinidas...', 'info');
                 zonas = JSON.parse(JSON.stringify(ZONAS_PREDEFINIDAS));
                 return true;
             }
@@ -1180,19 +1580,15 @@
             function generarPuestosDesdeZonas() {
                 seats = [];
                 let id = 1;
-
                 zonas.forEach(zona => {
                     for (let mesa = 1; mesa <= zona.mesas; mesa++) {
-                        // Para zonas con numeración personalizada, usamos un identificador especial
                         let numeroMesa = mesa;
                         if (zona.numeracion === 'personalizado') {
-                            // Para Preferencial usamos letras o números no consecutivos
-                            const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-                            if (zona.id === 'preferencial') {
-                                numeroMesa = letras[mesa - 1] || mesa;
-                            }
+                            const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+                                'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+                            ];
+                            numeroMesa = letras[mesa - 1] || mesa;
                         }
-
                         for (let puesto = 1; puesto <= zona.puestosPorMesa; puesto++) {
                             seats.push({
                                 id: id++,
@@ -1209,17 +1605,15 @@
                         }
                     }
                 });
-
-                logDebug(`✅ Generados ${seats.length} puestos en ${zonas.length} zonas`, 'success');
+                logDebug(`✅ Generados ${seats.length} puestos`, 'success');
                 return seats.length;
             }
 
             // ============================================================
-            // ===== AGREGAR ZONA PERSONALIZADA =====
+            // ===== AGREGAR ZONA =====
             // ============================================================
             function agregarZonaPersonalizada(nombre, mesas, puestosPorMesa, precio, color, numeracion) {
                 const id = 'zona-' + Date.now();
-
                 const nuevaZona = {
                     id: id,
                     nombre: nombre,
@@ -1229,12 +1623,9 @@
                     color: color || '#ffb74d',
                     numeracion: numeracion || 'consecutivo'
                 };
-
                 zonas.push(nuevaZona);
 
-                // Generar puestos para la nueva zona
                 let maxId = seats.length > 0 ? Math.max(...seats.map(s => s.id)) : 0;
-
                 for (let mesa = 1; mesa <= mesas; mesa++) {
                     for (let puesto = 1; puesto <= puestosPorMesa; puesto++) {
                         seats.push({
@@ -1252,33 +1643,339 @@
                     }
                 }
 
-                logDebug(`✅ Zona "${nombre}" agregada con ${mesas * puestosPorMesa} puestos`, 'success');
+                logDebug(`✅ Zona "${nombre}" creada`, 'success');
                 guardarYRenderizar();
                 actualizarFiltros();
-
                 showModal('✅ Zona creada',
-                    `Zona "${nombre}" creada exitosamente.\n\n` +
-                    `📊 Mesas: ${mesas}\n` +
-                    `🪑 Puestos por mesa: ${puestosPorMesa}\n` +
-                    `💰 Precio unitario: $${precio.toLocaleString()}\n` +
-                    `🎫 Total puestos: ${mesas * puestosPorMesa}`
+                    `Zona "${nombre}" creada.\n\n📊 Mesas: ${mesas}\n🪑 Puestos/mesa: ${puestosPorMesa}\n💰 Precio: $${precio.toLocaleString()}\n🎫 Total: ${mesas * puestosPorMesa} puestos`
                 );
+            }
+
+            // ============================================================
+            // ===== CONCILIACIÓN CON FILTRO DE FECHAS (CORREGIDO) =====
+            // ============================================================
+            
+            // Función para extraer la fecha de una venta
+            function extraerFechaVenta(fechaStr) {
+                if (!fechaStr) return null;
+                try {
+                    // Si la fecha ya está en formato ISO (YYYY-MM-DD)
+                    if (fechaStr.includes('T') && fechaStr.includes('-')) {
+                        return new Date(fechaStr);
+                    }
+                    
+                    // Si la fecha tiene formato "8/13/2026, 15:30:45"
+                    const partes = fechaStr.split(',');
+                    if (partes.length === 0) return null;
+                    
+                    // Intentar crear la fecha
+                    const fechaLimpia = partes[0].trim();
+                    const fecha = new Date(fechaLimpia);
+                    
+                    // Verificar si la fecha es válida
+                    if (isNaN(fecha.getTime())) {
+                        // Intentar con formato alternativo
+                        const partesFecha = fechaLimpia.split('/');
+                        if (partesFecha.length === 3) {
+                            // Formato MM/DD/YYYY
+                            return new Date(partesFecha[2], partesFecha[0] - 1, partesFecha[1]);
+                        }
+                        return null;
+                    }
+                    
+                    return fecha;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            // Función para comparar si dos fechas son el mismo día
+            function esMismoDia(fecha1, fecha2) {
+                if (!fecha1 || !fecha2) return false;
+                return fecha1.getFullYear() === fecha2.getFullYear() &&
+                       fecha1.getMonth() === fecha2.getMonth() &&
+                       fecha1.getDate() === fecha2.getDate();
+            }
+
+            // Función para formatear fecha a YYYY-MM-DD
+            function formatearFechaISO(fecha) {
+                if (!fecha) return '';
+                const d = new Date(fecha);
+                return d.getFullYear() + '-' + 
+                       String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+                       String(d.getDate()).padStart(2, '0');
+            }
+
+            function generarConciliacion(filtro, fechaDiaVal, fechaInicioVal, fechaFinVal) {
+                let ventasFiltradas = [];
+                let textoFiltro = 'Todas las ventas';
+
+                // Obtener fecha actual
+                const hoy = new Date();
+                const hoyStr = formatearFechaISO(hoy);
+
+                logDebug(`📅 Filtro: ${filtro}, Hoy: ${hoyStr}`, 'info');
+
+                if (filtro === 'todas') {
+                    ventasFiltradas = ventas;
+                    textoFiltro = 'Todas las ventas';
+                } else if (filtro === 'hoy') {
+                    // Filtrar ventas de hoy usando comparación de fechas
+                    ventasFiltradas = ventas.filter(v => {
+                        const fechaVenta = extraerFechaVenta(v.fecha);
+                        if (!fechaVenta) return false;
+                        return esMismoDia(fechaVenta, hoy);
+                    });
+                    textoFiltro = `Ventas de hoy (${hoy.toLocaleDateString()})`;
+                } else if (filtro === 'dia' && fechaDiaVal) {
+                    const fechaBuscar = new Date(fechaDiaVal);
+                    ventasFiltradas = ventas.filter(v => {
+                        const fechaVenta = extraerFechaVenta(v.fecha);
+                        if (!fechaVenta) return false;
+                        return esMismoDia(fechaVenta, fechaBuscar);
+                    });
+                    textoFiltro = `Ventas del ${fechaBuscar.toLocaleDateString()}`;
+                } else if (filtro === 'rango' && fechaInicioVal && fechaFinVal) {
+                    const inicio = new Date(fechaInicioVal);
+                    const fin = new Date(fechaFinVal);
+                    fin.setHours(23, 59, 59);
+                    
+                    ventasFiltradas = ventas.filter(v => {
+                        const fechaVenta = extraerFechaVenta(v.fecha);
+                        if (!fechaVenta) return false;
+                        return fechaVenta >= inicio && fechaVenta <= fin;
+                    });
+                    textoFiltro = `Ventas del ${inicio.toLocaleDateString()} al ${fin.toLocaleDateString()}`;
+                } else {
+                    ventasFiltradas = ventas;
+                    textoFiltro = 'Todas las ventas';
+                }
+
+                logDebug(`📊 Ventas filtradas: ${ventasFiltradas.length} de ${ventas.length}`, 'info');
+
+                // Generar resumen
+                const resumen = {};
+                let totalGeneral = 0;
+                let totalVentas = 0;
+
+                for (const key in FORMAS_PAGO) {
+                    resumen[key] = { total: 0, cantidad: 0 };
+                }
+
+                ventasFiltradas.forEach(v => {
+                    const metodo = v.formaPago || 'efectivo';
+                    if (!resumen[metodo]) {
+                        resumen[metodo] = { total: 0, cantidad: 0 };
+                    }
+                    resumen[metodo].total += v.precio || 0;
+                    resumen[metodo].cantidad++;
+                    totalGeneral += v.precio || 0;
+                    totalVentas++;
+                });
+
+                ventasFiltradas.forEach(v => {
+                    if (!v.formaPago) {
+                        if (!resumen['sin-registro']) {
+                            resumen['sin-registro'] = { total: 0, cantidad: 0 };
+                        }
+                        resumen['sin-registro'].total += v.precio || 0;
+                        resumen['sin-registro'].cantidad++;
+                    }
+                });
+
+                return { resumen, totalGeneral, totalVentas, textoFiltro, ventasFiltradas };
+            }
+
+            // ============================================================
+            // ===== FUNCIONES DE COMPRA CON FECHA ISO =====
+            // ============================================================
+            
+            // Función para obtener fecha actual en formato ISO para guardar
+            function obtenerFechaISO() {
+                const ahora = new Date();
+                return ahora.getFullYear() + '-' + 
+                       String(ahora.getMonth() + 1).padStart(2, '0') + '-' + 
+                       String(ahora.getDate()).padStart(2, '0') + ', ' +
+                       String(ahora.getHours()).padStart(2, '0') + ':' +
+                       String(ahora.getMinutes()).padStart(2, '0') + ':' +
+                       String(ahora.getSeconds()).padStart(2, '0');
+            }
+
+            // ============================================================
+            // ===== MODIFICAR FUNCIONES DE COMPRA PARA USAR FECHA ISO =====
+            // ============================================================
+            
+            // Modificar la función que registra ventas individuales
+            // En buyMultiple y buyPalco, cambiar:
+            // fecha: new Date().toLocaleString(),
+            // POR:
+            // fecha: obtenerFechaISO(),
+
+            // ============================================================
+            // ===== MOSTRAR CONCILIACIÓN =====
+            // ============================================================
+            function mostrarConciliacion(filtro = 'todas', fechaDiaVal = null, fechaInicioVal = null, fechaFinVal = null) {
+                if (filtro === 'dia' && !fechaDiaVal) {
+                    fechaDiaVal = document.getElementById('fechaDia').value;
+                }
+                if (filtro === 'rango' && !fechaInicioVal) {
+                    fechaInicioVal = document.getElementById('fechaInicio').value;
+                    fechaFinVal = document.getElementById('fechaFin').value;
+                }
+
+                const data = generarConciliacion(filtro, fechaDiaVal, fechaInicioVal, fechaFinVal);
+
+                document.getElementById('filtroInfo').innerHTML = `Mostrando: <span>${data.textoFiltro}</span>`;
+                if (data.totalVentas === 0) {
+                    document.getElementById('filtroInfo').innerHTML += ` (⚠️ Sin ventas en este período)`;
+                }
+
+                let html = '';
+                
+                if (data.totalVentas === 0) {
+                    html += `<p style="color:#888;font-size:0.9rem;text-align:center;padding:20px 0;">📭 No hay ventas en el período seleccionado</p>`;
+                } else {
+                    html += `<p style="font-size:0.85rem;color:#aaa;">Total ventas: ${data.totalVentas}</p>`;
+                    html += '<div class="conciliacion-grid">';
+
+                    for (const [key, value] of Object.entries(data.resumen)) {
+                        if (value.cantidad === 0) continue;
+                        const label = FORMAS_PAGO[key] ? FORMAS_PAGO[key].label : '📋 Sin registro';
+                        const porcentaje = data.totalGeneral > 0 ? ((value.total / data.totalGeneral) * 100).toFixed(1) : 0;
+                        html += `
+                            <div class="conciliacion-item">
+                                <div class="metodo">${label}</div>
+                                <div class="total">$${value.total.toLocaleString()}</div>
+                                <div class="cantidad">${value.cantidad} transacciones (${porcentaje}%)</div>
+                            </div>
+                        `;
+                    }
+
+                    html += `</div>`;
+                    html += `
+                        <div class="conciliacion-total">
+                            <div class="label">💰 TOTAL RECAUDADO</div>
+                            <div class="number">$${data.totalGeneral.toLocaleString()}</div>
+                            <div style="color:#888;font-size:0.8rem;margin-top:4px;">
+                                ${data.totalVentas} ventas · ${Object.keys(data.resumen).filter(k => data.resumen[k].cantidad > 0).length} métodos de pago
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += `<div id="conciliacionData" style="display:none;">${JSON.stringify(data)}</div>`;
+
+                conciliacionContent.innerHTML = html;
+                modalConciliacion.style.display = 'block';
+                modalForm.style.display = 'none';
+                modalZonaForm.style.display = 'none';
+                modalTitle.textContent = '🏦 Conciliación de Caja';
+                modalMessage.textContent = '';
+                modalBtn.style.display = 'none';
+                modalCancelBtn.style.display = 'none';
+                btnCerrarConciliacion.style.display = 'inline-block';
+                modal.classList.add('active');
+
+                btnConciliacionExcel.onclick = function() {
+                    const dataGuardada = JSON.parse(document.getElementById('conciliacionData').textContent);
+                    exportarConciliacionExcel(dataGuardada);
+                };
+                btnConciliacionExcel.style.display = 'inline-block';
+            }
+
+            function exportarConciliacionExcel(data) {
+                let tabla = `
+                    <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                          xmlns:x="urn:schemas-microsoft-com:office:excel" 
+                          xmlns="http://www.w3.org/TR/REC-html40">
+                    <head><meta charset="UTF-8">
+                        <style>
+                            th { background-color: #ffd700; color: #1a1a4e; font-weight: bold; padding: 8px; border: 1px solid #000; }
+                            td { padding: 6px; border: 1px solid #ccc; }
+                            .total { background-color: #f0f0f0; font-weight: bold; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>🏦 CONCILIACIÓN DE CAJA - CONCIERTO</h2>
+                        <p>Fecha de generación: ${new Date().toLocaleString()}</p>
+                        <p>${data.textoFiltro || 'Todas las ventas'}</p>
+                        <p>Total ventas: ${data.totalVentas}</p>
+                        <br/>
+                        <table>
+                            <thead><tr><th>Método de Pago</th><th>Cantidad</th><th>Total</th><th>%</th></tr></thead>
+                            <tbody>
+                `;
+
+                for (const [key, value] of Object.entries(data.resumen)) {
+                    if (value.cantidad === 0) continue;
+                    const label = FORMAS_PAGO[key] ? FORMAS_PAGO[key].label : '📋 Sin registro';
+                    const porcentaje = data.totalGeneral > 0 ? ((value.total / data.totalGeneral) * 100).toFixed(1) : 0;
+                    tabla +=
+                        `<tr><td>${label}</td><td>${value.cantidad}</td><td>$${value.total.toLocaleString()}</td><td>${porcentaje}%</td></tr>`;
+                }
+
+                tabla += `
+                            <tr class="total"><td><strong>TOTAL</strong></td><td><strong>${data.totalVentas}</strong></td><td><strong>$${data.totalGeneral.toLocaleString()}</strong></td><td><strong>100%</strong></td></tr>
+                        </tbody></table>
+                        <br/>
+                        <h3>📋 DETALLE DE VENTAS</h3>
+                        <table>
+                            <thead><tr><th>#</th><th>Fecha</th><th>Zona</th><th>Mesa</th><th>Puesto</th><th>Comprador</th><th>Pago</th><th>Precio</th></tr></thead>
+                            <tbody>
+                `;
+
+                const ventasFiltradas = data.ventasFiltradas || data.ventas || [];
+                ventasFiltradas.forEach((v, i) => {
+                    const pago = FORMAS_PAGO[v.formaPago] ? FORMAS_PAGO[v.formaPago].label : 'Sin registro';
+                    tabla +=
+                        `<tr><td>${i+1}</td><td>${v.fecha}</td><td>${v.zonaNombre}</td><td>${v.mesa}</td><td>${v.puesto}</td><td>${v.comprador}</td><td>${pago}</td><td>$${(v.precio||0).toLocaleString()}</td></tr>`;
+                });
+
+                tabla += `
+                            </tbody></table>
+                            <br/>
+                            <p><strong>Total recaudado:</strong> $${data.totalGeneral.toLocaleString()}</p>
+                            <p><strong>Total ventas:</strong> ${data.totalVentas}</p>
+                            <p><strong>Métodos de pago utilizados:</strong> ${Object.keys(data.resumen).filter(k => data.resumen[k].cantidad > 0).length}</p>
+                        </body></html>
+                `;
+
+                const blob = new Blob([tabla], { type: 'application/vnd.ms-excel;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Conciliacion_${new Date().toISOString().slice(0,10)}.xls`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showModal('✅ Exportado', 'Informe de conciliación exportado correctamente.');
             }
 
             // ============================================================
             // ===== MODAL =====
             // ============================================================
-            function showModal(title, message, showForm = false, showZonaForm = false, isConfirm = false, onConfirm = null) {
+            function showModal(title, message, showForm = false, showZonaForm = false, showConciliacion = false, isConfirm =
+                false, onConfirm = null) {
                 modalTitle.textContent = title;
                 modalMessage.textContent = message;
 
                 modalForm.style.display = showForm ? 'block' : 'none';
                 modalZonaForm.style.display = showZonaForm ? 'block' : 'none';
+                modalConciliacion.style.display = showConciliacion ? 'block' : 'none';
 
                 if (showForm) {
                     buyerName.value = '';
                     buyerId.value = '';
+                    formaPago.value = 'efectivo';
+                    montoRecibido.value = '';
+                    actualizarResumenCompra();
+                    pausarTimer();
+                } else if (!showConciliacion) {
+                    reanudarTimer();
                 }
+
                 if (showZonaForm) {
                     zonaNombre.value = '';
                     zonaMesas.value = '';
@@ -1288,45 +1985,125 @@
                     zonaNumeracion.value = 'consecutivo';
                 }
 
+                if (showConciliacion) {
+                    configurarFiltroConciliacion();
+                }
+
                 modalConfig = {
                     isConfirm: isConfirm,
                     onConfirm: onConfirm,
                     showForm: showForm,
-                    showZonaForm: showZonaForm
+                    showZonaForm: showZonaForm,
+                    showConciliacion: showConciliacion
                 };
 
-                if (isConfirm) {
+                if (showConciliacion) {
+                    modalBtn.style.display = 'none';
+                    modalCancelBtn.style.display = 'none';
+                    btnCerrarConciliacion.style.display = 'inline-block';
+                    btnCerrarConciliacion.onclick = function() {
+                        closeModal();
+                    };
+                } else if (isConfirm) {
                     modalBtn.textContent = 'Confirmar';
                     modalBtn.className = 'btn-close';
                     modalBtn.style.background = '#ffd700';
                     modalBtn.style.color = '#1a1a4e';
                     modalCancelBtn.style.display = 'inline-block';
+                    modalBtn.style.display = 'inline-block';
+                    modalBtn.onclick = function() {
+                        handleConfirm();
+                    };
+                    modalCancelBtn.onclick = function() {
+                        handleCancel();
+                    };
                 } else {
                     modalBtn.textContent = 'Aceptar';
                     modalBtn.className = 'btn-close';
                     modalBtn.style.background = '#ffd700';
                     modalBtn.style.color = '#1a1a4e';
                     modalCancelBtn.style.display = 'none';
+                    modalBtn.style.display = 'inline-block';
+                    modalBtn.onclick = function() {
+                        closeModal();
+                    };
                 }
 
+                isModalOpen = true;
                 modal.classList.add('active');
-                logDebug(`📋 Modal mostrado: "${title}"`, 'info');
+                logDebug(`📋 Modal: "${title}"`, 'info');
             }
 
             function closeModal() {
+                reanudarTimer();
                 modal.classList.remove('active');
                 modalConfig = {
                     isConfirm: false,
                     onConfirm: null,
                     showForm: false,
-                    showZonaForm: false
+                    showZonaForm: false,
+                    showConciliacion: false
                 };
+                modalBtn.style.display = 'inline-block';
+                modalCancelBtn.style.display = 'none';
+                btnCerrarConciliacion.style.display = 'none';
+                btnConciliacionExcel.style.display = 'none';
+                isModalOpen = false;
             }
 
-            function handleConfirm() {
-                logDebug('🔄 Botón Confirmar presionado', 'info');
+            // ============================================================
+            // ===== CONFIGURAR FILTRO DE CONCILIACIÓN =====
+            // ============================================================
+            function configurarFiltroConciliacion() {
+                const hoy = new Date();
+                const hoyStr = hoy.toISOString().split('T')[0];
+                if (fechaDia) fechaDia.value = hoyStr;
+                if (fechaInicio) fechaInicio.value = hoyStr;
+                if (fechaFin) fechaFin.value = hoyStr;
 
-                // Si es formulario de zona
+                document.querySelectorAll('.filtro-opciones button').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.filtro-opciones button').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        const filtro = this.dataset.filtro;
+                        document.getElementById('filtroDia').classList.toggle('active', filtro === 'dia');
+                        document.getElementById('filtroRango').classList.toggle('active', filtro === 'rango');
+                        
+                        filtroConciliacion = filtro;
+                        
+                        if (filtro === 'todas') {
+                            mostrarConciliacion('todas');
+                        } else if (filtro === 'hoy') {
+                            mostrarConciliacion('hoy');
+                        } else if (filtro === 'dia') {
+                            mostrarConciliacion('dia', document.getElementById('fechaDia').value);
+                        } else if (filtro === 'rango') {
+                            mostrarConciliacion('rango', null, document.getElementById('fechaInicio').value, document.getElementById('fechaFin').value);
+                        }
+                    });
+                });
+
+                document.getElementById('btnAplicarFiltro').addEventListener('click', function() {
+                    const filtro = document.querySelector('.filtro-opciones button.active').dataset.filtro;
+                    if (filtro === 'dia') {
+                        mostrarConciliacion('dia', document.getElementById('fechaDia').value);
+                    } else if (filtro === 'rango') {
+                        mostrarConciliacion('rango', null, document.getElementById('fechaInicio').value, document.getElementById('fechaFin').value);
+                    } else {
+                        mostrarConciliacion(filtro);
+                    }
+                });
+
+                mostrarConciliacion('todas');
+            }
+
+            // ============================================================
+            // ===== MANEJAR CONFIRMACIÓN =====
+            // ============================================================
+            function handleConfirm() {
+                logDebug('🔄 Confirmar presionado', 'info');
+
                 if (modalConfig.showZonaForm) {
                     const nombre = zonaNombre.value.trim();
                     const mesas = parseInt(zonaMesas.value);
@@ -1336,30 +2113,25 @@
                     const numeracion = zonaNumeracion.value;
 
                     if (!nombre || !mesas || !puestos || !precio) {
-                        showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.', false, true, false);
+                        showModal('⚠️ Datos incompletos', 'Completa todos los campos.', false, true, false);
                         return;
                     }
-
                     if (mesas < 1 || puestos < 1 || precio < 0) {
-                        showModal('⚠️ Datos inválidos', 'Los valores deben ser positivos.', false, true, false);
+                        showModal('⚠️ Datos inválidos', 'Valores deben ser positivos.', false, true, false);
                         return;
                     }
-
                     closeModal();
                     agregarZonaPersonalizada(nombre, mesas, puestos, precio, color, numeracion);
                     return;
                 }
 
-                // Si es formulario de compra
                 if (modalConfig.showForm) {
                     const nombre = buyerName.value.trim();
                     const id = buyerId.value.trim();
                     if (!nombre || !id) {
-                        logDebug('⚠️ Datos incompletos', 'warning');
-                        showModal('⚠️ Datos incompletos', 'Por favor, completa todos los campos.', true, false);
+                        showModal('⚠️ Datos incompletos', 'Completa todos los campos.', true, false);
                         return;
                     }
-                    logDebug(`✅ Datos del formulario: ${nombre} - ${id}`, 'success');
                 }
 
                 if (!modalConfig.isConfirm) {
@@ -1368,6 +2140,7 @@
                 }
 
                 const callback = modalConfig.onConfirm;
+                cancelarTimer();
                 closeModal();
 
                 if (callback && typeof callback === 'function') {
@@ -1384,24 +2157,125 @@
             }
 
             function handleCancel() {
-                logDebug('❌ Confirmación cancelada', 'warning');
+                logDebug('❌ Cancelado por usuario', 'warning');
+                reanudarTimer();
                 closeModal();
             }
 
-            modalBtn.addEventListener('click', handleConfirm);
-            modalCancelBtn.addEventListener('click', handleCancel);
-
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    handleCancel();
+            // ============================================================
+            // ===== SISTEMA DE PAUSA/REANUDACIÓN DEL TIMER =====
+            // ============================================================
+            function pausarTimer() {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    timerPausado = true;
+                    timerStatus.textContent = '⏸️ Pausado';
+                    timerStatus.className = 'timer-status paused';
+                    logDebug(`⏸️ Temporizador PAUSADO - ${timerSegundos}s restantes`, 'warning');
                 }
-            });
+            }
+
+            function reanudarTimer() {
+                if (timerPausado && timerSegundos > 0) {
+                    timerPausado = false;
+                    timerStatus.textContent = '⏱️ Activo';
+                    timerStatus.className = 'timer-status';
+                    iniciarTimer();
+                    logDebug(`▶️ Temporizador REANUDADO - ${timerSegundos}s restantes`, 'success');
+                }
+            }
+
+            function cancelarTimer() {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                timerPausado = false;
+                timerSegundos = TIEMPO_BLOQUEO;
+                timerStatus.textContent = '✅ Completado';
+                timerStatus.className = 'timer-status';
+                logDebug(`✅ Temporizador CANCELADO (compra completada)`, 'success');
+            }
+
+            function iniciarTimer() {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+
+                timerCount.textContent = timerSegundos;
+                timerCount.style.color = '#ffd700';
+
+                timerInterval = setInterval(function() {
+                    if (timerPausado) return;
+                    
+                    timerSegundos--;
+                    timerCount.textContent = timerSegundos;
+
+                    if (timerSegundos <= 5) {
+                        timerCount.style.color = '#ff6b6b';
+                    } else {
+                        timerCount.style.color = '#ffd700';
+                    }
+
+                    if (timerSegundos <= 0) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        timerPausado = false;
+                        timerStatus.textContent = '⏰ Agotado';
+                        timerStatus.className = 'timer-status';
+                        
+                        if (isModalOpen) {
+                            closeModal();
+                        }
+                        
+                        showModal('⏰ Tiempo agotado',
+                            'El tiempo para completar la compra ha expirado.\n\n' +
+                            'Los puestos seleccionados han sido liberados.\n' +
+                            'Por favor, selecciona los puestos nuevamente.'
+                        );
+                        limpiarSeleccion();
+                        guardarYRenderizar();
+                        logDebug('⏰ Temporizador AGOTADO', 'error');
+                    }
+                }, 1000);
+            }
+
+            function iniciarTimerDesdeCero() {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                timerPausado = false;
+                timerSegundos = TIEMPO_BLOQUEO;
+                timerStatus.textContent = '⏱️ Activo';
+                timerStatus.className = 'timer-status';
+                timerCount.style.color = '#ffd700';
+                iniciarTimer();
+            }
+
+            // ============================================================
+            // ===== ACTUALIZAR RESUMEN =====
+            // ============================================================
+            function actualizarResumenCompra() {
+                const seatsSeleccionados = selectedSeats.map(id => seats.find(s => s.id === id)).filter(s => s);
+
+                if (seatsSeleccionados.length === 0) {
+                    resumenText.textContent = '⚠️ No hay puestos seleccionados';
+                    return;
+                }
+
+                const total = seatsSeleccionados.reduce((sum, s) => sum + (s.precio || 0), 0);
+                const puestosInfo = seatsSeleccionados.map(s => `Mesa ${s.mesa} - Puesto ${s.puesto}`).join(', ');
+
+                resumenText.textContent = `📦 ${seatsSeleccionados.length} puestos | 💰 $${total.toLocaleString()} | ${puestosInfo}`;
+            }
 
             // ============================================================
             // ===== FILTROS =====
             // ============================================================
             function actualizarFiltros() {
-                // Actualizar select de zonas
                 zonaSelect.innerHTML = '<option value="">Todas las zonas</option>';
                 zonas.forEach(z => {
                     const opt = document.createElement('option');
@@ -1410,7 +2284,6 @@
                     zonaSelect.appendChild(opt);
                 });
 
-                // Actualizar botones de filtro
                 zonaFiltro.innerHTML = '<button class="active" data-zona="todas">🌐 Todas</button>';
                 zonas.forEach(z => {
                     const btn = document.createElement('button');
@@ -1420,28 +2293,51 @@
                     zonaFiltro.appendChild(btn);
                 });
 
-                // Eventos de los botones
                 zonaFiltro.querySelectorAll('button').forEach(btn => {
                     btn.addEventListener('click', function() {
                         zonaFiltro.querySelectorAll('button').forEach(b => b.classList.remove('active'));
                         this.classList.add('active');
                         zonaFiltroActual = this.dataset.zona;
+                        limpiarSeleccion();
                         render();
                     });
                 });
             }
 
             // ============================================================
+            // ===== LIMPIAR SELECCIÓN =====
+            // ============================================================
+            function limpiarSeleccion() {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                timerPausado = false;
+                timerSegundos = TIEMPO_BLOQUEO;
+                
+                selectedSeats.forEach(id => {
+                    const seat = seats.find(s => s.id === id);
+                    if (seat && seat.estado === 'blocked') {
+                        seat.estado = 'available';
+                    }
+                });
+                selectedSeats = [];
+                if (timeoutBlock) {
+                    clearTimeout(timeoutBlock);
+                    timeoutBlock = null;
+                }
+                logDebug('🧹 Selección limpiada', 'info');
+            }
+
+            // ============================================================
             // ===== RENDERIZAR =====
             // ============================================================
             function render() {
-                // Filtrar puestos por zona seleccionada
                 let seatsFiltrados = seats;
                 if (zonaFiltroActual !== 'todas') {
                     seatsFiltrados = seats.filter(s => s.zonaId === zonaFiltroActual);
                 }
 
-                // Actualizar resumen
                 const total = seats.length;
                 const disponibles = seats.filter(s => s.estado === 'available').length;
                 const vendidos = seats.filter(s => s.estado === 'sold').length;
@@ -1453,21 +2349,18 @@
                 blockedSeatsEl.textContent = bloqueados;
                 totalVentasEl.textContent = ventas.length;
 
-                // Calcular total recaudado
                 let totalRecaudado = 0;
                 ventas.forEach(v => {
-                    const seat = seats.find(s => s.mesa === v.mesa && s.puesto === v.puesto && s.zonaId === v.zonaId);
-                    if (seat) {
-                        totalRecaudado += seat.precio || 0;
-                    }
+                    totalRecaudado += v.precio || 0;
                 });
                 totalRecaudadoEl.textContent = '$' + totalRecaudado.toLocaleString();
 
-                // Actualizar select de mesas
-                mesaSelect.innerHTML = '<option value="">Selecciona una mesa...</option>';
+                mesaSelect.innerHTML = '<option value="">Selecciona mesa...</option>';
                 const mesasUnicas = {};
+                let mesasCompletas = 0;
+                
                 seatsFiltrados.forEach(s => {
-                    const key = s.zonaId + '-' + s.mesa;
+                    const key = s.zonaId + '|' + s.mesa;
                     if (!mesasUnicas[key]) {
                         mesasUnicas[key] = {
                             zonaId: s.zonaId,
@@ -1475,7 +2368,8 @@
                             mesa: s.mesa,
                             disponibles: 0,
                             total: 0,
-                            precio: s.precio
+                            precio: s.precio,
+                            estaCompleta: false
                         };
                     }
                     mesasUnicas[key].total++;
@@ -1483,21 +2377,50 @@
                 });
 
                 Object.values(mesasUnicas).forEach(m => {
+                    if (m.disponibles === m.total && m.total > 0) {
+                        m.estaCompleta = true;
+                        mesasCompletas++;
+                    }
+                });
+
+                Object.values(mesasUnicas).forEach(m => {
                     const opt = document.createElement('option');
                     opt.value = m.zonaId + '|' + m.mesa;
-                    const disponiblesLabel = m.disponibles > 0 ? `${m.disponibles} libres` : 'COMPLETA';
-                    opt.textContent = `${m.zonaNombre} - Mesa ${m.mesa} (${disponiblesLabel}) - $${m.precio.toLocaleString()}`;
-                    if (m.disponibles === 0) opt.disabled = true;
+                    const estadoLabel = m.estaCompleta ? '✅ COMPLETA' : `❌ ${m.disponibles}/${m.total} libres`;
+                    opt.textContent = `${m.zonaNombre} - Mesa ${m.mesa} (${estadoLabel}) - $${m.precio.toLocaleString()}`;
+                    if (!m.estaCompleta) {
+                        opt.disabled = true;
+                        opt.style.color = '#666';
+                    }
                     mesaSelect.appendChild(opt);
                 });
 
-                // Renderizar grid
+                if (Object.keys(mesasUnicas).length === 0) {
+                    mesaInfo.textContent = '📋 No hay mesas en esta zona';
+                    mesaInfo.className = 'mesa-info warning';
+                    btnPalco.disabled = true;
+                } else if (mesasCompletas === 0) {
+                    mesaInfo.textContent = `⚠️ Hay ${Object.keys(mesasUnicas).length} mesas, pero ninguna está completa para palco`;
+                    mesaInfo.className = 'mesa-info error';
+                    btnPalco.disabled = true;
+                } else {
+                    mesaInfo.textContent = `✅ ${mesasCompletas} mesas completas disponibles (de ${Object.keys(mesasUnicas).length} totales)`;
+                    mesaInfo.className = 'mesa-info success';
+                    btnPalco.disabled = false;
+                }
+
                 gridEl.innerHTML = '';
-                seatsFiltrados.forEach((seat, index) => {
+                seatsFiltrados.forEach((seat) => {
                     const div = document.createElement('div');
                     const claseZona = 'zona-' + (seat.zonaId || 'personalizada');
                     div.className = `seat ${seat.estado} ${claseZona}`;
                     div.style.borderLeftColor = seat.color || '#ffb74d';
+                    div.dataset.seatId = seat.id;
+
+                    const isSelected = selectedSeats.includes(seat.id);
+                    if (isSelected && seat.estado === 'blocked') {
+                        div.classList.add('selected');
+                    }
 
                     const precioFormateado = '$' + (seat.precio || 0).toLocaleString();
 
@@ -1506,133 +2429,192 @@
                         <div class="seat-mesa">Mesa ${seat.mesa}</div>
                         <div class="seat-zona">${seat.zonaNombre || 'Zona'}</div>
                         <div class="seat-price">${precioFormateado}</div>
+                        ${isSelected ? `<div class="seat-selected active">${selectedSeats.indexOf(seat.id) + 1}</div>` : '<div class="seat-selected"></div>'}
                         ${seat.estado === 'sold' && seat.comprador ? `<div class="seat-buyer">${seat.comprador}</div>` : ''}
                         ${seat.estado === 'sold' ? '<div class="badge sold-badge">VENDIDO</div>' : ''}
-                        ${seat.estado === 'blocked' ? '<div class="badge blocked-badge">BLOQUEADO</div>' : ''}
+                        ${seat.estado === 'blocked' && !isSelected ? '<div class="badge blocked-badge">BLOQUEADO</div>' : ''}
                     `;
+
                     if (seat.estado === 'available') {
-                        div.addEventListener('click', () => selectSeat(index));
+                        div.addEventListener('click', () => toggleSeatSelection(seat.id));
                     }
                     gridEl.appendChild(div);
                 });
 
-                updateButtons();
+                btnBuy.disabled = selectedSeats.length === 0;
+                
+                if (selectedSeats.length > 0 && !isModalOpen && !timerInterval) {
+                    iniciarTimerDesdeCero();
+                }
             }
 
             // ============================================================
             // ===== SELECCIONAR PUESTO =====
             // ============================================================
-            function selectSeat(index) {
-                if (timeoutBlock) {
-                    clearTimeout(timeoutBlock);
-                    timeoutBlock = null;
-                    if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].estado === 'blocked') {
-                        seats[selectedSeatIndex].estado = 'available';
+            function toggleSeatSelection(seatId) {
+                const seat = seats.find(s => s.id === seatId);
+                if (!seat || seat.estado !== 'available') return;
+
+                const index = selectedSeats.indexOf(seatId);
+                const maxPuestos = parseInt(cantidadPuestos.value) || 1;
+
+                if (index !== -1) {
+                    seat.estado = 'available';
+                    selectedSeats.splice(index, 1);
+                    logDebug(`🔓 Puesto ${seatId} deseleccionado`, 'info');
+                    if (selectedSeats.length === 0 && timerInterval) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        timerPausado = false;
+                        timerSegundos = TIEMPO_BLOQUEO;
+                    }
+                } else {
+                    if (selectedSeats.length >= maxPuestos) {
+                        showModal('⚠️ Límite alcanzado', `Solo puedes seleccionar ${maxPuestos} puestos a la vez.`);
+                        return;
+                    }
+                    if (timeoutBlock) {
+                        clearTimeout(timeoutBlock);
+                        timeoutBlock = null;
+                    }
+                    seat.estado = 'blocked';
+                    selectedSeats.push(seatId);
+                    logDebug(`🔒 Puesto ${seatId} seleccionado (${selectedSeats.length}/${maxPuestos})`, 'success');
+                    
+                    if (selectedSeats.length === 1 && !isModalOpen) {
+                        iniciarTimerDesdeCero();
                     }
                 }
-
-                if (selectedSeatIndex === index && seats[index].estado === 'blocked') {
-                    seats[index].estado = 'available';
-                    selectedSeatIndex = null;
-                    guardarYRenderizar();
-                    return;
-                }
-
-                if (seats[index].estado !== 'available') return;
-
-                seats[index].estado = 'blocked';
-                selectedSeatIndex = index;
-
-                timeoutBlock = setTimeout(() => {
-                    if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].estado === 'blocked') {
-                        seats[selectedSeatIndex].estado = 'available';
-                        selectedSeatIndex = null;
-                        guardarYRenderizar();
-                        showModal('⏰ Tiempo agotado', 'El bloqueo del puesto ha expirado.');
-                    }
-                    timeoutBlock = null;
-                }, 30000);
 
                 guardarYRenderizar();
             }
 
             // ============================================================
-            // ===== COMPRAR =====
+            // ===== COMPRAR MÚLTIPLE =====
             // ============================================================
-            function buyIndividual() {
-                if (selectedSeatIndex === null) {
-                    showModal('⚠️ Selecciona un puesto', 'Haz clic en un puesto disponible para seleccionarlo.');
+            function buyMultiple() {
+                if (selectedSeats.length === 0) {
+                    showModal('⚠️ Selecciona puestos', 'Selecciona al menos 1 puesto.');
                     return;
                 }
 
-                const seat = seats[selectedSeatIndex];
-                if (seat.estado !== 'blocked') {
-                    showModal('⚠️ Puesto no disponible', 'El puesto ya no está disponible.');
-                    selectedSeatIndex = null;
-                    guardarYRenderizar();
+                const seatsSeleccionados = selectedSeats.map(id => seats.find(s => s.id === id)).filter(s => s);
+                const invalidos = seatsSeleccionados.filter(s => s.estado !== 'blocked');
+
+                if (invalidos.length > 0) {
+                    showModal('⚠️ Puestos no disponibles', 'Algunos puestos ya no están disponibles.');
+                    limpiarSeleccion();
+                    render();
                     return;
                 }
 
-                const precioFormateado = '$' + (seat.precio || 0).toLocaleString();
+                const total = seatsSeleccionados.reduce((sum, s) => sum + (s.precio || 0), 0);
+                const precioFormateado = '$' + total.toLocaleString();
+
+                const resumen = seatsSeleccionados.map(s =>
+                    `Mesa ${s.mesa} - Puesto ${s.puesto} ($${(s.precio||0).toLocaleString()})`
+                ).join('\n');
+
+                if (timeoutBlock) {
+                    clearTimeout(timeoutBlock);
+                    timeoutBlock = null;
+                }
 
                 showModal(
-                    '📝 Datos del comprador',
-                    `Puesto ${seat.puesto} - Mesa ${seat.mesa}\nZona: ${seat.zonaNombre}\nPrecio: ${precioFormateado}`,
+                    '📝 Datos de compra',
+                    `🛒 Compra de ${seatsSeleccionados.length} puestos\n\n📋 Detalle:\n${resumen}\n\n💰 Total: ${precioFormateado}`,
                     true,
+                    false,
                     false,
                     true,
                     function() {
                         const nombre = buyerName.value.trim();
                         const id = buyerId.value.trim();
+                        const pago = formaPago.value;
+                        const monto = parseInt(montoRecibido.value) || 0;
 
                         if (!nombre || !id) {
                             showModal('⚠️ Datos incompletos', 'Completa todos los campos.', true, false);
                             return;
                         }
 
-                        seat.estado = 'sold';
-                        seat.comprador = nombre;
-                        seat.identificacion = id;
+                        cancelarTimer();
 
-                        ventas.push({
-                            fecha: new Date().toLocaleString(),
-                            zonaId: seat.zonaId,
-                            zonaNombre: seat.zonaNombre,
-                            mesa: seat.mesa,
-                            puesto: seat.puesto,
-                            comprador: nombre,
-                            identificacion: id,
-                            precio: seat.precio,
-                            tipo: 'Individual'
+                        seatsSeleccionados.forEach((seat) => {
+                            seat.estado = 'sold';
+                            seat.comprador = nombre;
+                            seat.identificacion = id;
+
+                            const venta = {
+                                fecha: obtenerFechaISO(), // ← FECHA EN FORMATO ISO
+                                zonaId: seat.zonaId,
+                                zonaNombre: seat.zonaNombre,
+                                mesa: seat.mesa,
+                                puesto: seat.puesto,
+                                comprador: nombre,
+                                identificacion: id,
+                                precio: seat.precio,
+                                tipo: 'Individual',
+                                formaPago: pago,
+                                montoRecibido: monto > 0 ? Math.round(monto / seatsSeleccionados.length) : 0,
+                                vueltas: 0,
+                                compraMultiple: seatsSeleccionados.length
+                            };
+                            ventas.push(venta);
                         });
 
-                        selectedSeatIndex = null;
-                        if (timeoutBlock) {
-                            clearTimeout(timeoutBlock);
-                            timeoutBlock = null;
+                        limpiarSeleccion();
+                        guardarYRenderizar();
+
+                        let mensajePago = `💰 Pago: ${FORMAS_PAGO[pago].label}`;
+                        if (pago === 'efectivo' && monto > 0) {
+                            mensajePago += `\n💵 Recibido: $${monto.toLocaleString()}`;
+                            const vueltas = monto - total;
+                            if (vueltas > 0) {
+                                mensajePago += `\n🔄 Vueltas: $${vueltas.toLocaleString()}`;
+                            }
                         }
 
-                        guardarYRenderizar();
                         showModal('✅ ¡Compra exitosa!',
-                            `Puesto ${seat.puesto} - Mesa ${seat.mesa}\nZona: ${seat.zonaNombre}\nComprador: ${nombre}\nPrecio: ${precioFormateado}`
+                            `🛒 ${seatsSeleccionados.length} puestos vendidos\n\n` +
+                            `Comprador: ${nombre}\n` +
+                            `Total: ${precioFormateado}\n` +
+                            `${mensajePago}\n\n` +
+                            `📋 Puestos:\n${seatsSeleccionados.map(s => `Mesa ${s.mesa} - Puesto ${s.puesto}`).join('\n')}`
                         );
-                        logDebug(`🎉 Venta individual: ${seat.zonaNombre} - Mesa ${seat.mesa} - Puesto ${seat.puesto}`, 'success');
+                        logDebug(`🎉 Multi-compra: ${seatsSeleccionados.length} puestos (${pago})`, 'success');
                     }
                 );
             }
 
+            // ============================================================
+            // ===== COMPRAR PALCO =====
+            // ============================================================
             function buyPalco() {
                 const valor = mesaSelect.value;
-                if (!valor) {
-                    showModal('⚠️ Selecciona una mesa', 'Elige una mesa del menú desplegable.');
+                logDebug(`🎪 Intento de compra de palco - Valor seleccionado: "${valor}"`, 'info');
+                
+                if (!valor || valor === '') {
+                    showModal('⚠️ Selecciona una mesa', 'Por favor, selecciona una mesa del menú desplegable.');
                     return;
                 }
 
-                const [zonaId, mesaNum] = valor.split('|');
-                const seatsInMesa = seats.filter(s => s.zonaId === zonaId && s.mesa == mesaNum);
+                const partes = valor.split('|');
+                if (partes.length !== 2) {
+                    logDebug(`❌ Formato inválido: "${valor}"`, 'error');
+                    showModal('⚠️ Error', 'Formato de mesa inválido.');
+                    return;
+                }
+
+                const zonaId = partes[0];
+                const mesaNum = partes[1];
+                logDebug(`🔍 Buscando: Zona "${zonaId}", Mesa "${mesaNum}"`, 'info');
+
+                const seatsInMesa = seats.filter(s => s.zonaId === zonaId && String(s.mesa) === String(mesaNum));
+                logDebug(`📊 Encontrados ${seatsInMesa.length} puestos en la mesa`, 'info');
 
                 if (seatsInMesa.length === 0) {
-                    showModal('⚠️ Mesa inválida', 'La mesa seleccionada no existe.');
+                    showModal('⚠️ Mesa inválida', `No se encontró la mesa ${mesaNum}.`);
                     return;
                 }
 
@@ -1640,36 +2622,53 @@
                 if (available.length !== seatsInMesa.length) {
                     const vendidos = seatsInMesa.filter(s => s.estado === 'sold').length;
                     const bloqueados = seatsInMesa.filter(s => s.estado === 'blocked').length;
-                    showModal('⚠️ Palco no disponible',
-                        `Mesa ${mesaNum} tiene ${available.length} libres, ${vendidos} vendidos y ${bloqueados} bloqueados.`
+                    showModal('⚠️ Mesa no disponible',
+                        `La mesa ${mesaNum} no está completa.\n\n` +
+                        `📊 ${available.length} libres\n` +
+                        `❌ ${vendidos} vendidos\n` +
+                        `🔒 ${bloqueados} bloqueados`
                     );
                     return;
                 }
 
                 const precioTotal = seatsInMesa.reduce((sum, s) => sum + (s.precio || 0), 0);
-                const zonaNombre = seatsInMesa[0].zonaNombre;
+                const zonaNombre = seatsInMesa[0].zonaNombre || 'Zona';
+
+                logDebug(`✅ Mesa ${mesaNum} disponible - ${seatsInMesa.length} puestos - Total: $${precioTotal.toLocaleString()}`, 'success');
+
+                limpiarSeleccion();
 
                 showModal(
-                    '📝 Datos del comprador',
-                    `Palco completo - Mesa ${mesaNum}\nZona: ${zonaNombre}\nTotal: $${precioTotal.toLocaleString()}`,
+                    '📝 Datos de compra - Palco',
+                    `🎪 Palco completo\n\n` +
+                    `📍 Zona: ${zonaNombre}\n` +
+                    `🪑 Mesa: ${mesaNum}\n` +
+                    `📦 ${seatsInMesa.length} puestos\n` +
+                    `💰 Total: $${precioTotal.toLocaleString()}`,
                     true,
+                    false,
                     false,
                     true,
                     function() {
                         const nombre = buyerName.value.trim();
                         const id = buyerId.value.trim();
+                        const pago = formaPago.value;
+                        const monto = parseInt(montoRecibido.value) || 0;
 
                         if (!nombre || !id) {
                             showModal('⚠️ Datos incompletos', 'Completa todos los campos.', true, false);
                             return;
                         }
 
+                        cancelarTimer();
+
                         seatsInMesa.forEach(s => {
                             s.estado = 'sold';
                             s.comprador = nombre;
                             s.identificacion = id;
-                            ventas.push({
-                                fecha: new Date().toLocaleString(),
+                            
+                            const venta = {
+                                fecha: obtenerFechaISO(), // ← FECHA EN FORMATO ISO
                                 zonaId: s.zonaId,
                                 zonaNombre: s.zonaNombre,
                                 mesa: s.mesa,
@@ -1677,23 +2676,36 @@
                                 comprador: nombre,
                                 identificacion: id,
                                 precio: s.precio,
-                                tipo: 'Palco'
-                            });
+                                tipo: 'Palco',
+                                formaPago: pago,
+                                montoRecibido: monto > 0 ? Math.round(monto / seatsInMesa.length) : 0,
+                                vueltas: 0,
+                                compraMultiple: seatsInMesa.length
+                            };
+                            ventas.push(venta);
                         });
 
-                        if (selectedSeatIndex !== null && seats[selectedSeatIndex] && seats[selectedSeatIndex].mesa == mesaNum) {
-                            selectedSeatIndex = null;
-                            if (timeoutBlock) {
-                                clearTimeout(timeoutBlock);
-                                timeoutBlock = null;
+                        guardarYRenderizar();
+
+                        let mensajePago = `💰 Pago: ${FORMAS_PAGO[pago].label}`;
+                        if (pago === 'efectivo' && monto > 0) {
+                            mensajePago += `\n💵 Recibido: $${monto.toLocaleString()}`;
+                            const vueltas = monto - precioTotal;
+                            if (vueltas > 0) {
+                                mensajePago += `\n🔄 Vueltas: $${vueltas.toLocaleString()}`;
                             }
                         }
 
-                        guardarYRenderizar();
                         showModal('🎪 ¡Palco completo!',
-                            `Mesa ${mesaNum}\nZona: ${zonaNombre}\nComprador: ${nombre}\nTotal: $${precioTotal.toLocaleString()}`
+                            `🎪 Palco vendido exitosamente\n\n` +
+                            `📍 Zona: ${zonaNombre}\n` +
+                            `🪑 Mesa: ${mesaNum}\n` +
+                            `📦 ${seatsInMesa.length} puestos\n` +
+                            `👤 Comprador: ${nombre}\n` +
+                            `💰 Total: $${precioTotal.toLocaleString()}\n` +
+                            `${mensajePago}`
                         );
-                        logDebug(`🎉 Palco vendido: ${zonaNombre} - Mesa ${mesaNum}`, 'success');
+                        logDebug(`🎉 Palco vendido: ${zonaNombre} - Mesa ${mesaNum} (${pago})`, 'success');
                     }
                 );
             }
@@ -1703,8 +2715,8 @@
             // ============================================================
             function resetAll() {
                 const clave = resetKeyInput.value.trim();
-                logDebug(`🔑 Intento de reinicio`, 'info');
-
+                logDebug(`🔑 Intento de reinicio con clave`, 'info');
+                
                 if (!clave) {
                     showModal('⚠️ Clave requerida', 'Ingresa la clave para reiniciar.');
                     resetKeyInput.focus();
@@ -1712,37 +2724,49 @@
                 }
 
                 if (clave !== RESET_KEY) {
-                    showModal('🔒 Acceso denegado', 'Clave incorrecta.');
+                    showModal('🔒 Acceso denegado', 'Clave incorrecta.\n\nClave: 12436219*');
                     resetKeyInput.value = '';
                     resetKeyInput.focus();
                     return;
                 }
 
+                logDebug('✅ Clave correcta', 'success');
+
                 showModal(
                     '⚠️ Confirmar reinicio',
-                    `¿Reiniciar TODAS las ventas?\n\nVentas: ${ventas.length}\nPuestos vendidos: ${seats.filter(s => s.estado === 'sold').length}`,
+                    `¿Reiniciar TODAS las ventas?\n\n` +
+                    `📊 Datos actuales:\n` +
+                    `• Ventas: ${ventas.length}\n` +
+                    `• Puestos vendidos: ${seats.filter(s => s.estado === 'sold').length}\n\n` +
+                    `⚠️ Esta acción es irreversible.`,
+                    false,
                     false,
                     false,
                     true,
                     function() {
-                        if (timeoutBlock) {
-                            clearTimeout(timeoutBlock);
-                            timeoutBlock = null;
-                        }
-                        selectedSeatIndex = null;
-
+                        logDebug('🔄 Ejecutando reinicio...', 'warning');
+                        
+                        cancelarTimer();
+                        limpiarSeleccion();
+                        
                         seats.forEach(s => {
                             s.estado = 'available';
                             s.comprador = null;
                             s.identificacion = null;
                         });
-
+                        
+                        const ventasEliminadas = ventas.length;
                         ventas = [];
                         resetKeyInput.value = '';
-
+                        
                         guardarYRenderizar();
-                        showModal('🔄 Reiniciado', 'Todas las ventas se han reiniciado.');
-                        logDebug('✅ Reinicio completado', 'success');
+                        
+                        logDebug(`✅ Reinicio completado. ${ventasEliminadas} ventas eliminadas.`, 'success');
+                        showModal('🔄 Reiniciado', 
+                            `Todas las ventas se han reiniciado correctamente.\n\n` +
+                            `Ventas eliminadas: ${ventasEliminadas}\n` +
+                            `¡Listo para empezar de nuevo!`
+                        );
                     }
                 );
             }
@@ -1773,19 +2797,20 @@
                         <p>Total ventas: ${ventas.length}</p>
                         <br/>
                         <table>
-                            <thead><tr><th>#</th><th>Fecha</th><th>Zona</th><th>Mesa</th><th>Puesto</th><th>Comprador</th><th>ID</th><th>Precio</th><th>Tipo</th></tr></thead>
+                            <thead><tr><th>#</th><th>Fecha</th><th>Zona</th><th>Mesa</th><th>Puesto</th><th>Comprador</th><th>ID</th><th>Pago</th><th>Precio</th><th>Tipo</th><th>Multi</th></tr></thead>
                             <tbody>
                 `;
 
                 let totalRecaudado = 0;
                 ventas.forEach((v, i) => {
                     totalRecaudado += v.precio || 0;
+                    const pago = FORMAS_PAGO[v.formaPago] ? FORMAS_PAGO[v.formaPago].label : 'Sin registro';
                     tabla +=
-                        `<tr><td>${i+1}</td><td>${v.fecha}</td><td>${v.zonaNombre}</td><td>${v.mesa}</td><td>${v.puesto}</td><td>${v.comprador}</td><td>${v.identificacion}</td><td>$${(v.precio||0).toLocaleString()}</td><td>${v.tipo}</td></tr>`;
+                        `<tr><td>${i+1}</td><td>${v.fecha}</td><td>${v.zonaNombre}</td><td>${v.mesa}</td><td>${v.puesto}</td><td>${v.comprador}</td><td>${v.identificacion}</td><td>${pago}</td><td>$${(v.precio||0).toLocaleString()}</td><td>${v.tipo}</td><td>${v.compraMultiple || 1}</td></tr>`;
                 });
 
                 tabla += `
-                            <tr class="total"><td colspan="7"><strong>TOTAL RECAUDADO</strong></td><td><strong>$${totalRecaudado.toLocaleString()}</strong></td><td></td></tr>
+                            <tr class="total"><td colspan="9"><strong>TOTAL RECAUDADO</strong></td><td><strong>$${totalRecaudado.toLocaleString()}</strong></td><td></td></tr>
                         </tbody></table>
                         <br/>
                         <p><strong>Total puestos vendidos:</strong> ${ventas.length}</p>
@@ -1796,12 +2821,12 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `Informe_Ventas_${new Date().toISOString().slice(0,10)}.xls`;
+                a.download = `Ventas_${new Date().toISOString().slice(0,10)}.xls`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                logDebug(`📊 Excel generado con ${ventas.length} ventas`, 'success');
+                logDebug(`📊 Excel generado`, 'success');
             }
 
             // ============================================================
@@ -1811,21 +2836,21 @@
                 try {
                     const data = localStorage.getItem(STORAGE_KEY);
                     if (!data) {
-                        showModal('⚠️ Sin datos', 'No hay datos para exportar.');
+                        showModal('⚠️ Sin datos', 'No hay datos.');
                         return;
                     }
                     const blob = new Blob([data], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `Backup_Concierto_${new Date().toISOString().slice(0,10)}.json`;
+                    a.download = `Backup_${new Date().toISOString().slice(0,10)}.json`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                    showModal('💾 Backup creado', 'Datos exportados correctamente.');
+                    showModal('💾 Backup creado', 'Datos exportados.');
                 } catch (e) {
-                    showModal('❌ Error', 'Error al exportar: ' + e.message);
+                    showModal('❌ Error', 'Error: ' + e.message);
                 }
             }
 
@@ -1841,11 +2866,12 @@
                         try {
                             const data = JSON.parse(ev.target.result);
                             if (!data.seats || !Array.isArray(data.seats)) {
-                                showModal('❌ Error', 'Formato de archivo inválido.');
+                                showModal('❌ Error', 'Formato inválido.');
                                 return;
                             }
-                            showModal('📂 Confirmar importación',
-                                `¿Importar ${data.ventas?.length || 0} ventas?\nEsto reemplazará los datos actuales.`,
+                            showModal('📂 Confirmar',
+                                `¿Importar ${data.ventas?.length || 0} ventas?`,
+                                false,
                                 false,
                                 false,
                                 true,
@@ -1864,109 +2890,67 @@
             }
 
             // ============================================================
-            // ===== ACTUALIZAR BOTONES =====
-            // ============================================================
-            function updateButtons() {
-                const hasBlocked = seats.some(s => s.estado === 'blocked');
-                btnBuy.disabled = !hasBlocked;
-
-                // Verificar si hay alguna mesa completa disponible
-                let palcoDisponible = false;
-                const mesasAgrupadas = {};
-                seats.forEach(s => {
-                    const key = s.zonaId + '-' + s.mesa;
-                    if (!mesasAgrupadas[key]) {
-                        mesasAgrupadas[key] = { total: 0, disponibles: 0 };
-                    }
-                    mesasAgrupadas[key].total++;
-                    if (s.estado === 'available') mesasAgrupadas[key].disponibles++;
-                });
-
-                for (const key in mesasAgrupadas) {
-                    if (mesasAgrupadas[key].disponibles === mesasAgrupadas[key].total && mesasAgrupadas[key].total > 0) {
-                        palcoDisponible = true;
-                        break;
-                    }
-                }
-                btnPalco.disabled = !palcoDisponible;
-            }
-
-            // ============================================================
             // ===== DEBUG =====
             // ============================================================
             function toggleDebug() {
                 const panel = document.getElementById('debugPanel');
                 panel.classList.toggle('active');
                 if (panel.classList.contains('active')) {
-                    logDebug('🐛 Panel de depuración activado', 'info');
+                    logDebug('🐛 Debug activado', 'info');
                     logDebug(`📊 ${seats.length} puestos, ${ventas.length} ventas, ${zonas.length} zonas`, 'info');
-                }
-            }
-
-            // ============================================================
-            // ===== INICIALIZACIÓN =====
-            // ============================================================
-            function init() {
-                logDebug('🚀 Iniciando sistema multi-zona...', 'info');
-
-                if (cargarEstado()) {
-                    // Verificar que las zonas existan
-                    if (zonas.length === 0) {
-                        crearEstructuraZonas();
-                        generarPuestosDesdeZonas();
-                    }
-                    // Limpiar bloqueos
-                    seats.forEach(s => {
-                        if (s.estado === 'blocked') s.estado = 'available';
+                    logDebug(`🪑 Seleccionados: ${selectedSeats.length}`, 'info');
+                    logDebug(`⏱️ Timer: ${timerPausado ? 'PAUSADO' : 'ACTIVO'} (${timerSegundos}s)`, 'info');
+                    const pagos = {};
+                    ventas.forEach(v => {
+                        const p = v.formaPago || 'sin-registro';
+                        pagos[p] = (pagos[p] || 0) + 1;
                     });
-                } else {
-                    crearEstructuraZonas();
-                    generarPuestosDesdeZonas();
+                    logDebug(`💳 Pagos: ${JSON.stringify(pagos)}`, 'info');
                 }
-
-                actualizarFiltros();
-                render();
-                monitorStorage();
-                logDebug('✅ Sistema inicializado correctamente', 'success');
-
-                // Monitoreo cada 30 segundos
-                setInterval(monitorStorage, 30000);
-
-                console.log('🎫 Sistema de ventas multi-zona');
-                console.log('📊 Zonas:', zonas.length);
-                console.log('🪑 Puestos:', seats.length);
-                console.log('🔑 Clave:', RESET_KEY);
             }
 
             // ============================================================
             // ===== EVENTOS =====
             // ============================================================
-            btnBuy.addEventListener('click', buyIndividual);
+            btnBuy.addEventListener('click', buyMultiple);
             btnPalco.addEventListener('click', buyPalco);
             btnReset.addEventListener('click', resetAll);
             btnExcel.addEventListener('click', generarExcel);
+            btnConciliacion.addEventListener('click', function() {
+                if (ventas.length === 0) {
+                    showModal('📊 Sin datos', 'No hay ventas para conciliar.');
+                    return;
+                }
+                showModal('🏦 Conciliación', '', false, false, true, false);
+            });
             btnExportData.addEventListener('click', exportarBackup);
             btnImportData.addEventListener('click', importarBackup);
             btnAgregarZona.addEventListener('click', function() {
-                showModal('➕ Nueva Zona', 'Completa los datos de la nueva zona.', false, true, false);
+                showModal('➕ Nueva Zona', 'Completa los datos.', false, true, false);
             });
             btnDebug.addEventListener('click', toggleDebug);
+
+            cantidadPuestos.addEventListener('change', function() {
+                let val = parseInt(this.value) || 1;
+                if (val < 1) val = 1;
+                if (val > MAX_PUESTOS_MULTI) val = MAX_PUESTOS_MULTI;
+                this.value = val;
+
+                if (selectedSeats.length > val) {
+                    limpiarSeleccion();
+                    render();
+                    showModal('⚠️ Límite ajustado', `La cantidad máxima es ${val} puestos.`);
+                }
+            });
 
             resetKeyInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') resetAll();
             });
 
             mesaSelect.addEventListener('change', function() {
-                if (selectedSeatIndex !== null) {
-                    if (seats[selectedSeatIndex] && seats[selectedSeatIndex].estado === 'blocked') {
-                        seats[selectedSeatIndex].estado = 'available';
-                    }
-                    selectedSeatIndex = null;
-                    if (timeoutBlock) {
-                        clearTimeout(timeoutBlock);
-                        timeoutBlock = null;
-                    }
-                    guardarYRenderizar();
+                if (selectedSeats.length > 0) {
+                    limpiarSeleccion();
+                    render();
                 }
             });
 
@@ -1975,22 +2959,60 @@
                 zonaFiltro.querySelectorAll('button').forEach(b => {
                     b.classList.toggle('active', b.dataset.zona === zonaFiltroActual);
                 });
+                limpiarSeleccion();
                 render();
             });
 
             // ============================================================
             // ===== INICIAR =====
             // ============================================================
+            function init() {
+                logDebug('🚀 Iniciando sistema con conciliación por fechas...', 'info');
+
+                if (cargarEstado()) {
+                    if (zonas.length === 0) {
+                        crearEstructuraZonas();
+                        generarPuestosDesdeZonas();
+                    }
+                    seats.forEach(s => {
+                        if (s.estado === 'blocked') s.estado = 'available';
+                    });
+                    selectedSeats = [];
+                } else {
+                    crearEstructuraZonas();
+                    generarPuestosDesdeZonas();
+                }
+
+                actualizarFiltros();
+                render();
+                monitorStorage();
+                logDebug('✅ Sistema iniciado', 'success');
+
+                setInterval(monitorStorage, 30000);
+
+                console.log('🎫 Sistema de ventas multi-zona con CONCILIACIÓN POR FECHAS');
+                console.log('📊 Zonas:', zonas.length);
+                console.log('🪑 Puestos:', seats.length);
+                console.log('🔑 Clave:', RESET_KEY);
+                console.log('📅 Conciliación: Todas | Hoy | Día específico | Rango de fechas');
+                console.log('📝 Las fechas se guardan en formato ISO (YYYY-MM-DD)');
+            }
+
             init();
 
-            // Mensaje de bienvenida
             if (!localStorage.getItem(STORAGE_KEY)) {
                 setTimeout(() => {
                     showModal('🎵 Bienvenido',
-                        `Sistema multi-zona de venta de boletos.\n\n` +
-                        `🏛️ ${zonas.length} zonas disponibles\n` +
-                        `🪑 ${seats.length} puestos totales\n\n` +
-                        `Selecciona un puesto y completa la compra.`
+                        `Sistema multi-zona con conciliación por fechas.\n\n` +
+                        `🏛️ ${zonas.length} zonas\n` +
+                        `🪑 ${seats.length} puestos\n` +
+                        `💳 ${Object.keys(FORMAS_PAGO).length} métodos de pago\n` +
+                        `📦 Compra de 1 a ${MAX_PUESTOS_MULTI} puestos\n\n` +
+                        `📅 La conciliación permite filtrar por:\n` +
+                        `• Todas las ventas\n` +
+                        `• Ventas de hoy\n` +
+                        `• Día específico\n` +
+                        `• Rango de fechas`
                     );
                 }, 500);
             }
